@@ -40,25 +40,13 @@ public final class Player: Equatable {
     public init(score: Int? = 0) {
         self.score = score!
     }
-    /// Method to move a tile to a particular place in the game.
-    public func moveTile(tile: Tile, to: Placement) -> Bool {
-        if tiles.contains(tile) {
-            tile.placement = to
-            if to == Placement.Bag {
-                tiles.remove(tile)
-                assert(tiles.contains(tile) == false)
-            }
-            return true
-        }
-        return false
-    }
 }
 
 extension Papyrus {
     /// - returns: A new player with their rack pre-filled. Or an error if refill fails.
     public func createPlayer() -> Player {
         let newPlayer = Player()
-        tileIndex += replenishRack(newPlayer)
+        replenishRack(newPlayer)
         players.append(newPlayer)
         return newPlayer
     }
@@ -75,11 +63,17 @@ extension Papyrus {
     func replenishRack(player: Player) -> Int {
         let needed = PapyrusRackAmount - player.rackTiles.count
         var count = 0
-        for i in tileIndex..<tiles.count where tiles[i].placement == .Bag && count < needed {
+        for i in 0..<tiles.count where tiles[i].placement == .Bag && count < needed {
             tiles[i].placement = .Rack
             player.tiles.insert(tiles[i])
             count++
         }
         return count
+    }
+    
+    /// Move tiles from a players rack to the bag.
+    func returnTiles(tiles: [Tile], forPlayer player: Player) {
+        player.tiles.subtractInPlace(tiles)
+        tiles.forEach({$0.placement = .Bag})
     }
 }

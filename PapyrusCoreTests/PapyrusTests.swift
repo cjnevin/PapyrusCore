@@ -45,7 +45,6 @@ class PapyrusTests: XCTestCase {
         XCTAssert(instance.tiles.count == totalTiles)
         instance.createPlayer()
         XCTAssert(instance.bagTiles.count == totalTiles - PapyrusRackAmount)
-        XCTAssert(instance.tileIndex == PapyrusRackAmount)
         
         let player = instance.player!
         XCTAssert(player.rackTiles.count == PapyrusRackAmount)
@@ -62,9 +61,8 @@ class PapyrusTests: XCTestCase {
         XCTAssert(player2.rackTiles.count == PapyrusRackAmount)
         XCTAssert(player2.tiles.count == player2.rackTiles.count)
         XCTAssert(instance.bagTiles.count == totalTiles - (PapyrusRackAmount * 2))
-        XCTAssert(instance.tileIndex == (PapyrusRackAmount * 2))
         
-        player2.rackTiles.forEach({player2.moveTile($0, to: Placement.Bag)})
+        instance.returnTiles(player2.rackTiles, forPlayer: player2)
         XCTAssert(player2.tiles.count == 0, "Expected tiles to be empty")
         XCTAssert(player2.rackTiles.count == 0, "Expected rack to be empty")
         XCTAssert(instance.bagTiles.count == totalTiles - PapyrusRackAmount, "Expected bag to be missing first players rack tiles")

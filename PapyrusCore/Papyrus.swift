@@ -32,7 +32,6 @@ public final class Papyrus {
     /// Array of positions of tiles we have dropped on the board.
     lazy var playedBoundaries = [Boundary]()
     lazy var tiles = [Tile]()
-    var tileIndex: Int = 0
     
     lazy var players = [Player]()
     public internal(set) var playerIndex: Int = 0
@@ -56,7 +55,6 @@ public final class Papyrus {
         playedBoundaries.removeAll()
         tiles.removeAll()
         players.removeAll()
-        tileIndex = 0
         playerIndex = 0
         tiles.appendContentsOf(Tile.createTiles())
         lifecycleCallback?(.Ready, self)
