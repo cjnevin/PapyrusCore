@@ -10,7 +10,9 @@ A boundary is a representation of two positions which is used internally for a m
 This module (currently defunct) should return possible plays given a specific boundary and tile array.
 
 ### Lexicon
-This module is essentially the dictionary, but naming it that would have been confusing in Swift, it provides a lookup method and a way of returning anagrams given a set of parameters.
+This module is essentially the dictionary, but naming it that would have been confusing in Swift, it provides a lookup method and a way of returning anagrams given a set of parameters. 
+
+Currently using a Trie (proposed by Appel & Guy "The World's Fastest Scrabble Algorithm", 1988) but there is a plan to change to a modified GADDAG (proposed by Steven Gordon, 1994) to provide bidirectional lookup, reduce memory consumption and download size.
 
 ### Play
 This module provides methods for submitting plays for Papyrus to validate and execute internally.
