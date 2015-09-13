@@ -25,4 +25,4 @@ A position represents a particular row, column and axis.
 A square represents an individual square on the board providing context to its type, tile, and position.
 
 ### Tile
-A tile represents an individual character/value pair in the game, its used extensively internally. Tiles have a placement property which provides context where it is in the flow of the game. Tiles may be referenced by players and squares.
+A tile represents an individual character/value pair in the game, its used extensively internally. Tiles have a placement property which provides context where it is in the flow of the game. Tiles may be owned by players and squares.
