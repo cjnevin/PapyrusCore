@@ -1,4 +1,6 @@
 # PapyrusCore
+![](https://reposs.herokuapp.com/?path=ChrisAU/PapyrusCore)
+Reusable library for playing Scrabble games.
 
 ## Papyrus
 Initialising a game of scrabble can be done using this class, simply call the newGame method on an instance.
