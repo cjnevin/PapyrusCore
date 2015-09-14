@@ -185,6 +185,18 @@ public struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
 }
 
 extension Papyrus {
+    /// - parameter boundary: Find filled tiles then return the index and characters for the boundary.
+    /// - returns: Array of indexes and characters.
+    func indexesAndCharacters(forBoundary boundary: Boundary) -> [(Int, Character)] {
+        return boundary.iterableRange.mapFilter({ (index) -> (Int, Character)? in
+            if let tile = tileAt(Position(horizontal: boundary.horizontal,
+                iterable: index, fixed: boundary.start.fixed)) {
+                return (index - boundary.start.iterable, tile.letter)
+            }
+            return nil
+        })
+    }
+    
     /// - parameter boundary: Boundary containing tiles that have been dropped on the board.
     /// - returns: Array of word boundaries that intersect the supplied boundary.
     func findIntersections(forBoundary boundary: Boundary) -> [Boundary] {
@@ -248,7 +260,7 @@ extension Papyrus {
                 
                 // If we don't have enough tiles in our rack and on the board, this boundary is invalid
                 if self.tilesIn(stretched).count + rackCount < stretched.length {
-                    print("Not enough tiles \(stretched.length), \(self.tilesIn(stretched))")
+                    //print("Not enough tiles \(stretched.length), \(self.tilesIn(stretched))")
                     return nil
                 }
                 

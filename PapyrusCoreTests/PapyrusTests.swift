@@ -12,6 +12,7 @@ import XCTest
 class PapyrusTests: XCTestCase {
 
     let instance = Papyrus()
+    let lexicon: Lexicon = Lexicon(withFilePath: NSBundle(forClass: LexiconTests.self).pathForResource("CSW12", ofType: "plist")!)!
     
     override func setUp() {
         super.setUp()
@@ -122,7 +123,6 @@ class PapyrusTests: XCTestCase {
             instance.squareAt(position)!.tile = tile
             
             let boundaries = instance.playableBoundaries(forBoundary: boundary)!
-            print(boundaries.count)
             XCTAssert(boundaries.count == expectations[index], "Expected \(expectations[index]) boundaries")
             
             instance.squareAt(position)!.tile = nil
@@ -152,57 +152,66 @@ class PapyrusTests: XCTestCase {
     }
     
     func testFindPlayableBoundaries() {
-        instance.squares[2][9].tile = Tile("R", 1)
-        instance.squares[3][9].tile = Tile("E", 1)
-        instance.squares[4][9].tile = Tile("S", 1)
-        instance.squares[5][9].tile = Tile("U", 1)
-        instance.squares[6][9].tile = Tile("M", 3)
-        instance.squares[8][9].tile = Tile("S", 1)
         
-        instance.squares[7][5].tile = Tile("A", 1)
-        instance.squares[7][6].tile = Tile("R", 1)
-        instance.squares[7][7].tile = Tile("C", 3)
-        instance.squares[7][8].tile = Tile("H", 4)
-        instance.squares[7][9].tile = Tile("E", 1)
-        instance.squares[7][10].tile = Tile("R", 1)
-        instance.squares[7][11].tile = Tile("S", 1)
+        instance.createPlayer()
         
-        instance.squares[8][7].tile = Tile("A", 1)
-        instance.squares[9][7].tile = Tile("R", 1)
-        instance.squares[10][7].tile = Tile("D", 2)
+        instance.returnTiles(instance.player!.rackTiles, forPlayer: instance.player!)
         
-        instance.squares[10][6].tile = Tile("A", 1)
-        instance.squares[10][5].tile = Tile("E", 1)
-        instance.squares[10][4].tile = Tile("D", 2)
-        instance.squares[10][8].tile = Tile("E", 1)
-        instance.squares[10][9].tile = Tile("R", 1)
+        let toDraw: [Character] = ["D", "I", "S", "L", "Y", "S", "P"]
+        toDraw.forEach { (letter) -> () in
+            let tile = instance.bagTiles.filter({$0.letter == letter}).first!
+            instance.player?.tiles.insert(tile)
+            tile.placement = .Rack
+        }
         
-        instance.squares[8][5].tile = Tile("R", 1)
-        instance.squares[9][5].tile = Tile("I", 1)
+        let items: [[(Position?, Character)]] = [
+            [
+                (Position(horizontal: true, iterable: 2, fixed: 9), "R"),
+                (Position(horizontal: true, iterable: 3, fixed: 9), "E"),
+                (Position(horizontal: true, iterable: 4, fixed: 9), "S"),
+                (Position(horizontal: true, iterable: 5, fixed: 9), "U"),
+                (Position(horizontal: true, iterable: 6, fixed: 9), "M"),
+                (Position(horizontal: true, iterable: 7, fixed: 9), "E"),
+                (Position(horizontal: true, iterable: 8, fixed: 9), "S")
+            ],/* [
+                (Position(horizontal: false, iterable: 5, fixed: 7), "A"),
+                (Position(horizontal: false, iterable: 6, fixed: 7), "R"),
+                (Position(horizontal: false, iterable: 7, fixed: 7), "C"),
+                (Position(horizontal: false, iterable: 8, fixed: 7), "H"),
+                (Position(horizontal: false, iterable: 9, fixed: 7), "E"),
+                (Position(horizontal: false, iterable: 10, fixed: 7), "R"),
+                (Position(horizontal: false, iterable: 11, fixed: 7), "S"),
+            ], [
+                (Position(horizontal: true, iterable: 7, fixed: 7), "C"),
+                (Position(horizontal: true, iterable: 8, fixed: 7), "A"),
+                (Position(horizontal: true, iterable: 9, fixed: 7), "R"),
+                (Position(horizontal: true, iterable: 10, fixed: 7), "D"),
+            ],*/ [
+                (Position(horizontal: false, iterable: 4, fixed: 10), "D"),
+                (Position(horizontal: false, iterable: 5, fixed: 10), "E"),
+                (Position(horizontal: false, iterable: 6, fixed: 10), "A"),
+                (Position(horizontal: false, iterable: 7, fixed: 10), "D"),
+                (Position(horizontal: false, iterable: 8, fixed: 10), "E"),
+                (Position(horizontal: false, iterable: 9, fixed: 10), "R"),
+            ]/*, [
+                (Position(horizontal: true, iterable: 7, fixed: 5), "A"),
+                (Position(horizontal: true, iterable: 8, fixed: 5), "R"),
+                (Position(horizontal: true, iterable: 9, fixed: 5), "I"),
+                (Position(horizontal: true, iterable: 10, fixed: 5), "E"),
+            ]*/
+        ]
         
-        var playedBoundaries = [Boundary]()
-        // ARCHERS
-        playedBoundaries.append(Boundary(
-            start: Position(horizontal: true, iterable: 5, fixed: 7),
-            end: Position(horizontal: true, iterable: 11, fixed: 7))!)
-        // DEAD
-        playedBoundaries.append(Boundary(
-            start: Position(horizontal: true, iterable: 4, fixed: 10),
-            end: Position(horizontal: true, iterable: 9, fixed: 10))!)
-        // CARD
-        playedBoundaries.append(Boundary(
-            start: Position(horizontal: false, iterable: 7, fixed: 7),
-            end: Position(horizontal: false, iterable: 10, fixed: 7))!)
-        // ARIE
-        playedBoundaries.append(Boundary(
-            start: Position(horizontal: false, iterable: 7, fixed: 5),
-            end: Position(horizontal: false, iterable: 10, fixed: 5))!)
-        // RESUME
-        playedBoundaries.append(Boundary(
-            start: Position(horizontal: false, iterable: 2, fixed: 9),
-            end: Position(horizontal: false, iterable: 8, fixed: 9))!)
-        
-        let playableBoundaries = instance.findPlayableBoundaries(playedBoundaries)
+        for positions in items {
+            let boundary = Boundary(start: positions.first?.0, end: positions.last?.0)!
+            positions.forEach({
+                let tile = Tile($0.1, 1)
+                instance.squareAt($0.0)?.tile = tile
+                tile.placement = Placement.Fixed
+            })
+            instance.playedBoundaries.append(boundary)
+        }
+        let playableBoundaries = instance.findPlayableBoundaries(instance.playedBoundaries)
+        XCTAssert(playableBoundaries.count > 0)
         
         // Now determine playable boundaries
         for row in 0..<PapyrusDimensions {
@@ -221,6 +230,21 @@ class PapyrusTests: XCTestCase {
             print(line)
         }
         print(playableBoundaries.count)
+        
+        let letters = instance.player!.rackTiles.map({$0.letter})
+        
+        playableBoundaries.forEach {
+            let fixedLetters = instance.indexesAndCharacters(forBoundary: $0)
+            var results = [String]()
+            for length in 0..<letters.count {
+                lexicon.anagramsOf(String(letters[0...length]), length: length,
+                    prefix: "", fixedLetters: fixedLetters, fixedCount: fixedLetters.count,
+                    root: nil, results: &results)
+            }
+            if (results.count > 0) {
+                print("\(fixedLetters):  \(results)")
+            }
+        }
         
         //XCTAssert(playableBoundaries.count == 100)
     }
