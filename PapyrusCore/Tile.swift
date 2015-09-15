@@ -80,6 +80,14 @@ extension Papyrus {
         return squaresIn(boundary).mapFilter({$0?.tile})
     }
     
+    /// - parameter tiles: Tiles to get the letter values of.
+    /// - returns: All letters for given tiles.
+    public func lettersIn(tiles: [Tile]) -> [Character] {
+        return tiles.mapFilter({$0.letter})
+    }
+    
+    /// - parameter boundary: Boundary to check.
+    /// - returns: All letters in a given boundary.
     public func lettersIn(boundary: Boundary) -> [Character] {
         return tilesIn(boundary).mapFilter({$0.letter})
     }

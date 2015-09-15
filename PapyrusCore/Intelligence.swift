@@ -79,16 +79,21 @@ extension Papyrus {
                     var intersectingMoves = [Move]()
                     let intersections = findIntersections(forBoundary: boundary).filter({$0.length > 1})
                     for intersection in intersections {
-                        let letters = lettersIn(intersection)
+                        let tiles = tilesIn(intersection)
+                        let letters = lettersIn(tiles)
                         assert(letters.count > 1 && letters.count == intersection.length)
                         do {
                             let intersectingWord = String(letters)
                             print("## WORD: \(intersectingWord)")
                             let intersectingDefinition = try lexicon.defined(intersectingWord)
                             print("## DEF: \(intersectingDefinition)")
-                            let move = Move(boundary: intersection, word: intersectingWord,
-                                definition: intersectingDefinition, score: score(intersection))
-                            intersectingMoves.append(move)
+                            var intersectingScore = 0
+                            if tiles.all({$0.placement == .Fixed}) == false {
+                                intersectingScore = score(intersection)
+                            }
+                            let intersectingMove = Move(boundary: intersection, word: intersectingWord,
+                                definition: intersectingDefinition, score: intersectingScore)
+                            intersectingMoves.append(intersectingMove)
                         } catch {
                             print("## INVALID")
                             valid = false

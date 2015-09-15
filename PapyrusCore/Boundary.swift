@@ -253,12 +253,4 @@ extension Papyrus {
         }
         return value
     }
-    
-    /// Get string value of letters in a given boundary.
-    /// Does not currently check for gaps - use another method for gap checking and validation.
-    /// - parameter boundary: The boundary to get the letters for.
-    func readable(boundary: Boundary) -> String? {
-        return String(boundary.iterableRange.mapFilter({
-            letterAt(Position(horizontal: boundary.start.horizontal, iterable: $0, fixed: boundary.start.fixed))}))
-    }
 }

@@ -98,7 +98,7 @@ class PapyrusTests: XCTestCase {
         XCTAssert(instance.nextWhileFilled(pos2) == pos, "Expected pos")
         XCTAssert(instance.nextWhileEmpty(emptyPos) == emptyPos, "Expected emptyPos")
         XCTAssert(instance.previousWhileFilled(pos) == pos2, "Expected pos2")
-        XCTAssert(instance.readable(Boundary(positions: [pos2, pos])!) == "\(tile2.letter)\(tile.letter)", "Expected readable string from tile letters")
+        //XCTAssert(instance.readable(Boundary(positions: [pos2, pos])!) == "\(tile2.letter)\(tile.letter)", "Expected readable string from tile letters")
     }
     
     func testWhileMethods() {
