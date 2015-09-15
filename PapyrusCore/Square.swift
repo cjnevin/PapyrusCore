@@ -90,7 +90,7 @@ public final class Square: CustomDebugStringConvertible, Equatable {
         self.column = column
     }
     public var debugDescription: String {
-        return String(tile?.letter ?? "_")
+        return String("\(row), \(column)")
     }
     /// - returns: Letter multiplier for this tile.
     public var letterValue: Int {
@@ -119,10 +119,7 @@ extension Papyrus {
     /// - parameter boundary: Boundary to check.
     /// - returns: All squares in a given boundary.
     public func squaresIn(boundary: Boundary) -> [Square?] {
-        return (boundary.start.iterable...boundary.end.iterable).map({
-            squareAt(Position(horizontal: boundary.horizontal,
-                iterable: $0, fixed: boundary.start.fixed))
-        })
+        return boundary.positions().mapFilter({ squareAt($0) })
     }
 }
 

@@ -122,8 +122,8 @@ class PapyrusTests: XCTestCase {
             let boundary = Boundary(start: position, end: position)!
             instance.squareAt(position)!.tile = tile
             
-            let boundaries = instance.playableBoundaries(forBoundary: boundary)!
-            XCTAssert(boundaries.count == expectations[index], "Expected \(expectations[index]) boundaries")
+            //let boundaries = instance.playableBoundaries(forBoundary: boundary)
+            //XCTAssert(boundaries.count == expectations[index], "Expected \(expectations[index]) boundaries")
             
             instance.squareAt(position)!.tile = nil
         }
@@ -149,6 +149,107 @@ class PapyrusTests: XCTestCase {
         XCTAssert(end == PapyrusDimensions - 1, "Expected end to be 14")
         
         print(instance.playableBoundaries(forBoundary: boundary))*/
+    }
+    
+    func testCardPlay() {
+        
+        instance.createPlayer()
+        
+        let player = instance.player!
+        
+        instance.returnTiles(player.rackTiles, forPlayer: player)
+        
+        let toDraw: [Character] = ["C", "A", "R", "D", "D", "I", "S"]
+        toDraw.forEach { (letter) -> () in
+            let tile = instance.bagTiles.filter({$0.letter == letter}).first!
+            player.tiles.insert(tile)
+            tile.placement = .Rack
+        }
+        
+        let positions: [(Position?, Character)] =
+        [
+            (Position(horizontal: true, iterable: 4, fixed: 7), "C"),
+            (Position(horizontal: true, iterable: 5, fixed: 7), "A"),
+            (Position(horizontal: true, iterable: 6, fixed: 7), "R"),
+            (Position(horizontal: true, iterable: 7, fixed: 7), "D")
+        ]
+        
+        var boundary = Boundary(start: positions.first?.0, end: positions.last?.0)!
+        positions.forEach({ (position, character) -> () in
+            let tile = player.tiles.filter({$0.letter == character}).first!
+            instance.squareAt(position)?.tile = tile
+            tile.placement = Placement.Board
+        })/*
+        do {
+            try instance.play(boundary, submit: false, lexicon: lexicon)
+        }
+        catch ValidationError.NoCenterIntersection {
+            XCTAssert(true)
+            positions.forEach({
+                let tile = instance.squareAt($0.0)!.tile!
+                instance.squareAt($0.0)!.tile = nil
+                tile.placement = Placement.Rack
+            })
+        }
+        catch {
+            XCTFail("Unexpected error")
+        }
+
+        // Move tiles and try again
+        positions.forEach({ (position, character) -> () in
+            let tile = player.tiles.filter({$0.letter == character}).first!
+            let shifted = position!.positionWithFixed(position!.fixed - 1)!
+            instance.squareAt(shifted)?.tile = tile
+            tile.placement = Placement.Board
+        })
+        boundary = boundary.previous()!
+        */
+        // TODO: Rethink boundaries
+        
+        do {
+            let score = try instance.play(boundary, submit: false, lexicon: lexicon)
+            XCTAssert(score == 14)
+            
+            try instance.play(boundary, submit: true, lexicon: lexicon)
+            XCTAssert(player.rackTiles.count == 7)
+            
+            instance.returnTiles(player.rackTiles.filter({$0.letter != "D" && $0.letter != "I" && $0.letter != "S"}), forPlayer: player)
+           
+            XCTAssert(player.rackTiles.count == 3)
+            print(player.rackTiles)
+            //XCTAssert(instance.playedBoundaries.count == 5)
+            // XCTAssert(instance.playedBoundaries.contains(boundary))
+            
+            //print(instance.playedBoundaries)
+            
+            let played = instance.allBoundaries()
+            
+            print("### ALL \(played)")
+            
+            let playableBoundaries = instance.allPlayableBoundaries()
+            print("### PLAYABLE \(playableBoundaries)")
+            
+            let letters = player.rackTiles.map({$0.letter})
+            print(letters)
+            
+            playableBoundaries.forEach { (boundary) in
+                let fixedLetters = instance.indexesAndCharacters(forBoundary: boundary)
+                var results = [(String, String)]()
+                lexicon.anagramsOf(letters, length: boundary.length,
+                    prefix: "", fixedLetters: fixedLetters, fixedCount: fixedLetters.count,
+                    root: nil, results: &results)
+                if (results.count > 0) {
+                    print("\(boundary) \(fixedLetters):  \(results)")
+                }
+            }
+            
+            let possibles = instance.possiblePlays(forPlayer: player, lexicon: lexicon)
+            print(possibles)
+        }
+        catch {
+            XCTFail("Unexpected error")
+        }
+        
     }
     
     func testFindPlayableBoundaries() {
@@ -208,9 +309,12 @@ class PapyrusTests: XCTestCase {
                 instance.squareAt($0.0)?.tile = tile
                 tile.placement = Placement.Fixed
             })
-            instance.playedBoundaries.append(boundary)
+            let intersections = instance.findIntersections(forBoundary: boundary)
+            XCTAssert(intersections.count == boundary.length)
+            //instance.playedBoundaries.appendContentsOf(intersections)
+            //instance.playedBoundaries.append(boundary)
         }
-        let playableBoundaries = instance.findPlayableBoundaries(instance.playedBoundaries)
+        let playableBoundaries = [Boundary]()// instance.findPlayableBoundaries(instance.playedBoundaries)
         XCTAssert(playableBoundaries.count > 0)
         
         // Now determine playable boundaries
@@ -235,9 +339,9 @@ class PapyrusTests: XCTestCase {
         
         playableBoundaries.forEach {
             let fixedLetters = instance.indexesAndCharacters(forBoundary: $0)
-            var results = [String]()
+            var results = [(String, String)]()
             for length in 0..<letters.count {
-                lexicon.anagramsOf(String(letters[0...length]), length: length,
+                lexicon.anagramsOf(Array(letters[0...length]), length: length,
                     prefix: "", fixedLetters: fixedLetters, fixedCount: fixedLetters.count,
                     root: nil, results: &results)
             }

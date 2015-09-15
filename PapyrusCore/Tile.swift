@@ -79,4 +79,69 @@ extension Papyrus {
     public func tilesIn(boundary: Boundary) -> [Tile] {
         return squaresIn(boundary).mapFilter({$0?.tile})
     }
+    
+    public func lettersIn(boundary: Boundary) -> [Character] {
+        return tilesIn(boundary).mapFilter({$0.letter})
+    }
+    
+    public func allBoundaries() -> [Boundary] {
+        var boundaries = [Boundary]()
+        (0..<PapyrusDimensions).forEach({ (fixed) in
+            if let verticalBoundary = Boundary(
+                start: nextWhileEmpty(
+                    Position(horizontal: false, iterable: 0, fixed: fixed)
+                )?.next(),
+                end: previousWhileEmpty(
+                    Position(horizontal: false, iterable: PapyrusDimensions - 1, fixed: fixed)
+                )?.previous()
+                ) {
+                    boundaries.append(verticalBoundary)
+            }
+            if let horizontalBoundary = Boundary(
+                start: nextWhileEmpty(
+                    Position(horizontal: true, iterable: 0, fixed: fixed)
+                )?.next(),
+                end: previousWhileEmpty(
+                    Position(horizontal: true, iterable: PapyrusDimensions - 1, fixed: fixed)
+                )?.previous()
+                ) {
+                    boundaries.append(horizontalBoundary)
+            }
+        })
+        return boundaries
+    }
+    
+    public func expandedBoundaries(forBoundary boundary: Boundary) -> [Boundary]? {
+        guard let newStart = self.previousWhileTilesInRack(boundary.start),
+            newEnd = self.nextWhileTilesInRack(boundary.end),
+            newBoundary = boundary.stretch(newStart, newEnd: newEnd) else
+        {
+            return nil
+        }
+        let rackCount = player!.rackTiles.count
+        let boundaryTileCount = tilesIn(boundary).count
+        // Get maximum word size, then shift the iterable index
+        var maxLength = boundary.length + rackCount
+        
+        // Adjust for existing tiles on the board
+        maxLength += tilesIn(newBoundary).count - boundaryTileCount
+        
+        let lengthRange = 0..<maxLength
+        
+        return newBoundary.iterableRange.flatMap({ (startIterable) -> ([Boundary]) in
+            lengthRange.mapFilter({ (length) -> (Boundary?) in
+                let endIterable = startIterable + length
+                guard let stretched = boundary.stretch(startIterable,
+                    endIterable: endIterable) else { return nil }
+                return stretched
+            })
+        })
+    }
+    
+    public func allPlayableBoundaries() -> [Boundary] {
+        let playable = allBoundaries().mapFilter({ (boundary) -> ([Boundary]?) in
+            return expandedBoundaries(forBoundary: boundary)
+        })
+        return Array(Set(playable.flatMap({$0})))
+    }
 }

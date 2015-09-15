@@ -29,8 +29,6 @@ public final class Papyrus {
     let innerOperations = NSOperationQueue()
     let wordOperations = NSOperationQueue()
     
-    /// Array of positions of tiles we have dropped on the board.
-    lazy var playedBoundaries = [Boundary]()
     lazy var tiles = [Tile]()
     
     lazy var players = [Player]()
@@ -52,7 +50,6 @@ public final class Papyrus {
         lifecycleCallback?(.Cleanup, self)
         lifecycleCallback = callback
         lifecycleCallback?(.Preparing, self)
-        playedBoundaries.removeAll()
         tiles.removeAll()
         players.removeAll()
         playerIndex = 0

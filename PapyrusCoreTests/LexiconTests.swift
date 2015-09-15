@@ -25,32 +25,32 @@ class LexiconTests: XCTestCase {
 
     func testAnagrams() {
         var fixedLetters: [(Int, Character)] = []
-        var results = [String]()
-        lexicon.anagramsOf("CAT", length: 3, prefix: "",
+        var results = [(String, String)]()
+        lexicon.anagramsOf(Array("CAT".characters), length: 3, prefix: "",
             fixedLetters: fixedLetters, fixedCount: 0, root: lexicon.dictionary!, results: &results)
-        XCTAssert(results.sort() == ["ACT", "CAT"])
+        XCTAssert(results.mapFilter({$0.0}).sort() == ["ACT", "CAT"])
         
         fixedLetters.append((2, "R"))
-        results = [String]()
-        lexicon.anagramsOf("TAC", length: 4, prefix: "",
+        results = [(String, String)]()
+        lexicon.anagramsOf(Array("TAC".characters), length: 4, prefix: "",
             fixedLetters: fixedLetters, fixedCount: 1, root: lexicon.dictionary!, results: &results)
-        XCTAssert(results == ["CART"])
+        XCTAssert(results.mapFilter({$0.0}) == ["CART"])
         
-        results = [String]()
-        lexicon.anagramsOf("TACPOSW", length: 3, prefix: "",
+        results = [(String, String)]()
+        lexicon.anagramsOf(Array("TACPOSW".characters), length: 3, prefix: "",
             fixedLetters: fixedLetters, fixedCount: 1, root: lexicon.dictionary!, results: &results)
-        XCTAssert(results.sort() == ["CAR", "COR", "OAR", "PAR", "SAR", "TAR", "TOR", "WAR"])
+        XCTAssert(results.mapFilter({$0.0}).sort() == ["CAR", "COR", "OAR", "PAR", "SAR", "TAR", "TOR", "WAR"])
         
-        results = [String]()
-        lexicon.anagramsOf("PATIERS", length: 8, prefix: "",
+        results = [(String, String)]()
+        lexicon.anagramsOf(Array("PATIERS".characters), length: 8, prefix: "",
             fixedLetters: fixedLetters, fixedCount: 1, root: lexicon.dictionary!, results: &results)
-        XCTAssert(results == ["PARTIERS"])
+        XCTAssert(results.mapFilter({$0.0}) == ["PARTIERS"])
         
-        results = [String]()
+        results = [(String, String)]()
         fixedLetters.append((0, "C"))
-        lexicon.anagramsOf("AEIOU", length: 3, prefix: "",
+        lexicon.anagramsOf(Array("AEIOU".characters), length: 3, prefix: "",
             fixedLetters: fixedLetters, fixedCount: 1, root: lexicon.dictionary!, results: &results)
-        XCTAssert(results.sort() == ["CAR", "COR", "CUR"])
+        XCTAssert(results.mapFilter({$0.0}).sort() == ["CAR", "COR", "CUR"])
     }
 
     func wrappedDefined(str: String) -> Bool {

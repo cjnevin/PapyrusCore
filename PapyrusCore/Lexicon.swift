@@ -36,8 +36,11 @@ public struct Lexicon {
             if let inner = current?[String(char)] as? LexiconType {
                 index = index.advancedBy(1)
                 if index == word.endIndex {
-                    // Defined but definition is missing is still defined
-                    return inner[DefKey] as? String ?? ""
+                    if let definition = inner[DefKey] as? String {
+                        return definition
+                    } else {
+                        throw ValidationError.UndefinedWord(word)
+                    }
                 }
                 current = inner
             } else {
@@ -47,9 +50,9 @@ public struct Lexicon {
         throw ValidationError.UndefinedWord(word)
     }
     
-    func anagramsOf(letters: String, length: Int, prefix: String,
+    func anagramsOf(letters: [Character], length: Int, prefix: String,
         fixedLetters: [(Int, Character)], fixedCount: Int, root: LexiconType?,
-        inout results: [String])
+        inout results: [(String, String)])
     {
         let source = root ?? dictionary!
         let prefixLength = prefix.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
@@ -63,20 +66,23 @@ public struct Lexicon {
         }
         
         // See if word exists
-        if let _ = source.indexForKey(DefKey) where fixedLetters.count == 0 &&
+        if let definition = source[DefKey] as? String where fixedLetters.count == 0 &&
             prefixLength == length && prefixLength > fixedCount {
-            results.append(prefix)
+            results.append((prefix, definition))
         }
         // Before continuing...
+        var newLetters = letters
         for (key, value) in source {
             // Search for ? or key
-            if let range = letters.rangeOfString("?") ?? letters.rangeOfString(key) {
-                // Strip key/?
-                let newLetters = letters.stringByReplacingCharactersInRange(range, withString: "")
-                // Create anagrams with remaining letters
+            if (key == DefKey) {
+                continue
+            }
+            if let index = newLetters.indexOf(Character(key)) ?? newLetters.indexOf("?") {
+                newLetters.removeAtIndex(index)
                 anagramsOf(newLetters, length: length, prefix: prefix + key,
                     fixedLetters: fixedLetters, fixedCount: fixedCount,
                     root: value as? LexiconType, results: &results)
+                break
             }
         }
     }
