@@ -29,6 +29,55 @@ public struct Possibility {
 
 extension Papyrus {
     
+    /// Determine intersections for a given boundary.
+    /// - parameter boundary: Boundary to check.
+    /// - parameter lexicon: Dictionary to use for validating words.
+    /// - returns: Success flag and array of moves.
+    private func intersectingMoves(forBoundary boundary: Boundary, lexicon: Lexicon) -> (Bool, [Move]) {
+        var valid = true
+        var intersectingMoves = [Move]()
+        let intersections = findIntersections(forBoundary: boundary).filter({$0.length > 1})
+        
+        for intersection in intersections {
+            let intersectingSquares = squaresIn(intersection)
+            let intersectingTiles = tilesIn(intersectingSquares)
+            let intersectingLetters = lettersIn(intersectingTiles)
+            let intersectingWord = String(intersectingLetters)
+            
+            assert(intersectingLetters.count > 1 &&
+                intersectingLetters.count == intersection.length)
+            
+            do {
+                let intersectingDefinition = try lexicon.defined(intersectingWord)
+                
+                var intersectingScore = 0
+                if intersectingTiles.all({$0.placement == Placement.Fixed}) == false {
+                    intersectingScore = score(intersection)
+                }
+                
+                let filteredSquares = intersectingSquares.filter({$0.tile?.placement == Placement.Board})
+                let filteredTiles = tilesIn(filteredSquares)
+                let filteredLetters = lettersIn(filteredTiles)
+                
+                let intersectingMove = Move(boundary: intersection,
+                    characters: filteredLetters,
+                    squares: filteredSquares,
+                    tiles: filteredTiles,
+                    word: intersectingWord,
+                    definition: intersectingDefinition,
+                    score: intersectingScore)
+                
+                intersectingMoves.append(intersectingMove)
+            } catch {
+                print("## INVALID \(intersectingWord)")
+                valid = false
+                break
+            }
+        }
+        
+        return (valid, intersectingMoves)
+    }
+    
     /// - parameter player: Player whose tiles we will use to determine viable options.
     /// - parameter lexicon: Dictionary used for validating words and finding anagrams.
     /// - returns: All valid possible moves in the current state of the board.
@@ -43,11 +92,11 @@ extension Papyrus {
                 root: nil, results: &results)
             if (results.count > 0) {
                 let indexes = fixedLetters.map({$0.0})
-                for (result, definition) in results {
-                    print("-----\nPLAY: \(result) --- \(fixedLetters)")
+                for (mainWord, mainDefinition) in results {
+                    print("-----\nPLAY: \(mainWord) --- \(fixedLetters)")
                     
                     // Temporarily place them on board for validation
-                    var chars = Array(result.characters)
+                    var chars = Array(mainWord.characters)
                     var rackTiles = player.rackTiles
                     var temporarySquareTiles = [(Square, Tile, Character)]()
                     
@@ -74,51 +123,11 @@ extension Papyrus {
                         }
                     })
                     
-                    let mainScore = score(boundary)
-                    
                     print("## SQUARES: \(temporarySquareTiles)")
                     
-                    var valid = true
+                    let mainScore = score(boundary)
                     
-                    // Determine intersections
-                    var intersectingMoves = [Move]()
-                    let intersections = findIntersections(forBoundary: boundary).filter({$0.length > 1})
-                    for intersection in intersections {
-                        let intersectingSquares = squaresIn(intersection)
-                        let intersectingTiles = tilesIn(intersectingSquares)
-                        let intersectingLetters = lettersIn(intersectingTiles)
-                        let intersectingWord = String(intersectingLetters)
-                        
-                        assert(intersectingLetters.count > 1 &&
-                            intersectingLetters.count == intersection.length)
-                        
-                        do {
-                            let intersectingDefinition = try lexicon.defined(intersectingWord)
-                            
-                            var intersectingScore = 0
-                            if intersectingTiles.all({$0.placement == .Fixed}) == false {
-                                intersectingScore = score(intersection)
-                            }
-                            
-                            let filteredSquares = intersectingSquares.filter({$0.tile?.placement == Placement.Board})
-                            let filteredTiles = tilesIn(filteredSquares)
-                            let filteredLetters = lettersIn(filteredTiles)
-                            
-                            let intersectingMove = Move(boundary: intersection,
-                                characters: filteredLetters,
-                                squares: filteredSquares,
-                                tiles: filteredTiles,
-                                word: intersectingWord,
-                                definition: intersectingDefinition,
-                                score: intersectingScore)
-                            
-                            intersectingMoves.append(intersectingMove)
-                        } catch {
-                            print("## INVALID \(intersectingWord)")
-                            valid = false
-                            break
-                        }
-                    }
+                    let (valid, intersectingMoves) = self.intersectingMoves(forBoundary: boundary, lexicon: lexicon)
                     
                     // Restore state
                     temporarySquareTiles.forEach({ (square, tile, _) -> () in
@@ -138,8 +147,8 @@ extension Papyrus {
                             characters: temporarySquareTiles.map({$0.2}),
                             squares: temporarySquareTiles.map({$0.0}),
                             tiles: temporarySquareTiles.map({$0.1}),
-                            word: result,
-                            definition: definition,
+                            word: mainWord,
+                            definition: mainDefinition,
                             score: mainScore)
                         
                         let total = move.score + intersectingMoves.map({$0.score}).reduce(0, combine: +)
