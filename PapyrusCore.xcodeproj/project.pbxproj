@@ -17,7 +17,7 @@
 		99FD43191BA58A6400F50DCF /* TileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD43121BA58A6400F50DCF /* TileTests.swift */; };
 		99FD431A1BA58A6400F50DCF /* UtilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD43131BA58A6400F50DCF /* UtilTests.swift */; };
 		99FD43251BA58AF200F50DCF /* Boundary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD431B1BA58AF200F50DCF /* Boundary.swift */; };
-		99FD43271BA58AF200F50DCF /* Intelligence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD431D1BA58AF200F50DCF /* Intelligence.swift */; };
+		99FD43271BA58AF200F50DCF /* Move.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD431D1BA58AF200F50DCF /* Move.swift */; };
 		99FD43281BA58AF200F50DCF /* Lexicon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD431E1BA58AF200F50DCF /* Lexicon.swift */; };
 		99FD43291BA58AF200F50DCF /* Papyrus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD431F1BA58AF200F50DCF /* Papyrus.swift */; };
 		99FD432A1BA58AF200F50DCF /* Play.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD43201BA58AF200F50DCF /* Play.swift */; };
@@ -53,7 +53,7 @@
 		99FD43121BA58A6400F50DCF /* TileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileTests.swift; sourceTree = "<group>"; };
 		99FD43131BA58A6400F50DCF /* UtilTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UtilTests.swift; sourceTree = "<group>"; };
 		99FD431B1BA58AF200F50DCF /* Boundary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Boundary.swift; sourceTree = "<group>"; };
-		99FD431D1BA58AF200F50DCF /* Intelligence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Intelligence.swift; sourceTree = "<group>"; };
+		99FD431D1BA58AF200F50DCF /* Move.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Move.swift; sourceTree = "<group>"; };
 		99FD431E1BA58AF200F50DCF /* Lexicon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lexicon.swift; sourceTree = "<group>"; };
 		99FD431F1BA58AF200F50DCF /* Papyrus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Papyrus.swift; sourceTree = "<group>"; };
 		99FD43201BA58AF200F50DCF /* Play.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Play.swift; sourceTree = "<group>"; };
@@ -107,8 +107,8 @@
 			children = (
 				9960AD6D1BA589D800765614 /* PapyrusCore.h */,
 				99FD431B1BA58AF200F50DCF /* Boundary.swift */,
-				99FD431D1BA58AF200F50DCF /* Intelligence.swift */,
 				99FD431E1BA58AF200F50DCF /* Lexicon.swift */,
+				99FD431D1BA58AF200F50DCF /* Move.swift */,
 				99FD431F1BA58AF200F50DCF /* Papyrus.swift */,
 				99FD43201BA58AF200F50DCF /* Play.swift */,
 				99FD43211BA58AF200F50DCF /* Player.swift */,
@@ -254,7 +254,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				99FD43271BA58AF200F50DCF /* Intelligence.swift in Sources */,
+				99FD43271BA58AF200F50DCF /* Move.swift in Sources */,
 				99FD43291BA58AF200F50DCF /* Papyrus.swift in Sources */,
 				99FD43281BA58AF200F50DCF /* Lexicon.swift in Sources */,
 				99FD432B1BA58AF200F50DCF /* Player.swift in Sources */,

@@ -74,10 +74,16 @@ extension Papyrus {
         return squareAt(position)?.tile
     }
     
+    /// - parameter squares: Squares to check.
+    /// - returns: All tiles for given squares.
+    public func tilesIn(squares: [Square]) -> [Tile] {
+        return squares.mapFilter({$0.tile})
+    }
+    
     /// - parameter boundary: Boundary to check.
     /// - returns: All tiles in a given boundary.
     public func tilesIn(boundary: Boundary) -> [Tile] {
-        return squaresIn(boundary).mapFilter({$0?.tile})
+        return squaresIn(boundary).mapFilter({$0.tile})
     }
     
     /// - parameter tiles: Tiles to get the letter values of.

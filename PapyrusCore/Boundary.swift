@@ -245,17 +245,17 @@ extension Papyrus {
     func score(boundary: Boundary) -> Int {
         guard let player = player else { return 0 }
         let affectedSquares = squaresIn(boundary)
-        var value = affectedSquares.mapFilter({$0?.letterValue}).reduce(0, combine: +)
-        value = affectedSquares.mapFilter({$0?.wordMultiplier}).reduce(value, combine: *)
-        if affectedSquares.mapFilter({ $0?.tile }).filter({player.tiles.contains($0)}).count == 7 {
+        var value = affectedSquares.mapFilter({$0.letterValue}).reduce(0, combine: +)
+        value = affectedSquares.mapFilter({$0.wordMultiplier}).reduce(value, combine: *)
+        if tilesIn(affectedSquares).filter({player.tiles.contains($0)}).count == 7 {
             // Add bonus
             value += 50
         }
         return value
     }
     
-    
-    public func allBoundaries() -> [Boundary] {
+    /// - returns: All boundaries for filled tiles in both axes.
+    func filledBoundaries() -> [Boundary] {
         var boundaries = [Boundary]()
         (0..<PapyrusDimensions).forEach({ (fixed) in
             if let verticalBoundary = Boundary(
@@ -282,7 +282,14 @@ extension Papyrus {
         return boundaries
     }
     
-    public func expandedBoundaries(forBoundary boundary: Boundary) -> [Boundary]? {
+    public func allPlayableBoundaries() -> [Boundary] {
+        let playable = filledBoundaries().mapFilter({ (boundary) -> ([Boundary]?) in
+            return playableBoundaries(forBoundary: boundary)
+        })
+        return Array(Set(playable.flatMap({$0})))
+    }
+    
+    func playableBoundaries(forBoundary boundary: Boundary) -> [Boundary]? {
         guard let newStart = self.previousWhileTilesInRack(boundary.start),
             newEnd = self.nextWhileTilesInRack(boundary.end),
             newBoundary = boundary.stretch(newStart, newEnd: newEnd) else
@@ -307,12 +314,5 @@ extension Papyrus {
                 return stretched
             })
         })
-    }
-    
-    public func allPlayableBoundaries() -> [Boundary] {
-        let playable = allBoundaries().mapFilter({ (boundary) -> ([Boundary]?) in
-            return expandedBoundaries(forBoundary: boundary)
-        })
-        return Array(Set(playable.flatMap({$0})))
     }
 }

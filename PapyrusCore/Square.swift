@@ -118,7 +118,7 @@ extension Papyrus {
     
     /// - parameter boundary: Boundary to check.
     /// - returns: All squares in a given boundary.
-    public func squaresIn(boundary: Boundary) -> [Square?] {
+    public func squaresIn(boundary: Boundary) -> [Square] {
         return boundary.positions().mapFilter({ squareAt($0) })
     }
 }

@@ -86,6 +86,18 @@ extension Papyrus {
         throw ValidationError.NoOptions
     }
     
+    public func draw() {
+        guard let player = player else { assert(false) }
+        if replenishRack(player) == 0 && player.rackTiles.count == 0 {
+            // Subtract remaining tiles in racks
+            for player in players {
+                player.score = player.rackTiles.mapFilter({$0.value}).reduce(player.score, combine: -)
+            }
+            // Complete the game
+            lifecycleCallback?(.Completed, self)
+        }
+    }
+    
     /// - parameter boundary: Boundary to check.
     /// - parameter submit: Whether this move is final or just used for validation.
     /// - Throws: If boundary cannot be played you will receive a ValidationError.
@@ -180,14 +192,7 @@ extension Papyrus {
             //print(playedBoundaries)
             
             // Draw new tiles. If count == 0 && rackCount == 0 complete game
-            if replenishRack(player) == 0 && player.rackTiles.count == 0 {
-                // Subtract remaining tiles in racks
-                for player in players {
-                    player.score = player.rackTiles.mapFilter({$0.value}).reduce(player.score, combine: -)
-                }
-                // Complete the game
-                lifecycleCallback?(.Completed, self)
-            }
+            
         }
         return value
     }

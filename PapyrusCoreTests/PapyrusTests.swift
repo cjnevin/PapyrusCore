@@ -211,39 +211,16 @@ class PapyrusTests: XCTestCase {
             XCTAssert(score == 14)
             
             try instance.play(boundary, submit: true, lexicon: lexicon)
-            XCTAssert(player.rackTiles.count == 7)
             
-            instance.returnTiles(player.rackTiles.filter({$0.letter != "D" && $0.letter != "I" && $0.letter != "S"}), forPlayer: player)
+            //instance.draw()
+            
+            //instance.returnTiles(player.rackTiles.filter({$0.letter != "D" && $0.letter != "I" && $0.letter != "S"}), forPlayer: player)
            
+            //XCTAssert(player.rackTiles.count == 3)
             XCTAssert(player.rackTiles.count == 3)
             print(player.rackTiles)
-            //XCTAssert(instance.playedBoundaries.count == 5)
-            // XCTAssert(instance.playedBoundaries.contains(boundary))
             
-            //print(instance.playedBoundaries)
-            
-            let played = instance.allBoundaries()
-            
-            print("### ALL \(played)")
-            
-            let playableBoundaries = instance.allPlayableBoundaries()
-            print("### PLAYABLE \(playableBoundaries)")
-            
-            let letters = player.rackTiles.map({$0.letter})
-            print(letters)
-            
-            playableBoundaries.forEach { (boundary) in
-                let fixedLetters = instance.indexesAndCharacters(forBoundary: boundary)
-                var results = [(String, String)]()
-                lexicon.anagramsOf(letters, length: boundary.length,
-                    prefix: "", fixedLetters: fixedLetters, fixedCount: fixedLetters.count,
-                    root: nil, results: &results)
-                if (results.count > 0) {
-                    print("\(boundary) \(fixedLetters):  \(results)")
-                }
-            }
-            
-            let possibles = instance.possiblePlays(forPlayer: player, lexicon: lexicon)
+            let possibles = instance.possibleMoves(forPlayer: player, lexicon: lexicon)
             print(possibles)
         }
         catch {
