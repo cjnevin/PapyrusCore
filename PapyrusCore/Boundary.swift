@@ -282,6 +282,8 @@ extension Papyrus {
         return boundaries
     }
     
+    /// Currently limited to **not** return adjacent plays.
+    /// - returns: All possible boundaries we may be able to place tiles, stemming off of existing words.
     public func allPlayableBoundaries() -> [Boundary] {
         let playable = filledBoundaries().mapFilter({ (boundary) -> ([Boundary]?) in
             return playableBoundaries(forBoundary: boundary)
