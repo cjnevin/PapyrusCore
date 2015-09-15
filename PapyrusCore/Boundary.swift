@@ -220,26 +220,6 @@ extension Papyrus {
         })
     }
     
-    /// Curried function for checking if an empty position is playable.
-    /// We need to check previous item to see if it's empty otherwise
-    /// next item must be empty (i.e. 2 squares must be free).
-    private func validEmpty(position: Position,
-        first: Position -> () -> Position?,
-        second: Position -> () -> Position?) -> Bool {
-        // Current position must be empty
-        assert(emptyAt(position))
-            // Check next index (or previous if at end) is empty
-            if let startNext = first(position)() where emptyAt(startNext) {
-                return true
-            } else {
-                // Check previous index (or next if at end) is empty or edge of board
-                if let startPrevious = second(position)() {
-                    return emptyAt(startPrevious)
-                }
-            }
-            return true
-    }
-    
     /// Calculate score for a given boundary.
     /// - parameter boundary: The boundary you want the score of.
     func score(boundary: Boundary) -> Int {
@@ -283,7 +263,7 @@ extension Papyrus {
         return boundaries
     }
     
-    /// - returns: All possible boundaries we may be able to place tiles, stemming off of existing words.
+    /// - returns: All possible boundaries we may be able to place tiles in, stemming off of all existing words.
     public func allPlayableBoundaries() -> [Boundary] {
         let playable = filledBoundaries().mapFilter({ (boundary) -> ([Boundary]?) in
             var allBoundaries = [Boundary]()
@@ -303,6 +283,7 @@ extension Papyrus {
         return Array(Set(playable.flatMap({$0})))
     }
     
+    /// - returns: All possible boundaries we may be able to place tiles in, stemming off of a given boundary.
     func playableBoundaries(forBoundary boundary: Boundary) -> [Boundary]? {
         guard let newStart = self.previousWhileTilesInRack(boundary.start),
             newEnd = self.nextWhileTilesInRack(boundary.end),
