@@ -51,9 +51,7 @@ extension Papyrus {
                     
                     boundary.positions().forEach({ (position) -> () in
                         let index = position.iterable - boundary.start.iterable
-                        if indexes.contains(index) {
-                            print("SKIPPED")
-                        } else {
+                        if !indexes.contains(index) {
                             let char = chars[index]
                             guard let rackIndex =
                                 rackTiles.indexOf({$0.letter == char}) ??
@@ -109,7 +107,7 @@ extension Papyrus {
                             
                             intersectingMoves.append(intersectingMove)
                         } catch {
-                            print("## INVALID")
+                            print("## INVALID \(intersectingWord)")
                             valid = false
                             break
                         }
@@ -127,7 +125,7 @@ extension Papyrus {
                     if valid {
                         let onBoard = tilesIn(boundary)
                         // Ensure we placed them all back
-                        assert(onBoard.all({$0.placement == Placement.Fixed}))
+                        assert(onBoard.count == 0 || (onBoard.count > 0 && onBoard.all({$0.placement == Placement.Fixed})))
                         
                         let move: Move = Move(boundary: boundary,
                             squares: temporarySquareTiles.map({$0.0}),

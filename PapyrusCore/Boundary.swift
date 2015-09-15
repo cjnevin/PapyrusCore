@@ -282,11 +282,22 @@ extension Papyrus {
         return boundaries
     }
     
-    /// Currently limited to **not** return adjacent plays.
     /// - returns: All possible boundaries we may be able to place tiles, stemming off of existing words.
     public func allPlayableBoundaries() -> [Boundary] {
         let playable = filledBoundaries().mapFilter({ (boundary) -> ([Boundary]?) in
-            return playableBoundaries(forBoundary: boundary)
+            var allBoundaries = [Boundary]()
+            if let mainBoundaries = playableBoundaries(forBoundary: boundary) {
+                allBoundaries.appendContentsOf(mainBoundaries)
+            }
+            if let adjacentPrevious = boundary.previous(),
+                adjacentBoundaries = playableBoundaries(forBoundary: adjacentPrevious) {
+                allBoundaries.appendContentsOf(adjacentBoundaries)
+            }
+            if let adjacentNext = boundary.next(),
+                adjacentBoundaries = playableBoundaries(forBoundary: adjacentNext) {
+                allBoundaries.appendContentsOf(adjacentBoundaries)
+            }
+            return allBoundaries.count > 0 ? allBoundaries : nil
         })
         return Array(Set(playable.flatMap({$0})))
     }

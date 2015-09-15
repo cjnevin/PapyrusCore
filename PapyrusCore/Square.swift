@@ -90,7 +90,7 @@ public final class Square: CustomDebugStringConvertible, Equatable {
         self.column = column
     }
     public var debugDescription: String {
-        return String("\(row), \(column)")
+        return String("\(row),\(column)")
     }
     /// - returns: Letter multiplier for this tile.
     public var letterValue: Int {
