@@ -10,6 +10,9 @@ import Foundation
 
 public struct Move {
     let boundary: Boundary
+    
+    // Contains only the 'Board' placed tiles.
+    let characters: [Character]
     let squares: [Square]
     let tiles: [Tile]
     
@@ -19,8 +22,7 @@ public struct Move {
 }
 
 public struct Possibility {
-    let fixedTiles: [Tile]
-    
+    let total: Int
     let move: Move
     let intersections: [Move]
 }
@@ -47,7 +49,7 @@ extension Papyrus {
                     // Temporarily place them on board for validation
                     var chars = Array(result.characters)
                     var rackTiles = player.rackTiles
-                    var temporarySquareTiles = [(Square, Tile)]()
+                    var temporarySquareTiles = [(Square, Tile, Character)]()
                     
                     boundary.positions().forEach({ (position) -> () in
                         let index = position.iterable - boundary.start.iterable
@@ -68,7 +70,7 @@ extension Papyrus {
                             square.tile = tile
                             square.tile?.placement = .Board
                             rackTiles.removeAtIndex(rackIndex)
-                            temporarySquareTiles.append((square, tile))
+                            temporarySquareTiles.append((square, tile, tile.letter))
                         }
                     })
                     
@@ -94,13 +96,18 @@ extension Papyrus {
                             let intersectingDefinition = try lexicon.defined(intersectingWord)
                             
                             var intersectingScore = 0
-                            if tiles.all({$0.placement == .Fixed}) == false {
+                            if intersectingTiles.all({$0.placement == .Fixed}) == false {
                                 intersectingScore = score(intersection)
                             }
                             
+                            let filteredSquares = intersectingSquares.filter({$0.tile?.placement == Placement.Board})
+                            let filteredTiles = tilesIn(filteredSquares)
+                            let filteredLetters = lettersIn(filteredTiles)
+                            
                             let intersectingMove = Move(boundary: intersection,
-                                squares: intersectingSquares,
-                                tiles: intersectingTiles,
+                                characters: filteredLetters,
+                                squares: filteredSquares,
+                                tiles: filteredTiles,
                                 word: intersectingWord,
                                 definition: intersectingDefinition,
                                 score: intersectingScore)
@@ -114,7 +121,7 @@ extension Papyrus {
                     }
                     
                     // Restore state
-                    temporarySquareTiles.forEach({ (square, tile) -> () in
+                    temporarySquareTiles.forEach({ (square, tile, _) -> () in
                         square.tile = nil
                         tile.placement = .Rack
                         if tile.value == 0 {
@@ -128,20 +135,26 @@ extension Papyrus {
                         assert(onBoard.count == 0 || (onBoard.count > 0 && onBoard.all({$0.placement == Placement.Fixed})))
                         
                         let move: Move = Move(boundary: boundary,
+                            characters: temporarySquareTiles.map({$0.2}),
                             squares: temporarySquareTiles.map({$0.0}),
                             tiles: temporarySquareTiles.map({$0.1}),
                             word: result,
                             definition: definition,
                             score: mainScore)
                         
-                        let possibility = Possibility(fixedTiles: onBoard,
-                            move: move, intersections: intersectingMoves)
+                        let total = move.score + intersectingMoves.map({$0.score}).reduce(0, combine: +)
+                        
+                        let possibility = Possibility(
+                            total: total,
+                            move: move,
+                            intersections: intersectingMoves)
+                        
                         possibilities.append(possibility)
                     }
                 }
             }
         }
-        return possibilities
+        return possibilities.sort({$0.total > $1.total})
     }
     
 }

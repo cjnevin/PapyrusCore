@@ -207,8 +207,8 @@ class PapyrusTests: XCTestCase {
         // TODO: Rethink boundaries
         
         do {
-            let score = try instance.play(boundary, submit: false, lexicon: lexicon)
-            XCTAssert(score == 14)
+            //let score = try instance.play(boundary, submit: false, lexicon: lexicon)
+            //XCTAssert(score == 14)
             
             try instance.play(boundary, submit: true, lexicon: lexicon)
             
@@ -221,7 +221,9 @@ class PapyrusTests: XCTestCase {
             print(player.rackTiles)
             
             let possibles = instance.possibleMoves(forPlayer: player, lexicon: lexicon)
-            print(possibles)
+            
+            
+            print("Best: \(possibles.first)")
         }
         catch {
             XCTFail("Unexpected error")

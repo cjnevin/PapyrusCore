@@ -247,7 +247,8 @@ extension Papyrus {
         let affectedSquares = squaresIn(boundary)
         var value = affectedSquares.mapFilter({$0.letterValue}).reduce(0, combine: +)
         value = affectedSquares.mapFilter({$0.wordMultiplier}).reduce(value, combine: *)
-        if tilesIn(affectedSquares).filter({player.tiles.contains($0)}).count == 7 {
+        let dropped = tilesIn(affectedSquares).filter({$0.placement == Placement.Board && player.tiles.contains($0)})
+        if dropped.count == PapyrusRackAmount {
             // Add bonus
             value += 50
         }

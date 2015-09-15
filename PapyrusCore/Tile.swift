@@ -56,6 +56,11 @@ extension Papyrus {
         return tiles.filter({$0.placement == Placement.Bag})
     }
     
+    /// - returns: All tiles currently dropped on the board.
+    public func droppedTiles() -> [Tile] {
+        return tiles.filter({$0.placement == Placement.Board})
+    }
+    
     /// - parameter position: Position to check.
     /// - returns: Whether there is a tile at a given position.
     public func emptyAt(position: Position) -> Bool {

@@ -98,6 +98,22 @@ extension Papyrus {
         }
     }
     
+    
+    public func submitPossibility(possibility: Possibility) {
+        zip(possibility.move.tiles, possibility.move.characters).forEach { (tile, character) -> () in
+            if tile.value == 0 {
+                tile.letter = character
+            }
+            assert(tile.letter == character)
+        }
+        zip(possibility.move.squares, possibility.move.tiles).forEach { (square, tile) -> () in
+            square.tile = tile
+            tile.placement = .Fixed
+        }
+        player?.score = possibility.move.score + possibility.intersections.map({$0.score}).reduce(0, combine: +)
+    }
+    
+    
     /// - parameter boundary: Boundary to check.
     /// - parameter submit: Whether this move is final or just used for validation.
     /// - Throws: If boundary cannot be played you will receive a ValidationError.
