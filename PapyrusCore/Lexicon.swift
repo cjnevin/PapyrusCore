@@ -12,9 +12,10 @@ import Foundation
 
 public typealias LexiconType = [String: AnyObject]
 
-public struct Lexicon {
+public class Lexicon {
     let DefKey = "Def"
     let dictionary: LexiconType?
+    lazy var previouslyInvalid = [String]()
     
     public init(withDictionary dictionary: LexiconType) {
         self.dictionary = dictionary
@@ -24,12 +25,16 @@ public struct Lexicon {
         if let contents = NSDictionary(contentsOfFile: path) as? LexiconType {
             self.dictionary = contents
         } else {
+            self.dictionary = nil
             return nil
         }
     }
     
     /// Determine if a word is defined in the dictionary.
     func defined(word: String) throws -> String {
+        if previouslyInvalid.contains(word) {
+            throw ValidationError.UndefinedWord(word)
+        }
         var current = dictionary
         var index = word.startIndex
         for char in word.uppercaseString.characters {
@@ -39,14 +44,17 @@ public struct Lexicon {
                     if let definition = inner[DefKey] as? String {
                         return definition
                     } else {
+                        previouslyInvalid.append(word)
                         throw ValidationError.UndefinedWord(word)
                     }
                 }
                 current = inner
             } else {
+                previouslyInvalid.append(word)
                 throw ValidationError.UndefinedWord(word)
             }
         }
+        previouslyInvalid.append(word)
         throw ValidationError.UndefinedWord(word)
     }
     
