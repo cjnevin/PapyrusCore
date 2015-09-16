@@ -33,7 +33,7 @@ extension Papyrus {
     /// - parameter boundary: Boundary to check.
     /// - parameter lexicon: Dictionary to use for validating words.
     /// - returns: Success flag and array of moves.
-    private func intersectingMoves(forBoundary boundary: Boundary, lexicon: Lexicon) -> (Bool, [Move]) {
+    private func intersectingMoves(forBoundary boundary: Boundary, lexicon: Lexicon, inout invalidBuffer: [String]) -> (Bool, [Move]) {
         var valid = true
         var intersectingMoves = [Move]()
         let intersections = findIntersections(forBoundary: boundary).filter({$0.length > 1})
@@ -47,31 +47,38 @@ extension Papyrus {
             assert(intersectingLetters.count > 1 &&
                 intersectingLetters.count == intersection.length)
             
-            do {
-                let intersectingDefinition = try lexicon.defined(intersectingWord)
-                
-                var intersectingScore = 0
-                if intersectingTiles.all({$0.placement == Placement.Fixed}) == false {
-                    intersectingScore = score(intersection)
-                }
-                
-                let filteredSquares = intersectingSquares.filter({$0.tile?.placement == Placement.Board})
-                let filteredTiles = tilesIn(filteredSquares)
-                let filteredLetters = lettersIn(filteredTiles)
-                
-                let intersectingMove = Move(boundary: intersection,
-                    characters: filteredLetters,
-                    squares: filteredSquares,
-                    tiles: filteredTiles,
-                    word: intersectingWord,
-                    definition: intersectingDefinition,
-                    score: intersectingScore)
-                
-                intersectingMoves.append(intersectingMove)
-            } catch {
-                print("## INVALID \(intersectingWord)")
+            if invalidBuffer.contains(intersectingWord) {
                 valid = false
                 break
+                //print("## OPTIMISATION INVALID \(intersectingWord)")
+            } else {
+                do {
+                    let intersectingDefinition = try lexicon.defined(intersectingWord)
+                    
+                    var intersectingScore = 0
+                    if intersectingTiles.all({$0.placement == Placement.Fixed}) == false {
+                        intersectingScore = score(intersection)
+                    }
+                    
+                    let filteredSquares = intersectingSquares.filter({$0.tile?.placement == Placement.Board})
+                    let filteredTiles = tilesIn(filteredSquares)
+                    let filteredLetters = lettersIn(filteredTiles)
+                    
+                    let intersectingMove = Move(boundary: intersection,
+                        characters: filteredLetters,
+                        squares: filteredSquares,
+                        tiles: filteredTiles,
+                        word: intersectingWord,
+                        definition: intersectingDefinition,
+                        score: intersectingScore)
+                    
+                    intersectingMoves.append(intersectingMove)
+                } catch {
+                    invalidBuffer.append(intersectingWord)
+                    //print("## INVALID \(intersectingWord)")
+                    valid = false
+                    break
+                }
             }
         }
         
@@ -87,16 +94,17 @@ extension Papyrus {
         allPlayableBoundaries().forEach { (boundary) in
             let fixedLetters = indexesAndCharacters(forBoundary: boundary)
             var results = [(String, String)]()
+            var invalidWordBuffer = [String]()
             lexicon.anagramsOf(letters, length: boundary.length,
-                prefix: "", fixedLetters: fixedLetters, fixedCount: fixedLetters.count,
+                prefix: [Character](), fixedLetters: fixedLetters, fixedCount: fixedLetters.count,
                 root: nil, results: &results)
             if (results.count > 0) {
                 let indexes = fixedLetters.map({$0.0})
                 for (mainWord, mainDefinition) in results {
-                    print("-----\nPLAY: \(mainWord) --- \(fixedLetters)")
+                    //print("-----\nPLAY: \(mainWord) --- \(fixedLetters)")
                     
                     // Temporarily place them on board for validation
-                    var chars = Array(mainWord.characters)
+                    let chars = Array(mainWord.characters)
                     var rackTiles = player.rackTiles
                     var temporarySquareTiles = [(Square, Tile, Character)]()
                     
@@ -123,11 +131,14 @@ extension Papyrus {
                         }
                     })
                     
-                    print("## SQUARES: \(temporarySquareTiles)")
+                    //print("## SQUARES: \(temporarySquareTiles)")
                     
                     let mainScore = score(boundary)
                     
-                    let (valid, intersectingMoves) = self.intersectingMoves(forBoundary: boundary, lexicon: lexicon)
+                    let (valid, intersectingMoves) =
+                    self.intersectingMoves(forBoundary: boundary,
+                        lexicon: lexicon,
+                        invalidBuffer: &invalidWordBuffer)
                     
                     // Restore state
                     temporarySquareTiles.forEach({ (square, tile, _) -> () in

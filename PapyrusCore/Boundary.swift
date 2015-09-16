@@ -306,6 +306,7 @@ extension Papyrus {
                 let endIterable = startIterable + length
                 guard let stretched = boundary.stretch(startIterable,
                     endIterable: endIterable) else { return nil }
+                
                 return stretched
             })
         })

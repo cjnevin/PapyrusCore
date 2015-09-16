@@ -220,8 +220,27 @@ class PapyrusTests: XCTestCase {
             XCTAssert(player.rackTiles.count == 3)
             print(player.rackTiles)
             
-            let possibles = instance.possibleMoves(forPlayer: player, lexicon: lexicon)
+            let armsToDraw: [Character] = ["A", "R", "M", "S"]
+            armsToDraw.forEach { (letter) -> () in
+                let tile = instance.bagTiles.filter({$0.letter == letter}).first!
+                player.tiles.insert(tile)
+                tile.placement = .Rack
+            }
+            XCTAssert(player.rackTiles.count == 7)
             
+            let fixedLetters: [(Int, Character)] = []
+            var results = [(String, String)]()
+            lexicon.anagramsOf(instance.lettersIn(player.rackTiles),
+                length: player.rackTiles.count, prefix: [Character](), fixedLetters: fixedLetters,
+                fixedCount: 0, root: nil, results: &results)
+            
+            print(player.rackTiles)
+            
+            guard let _ = try? lexicon.defined("DISARMS") else { assert(false) }
+            XCTAssert(true)
+            XCTAssert(results.map({$0.0}).contains("DISARMS"))
+            
+            let possibles = instance.possibleMoves(forPlayer: player, lexicon: lexicon)
             
             print("Best: \(possibles.first)")
         }
@@ -321,7 +340,7 @@ class PapyrusTests: XCTestCase {
             var results = [(String, String)]()
             for length in 0..<letters.count {
                 lexicon.anagramsOf(Array(letters[0...length]), length: length,
-                    prefix: "", fixedLetters: fixedLetters, fixedCount: fixedLetters.count,
+                    prefix: [Character](), fixedLetters: fixedLetters, fixedCount: fixedLetters.count,
                     root: nil, results: &results)
             }
             if (results.count > 0) {

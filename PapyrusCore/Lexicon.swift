@@ -50,14 +50,18 @@ public struct Lexicon {
         throw ValidationError.UndefinedWord(word)
     }
     
-    func anagramsOf(letters: [Character], length: Int, prefix: String,
+    func anagramsOf(letters: [Character], length: Int, prefix: [Character],
         fixedLetters: [(Int, Character)], fixedCount: Int, root: LexiconType?,
         inout results: [(String, String)])
     {
         let source = root ?? dictionary!
-        let prefixLength = prefix.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
-        if let c = fixedLetters.filter({$0.0 == prefixLength}).map({$0.1}).first, newSource = source[String(c)] as? LexiconType {
-            let newPrefix = prefix + String(c)
+        let prefixLength = prefix.count
+        if let c = fixedLetters.filter({$0.0 == prefixLength}).map({$0.1}).first,
+            newSource = source[String(c)] as? LexiconType
+        {
+            var newPrefix = prefix
+            newPrefix.append(c)
+            //let newPrefix = prefix + String(c)
             let reverseFiltered = fixedLetters.filter({$0.0 != prefixLength})
             anagramsOf(letters, length: length, prefix: newPrefix,
                 fixedLetters: reverseFiltered, fixedCount: fixedCount,
@@ -66,23 +70,25 @@ public struct Lexicon {
         }
         
         // See if word exists
-        if let definition = source[DefKey] as? String where fixedLetters.count == 0 &&
-            prefixLength == length && prefixLength > fixedCount {
-            results.append((prefix, definition))
+        if let definition = source[DefKey] as? String
+            where fixedLetters.count == 0 &&
+                prefixLength == length &&
+                prefixLength > fixedCount
+        {
+            results.append((String(prefix), definition))
         }
         // Before continuing...
-        var newLetters = letters
-        for (key, value) in source {
+        for (key, value) in source where key != DefKey {
             // Search for ? or key
-            if (key == DefKey) {
-                continue
-            }
-            if let index = newLetters.indexOf(Character(key)) ?? newLetters.indexOf("?") {
+            let keyChar = Character(key)
+            if let index = letters.indexOf(keyChar) ?? letters.indexOf("?") {
+                var newPrefix = prefix
+                var newLetters = letters
+                newPrefix.append(keyChar)
                 newLetters.removeAtIndex(index)
-                anagramsOf(newLetters, length: length, prefix: prefix + key,
+                anagramsOf(newLetters, length: length, prefix: newPrefix,
                     fixedLetters: fixedLetters, fixedCount: fixedCount,
                     root: value as? LexiconType, results: &results)
-                break
             }
         }
     }

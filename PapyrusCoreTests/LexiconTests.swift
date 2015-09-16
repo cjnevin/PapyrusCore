@@ -25,30 +25,31 @@ class LexiconTests: XCTestCase {
 
     func testAnagrams() {
         var fixedLetters: [(Int, Character)] = []
+        var rootPrefix = [Character]()
         var results = [(String, String)]()
-        lexicon.anagramsOf(Array("CAT".characters), length: 3, prefix: "",
+        lexicon.anagramsOf(Array("CAT".characters), length: 3, prefix: rootPrefix,
             fixedLetters: fixedLetters, fixedCount: 0, root: lexicon.dictionary!, results: &results)
         XCTAssert(results.mapFilter({$0.0}).sort() == ["ACT", "CAT"])
         
         fixedLetters.append((2, "R"))
         results = [(String, String)]()
-        lexicon.anagramsOf(Array("TAC".characters), length: 4, prefix: "",
+        lexicon.anagramsOf(Array("TAC".characters), length: 4, prefix: rootPrefix,
             fixedLetters: fixedLetters, fixedCount: 1, root: lexicon.dictionary!, results: &results)
         XCTAssert(results.mapFilter({$0.0}) == ["CART"])
         
         results = [(String, String)]()
-        lexicon.anagramsOf(Array("TACPOSW".characters), length: 3, prefix: "",
+        lexicon.anagramsOf(Array("TACPOSW".characters), length: 3, prefix: rootPrefix,
             fixedLetters: fixedLetters, fixedCount: 1, root: lexicon.dictionary!, results: &results)
         XCTAssert(results.mapFilter({$0.0}).sort() == ["CAR", "COR", "OAR", "PAR", "SAR", "TAR", "TOR", "WAR"])
         
         results = [(String, String)]()
-        lexicon.anagramsOf(Array("PATIERS".characters), length: 8, prefix: "",
+        lexicon.anagramsOf(Array("PATIERS".characters), length: 8, prefix: rootPrefix,
             fixedLetters: fixedLetters, fixedCount: 1, root: lexicon.dictionary!, results: &results)
         XCTAssert(results.mapFilter({$0.0}) == ["PARTIERS"])
         
         results = [(String, String)]()
         fixedLetters.append((0, "C"))
-        lexicon.anagramsOf(Array("AEIOU".characters), length: 3, prefix: "",
+        lexicon.anagramsOf(Array("AEIOU".characters), length: 3, prefix: rootPrefix,
             fixedLetters: fixedLetters, fixedCount: 1, root: lexicon.dictionary!, results: &results)
         XCTAssert(results.mapFilter({$0.0}).sort() == ["CAR", "COR", "CUR"])
     }
