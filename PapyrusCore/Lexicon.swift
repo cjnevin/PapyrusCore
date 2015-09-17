@@ -6,8 +6,6 @@
 //  Copyright © 2015 CJNevin. All rights reserved.
 //
 
-// TODO: Refactor using GADDAG/DAWG or similar approach.
-
 import Foundation
 
 public typealias LexiconType = [String: AnyObject]
