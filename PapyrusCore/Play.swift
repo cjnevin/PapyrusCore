@@ -28,7 +28,7 @@ extension Papyrus {
     
     /// Attempt to play an AI move.
     /// - parameter neededTilePositions: Tiles to add to the board if successful.
-    public func playAI(lexicon: Lexicon) throws -> PlayAIOutput {
+    public func playAI(lexicon: Dawg) throws -> PlayAIOutput {
         /*assert(playerIndex != 0)
         
         guard let player = player else { throw ValidationError.NoPlayer }
@@ -118,7 +118,7 @@ extension Papyrus {
     /// - parameter submit: Whether this move is final or just used for validation.
     /// - Throws: If boundary cannot be played you will receive a ValidationError.
     /// - returns: Score of word including intersecting words.
-    public func play(boundary: Boundary, submit: Bool, lexicon: Lexicon) throws -> Int {
+    public func play(boundary: Boundary, submit: Bool, dawg: Dawg) throws -> Int {
         
         print(boundary)
         
@@ -160,7 +160,9 @@ extension Papyrus {
         // Check if main word is valid.
         let mainWord = String(tiles.mapFilter({$0.letter}))
         print(mainWord)
-        let _ = try lexicon.defined(mainWord)
+        if !dawg.lookup(mainWord) {
+            throw ValidationError.UndefinedWord(mainWord)
+        }
         
         // Calculate score for main word.
         var value = score(boundary)

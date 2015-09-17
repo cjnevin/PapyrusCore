@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9911B6091BAB81950090AFD4 /* output.json in Resources */ = {isa = PBXBuildFile; fileRef = 9911B6081BAB81950090AFD4 /* output.json */; };
 		9960AD6E1BA589D800765614 /* PapyrusCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 9960AD6D1BA589D800765614 /* PapyrusCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9960AD751BA589D800765614 /* PapyrusCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9960AD6A1BA589D800765614 /* PapyrusCore.framework */; };
 		996E23AA1BAA334A0052F1E2 /* sowpods.txt in Resources */ = {isa = PBXBuildFile; fileRef = 996E23A91BAA334A0052F1E2 /* sowpods.txt */; };
@@ -21,7 +22,6 @@
 		99FD431A1BA58A6400F50DCF /* UtilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD43131BA58A6400F50DCF /* UtilTests.swift */; };
 		99FD43251BA58AF200F50DCF /* Boundary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD431B1BA58AF200F50DCF /* Boundary.swift */; };
 		99FD43271BA58AF200F50DCF /* Move.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD431D1BA58AF200F50DCF /* Move.swift */; };
-		99FD43281BA58AF200F50DCF /* Lexicon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD431E1BA58AF200F50DCF /* Lexicon.swift */; };
 		99FD43291BA58AF200F50DCF /* Papyrus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD431F1BA58AF200F50DCF /* Papyrus.swift */; };
 		99FD432A1BA58AF200F50DCF /* Play.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD43201BA58AF200F50DCF /* Play.swift */; };
 		99FD432B1BA58AF200F50DCF /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD43211BA58AF200F50DCF /* Player.swift */; };
@@ -29,7 +29,6 @@
 		99FD432D1BA58AF200F50DCF /* Square.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD43231BA58AF200F50DCF /* Square.swift */; };
 		99FD432E1BA58AF200F50DCF /* Tile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD43241BA58AF200F50DCF /* Tile.swift */; };
 		99FD43311BA58AFC00F50DCF /* ArrayExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD43301BA58AFC00F50DCF /* ArrayExtensions.swift */; };
-		99FD43331BA58D9900F50DCF /* CSW12.plist in Resources */ = {isa = PBXBuildFile; fileRef = 99FD43321BA58D9900F50DCF /* CSW12.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,6 +42,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9911B6081BAB81950090AFD4 /* output.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = output.json; sourceTree = "<group>"; };
 		9960AD6A1BA589D800765614 /* PapyrusCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PapyrusCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9960AD6D1BA589D800765614 /* PapyrusCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PapyrusCore.h; sourceTree = "<group>"; };
 		9960AD6F1BA589D800765614 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -60,7 +60,6 @@
 		99FD43131BA58A6400F50DCF /* UtilTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UtilTests.swift; sourceTree = "<group>"; };
 		99FD431B1BA58AF200F50DCF /* Boundary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Boundary.swift; sourceTree = "<group>"; };
 		99FD431D1BA58AF200F50DCF /* Move.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Move.swift; sourceTree = "<group>"; };
-		99FD431E1BA58AF200F50DCF /* Lexicon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lexicon.swift; sourceTree = "<group>"; };
 		99FD431F1BA58AF200F50DCF /* Papyrus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Papyrus.swift; sourceTree = "<group>"; };
 		99FD43201BA58AF200F50DCF /* Play.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Play.swift; sourceTree = "<group>"; };
 		99FD43211BA58AF200F50DCF /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
@@ -68,7 +67,6 @@
 		99FD43231BA58AF200F50DCF /* Square.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Square.swift; sourceTree = "<group>"; };
 		99FD43241BA58AF200F50DCF /* Tile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tile.swift; sourceTree = "<group>"; };
 		99FD43301BA58AFC00F50DCF /* ArrayExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayExtensions.swift; sourceTree = "<group>"; };
-		99FD43321BA58D9900F50DCF /* CSW12.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = CSW12.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,7 +112,6 @@
 				9960AD6D1BA589D800765614 /* PapyrusCore.h */,
 				99FD431B1BA58AF200F50DCF /* Boundary.swift */,
 				99CFE8C81BA9F20100BE522C /* Dawg.swift */,
-				99FD431E1BA58AF200F50DCF /* Lexicon.swift */,
 				99FD431D1BA58AF200F50DCF /* Move.swift */,
 				99FD431F1BA58AF200F50DCF /* Papyrus.swift */,
 				99FD43201BA58AF200F50DCF /* Play.swift */,
@@ -131,7 +128,6 @@
 		9960AD781BA589D800765614 /* PapyrusCoreTests */ = {
 			isa = PBXGroup;
 			children = (
-				99FD43321BA58D9900F50DCF /* CSW12.plist */,
 				99FD430D1BA58A6400F50DCF /* BoundaryTests.swift */,
 				99FD430E1BA58A6400F50DCF /* LexiconTests.swift */,
 				99FD430F1BA58A6400F50DCF /* PapyrusTests.swift */,
@@ -140,6 +136,7 @@
 				99FD43111BA58A6400F50DCF /* SquareTests.swift */,
 				99FD43121BA58A6400F50DCF /* TileTests.swift */,
 				99FD43131BA58A6400F50DCF /* UtilTests.swift */,
+				9911B6081BAB81950090AFD4 /* output.json */,
 				996E23A91BAA334A0052F1E2 /* sowpods.txt */,
 				9960AD7B1BA589D800765614 /* Info.plist */,
 			);
@@ -252,8 +249,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9911B6091BAB81950090AFD4 /* output.json in Resources */,
 				996E23AA1BAA334A0052F1E2 /* sowpods.txt in Resources */,
-				99FD43331BA58D9900F50DCF /* CSW12.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -267,7 +264,6 @@
 				99CFE8C91BA9F20100BE522C /* Dawg.swift in Sources */,
 				99FD43271BA58AF200F50DCF /* Move.swift in Sources */,
 				99FD43291BA58AF200F50DCF /* Papyrus.swift in Sources */,
-				99FD43281BA58AF200F50DCF /* Lexicon.swift in Sources */,
 				99FD432B1BA58AF200F50DCF /* Player.swift in Sources */,
 				99FD43311BA58AFC00F50DCF /* ArrayExtensions.swift in Sources */,
 				99FD43251BA58AF200F50DCF /* Boundary.swift in Sources */,

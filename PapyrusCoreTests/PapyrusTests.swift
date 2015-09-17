@@ -11,11 +11,19 @@ import XCTest
 
 class PapyrusTests: XCTestCase {
 
+    var odawg: Dawg?
     let instance = Papyrus()
-    let lexicon: Lexicon = Lexicon(withFilePath: NSBundle(forClass: LexiconTests.self).pathForResource("CSW12", ofType: "plist")!)!
+    //let lexicon: Lexicon = Lexicon(withFilePath: NSBundle(forClass: LexiconTests.self).pathForResource("CSW12", ofType: "plist")!)!
     
     override func setUp() {
         super.setUp()
+        
+        let array: NSArray = try! NSJSONSerialization.JSONObjectWithData(NSData(contentsOfFile: NSBundle(forClass: LexiconTests.self).pathForResource("output", ofType: "json")!)!,
+            options: NSJSONReadingOptions.AllowFragments) as! NSArray
+        var cached = [Int: DawgNode]()
+        let root = DawgNode.deserialize(array, cached: &cached)
+        odawg = Dawg(withRootNode: root)
+        
         // Put setup code here. This method is called before the invocation of each test method in the class.
         instance.newGame { (state, game) -> () in
             switch state {
@@ -210,7 +218,9 @@ class PapyrusTests: XCTestCase {
             //let score = try instance.play(boundary, submit: false, lexicon: lexicon)
             //XCTAssert(score == 14)
             
-            try instance.play(boundary, submit: true, lexicon: lexicon)
+            let dawg = odawg!
+            
+            try instance.play(boundary, submit: true, dawg: dawg)
             
             //instance.draw()
             
@@ -229,18 +239,18 @@ class PapyrusTests: XCTestCase {
             XCTAssert(player.rackTiles.count == 7)
             
             let fixedLetters: [(Int, Character)] = []
-            var results = [(String, String)]()
-            lexicon.anagramsOf(instance.lettersIn(player.rackTiles),
+            var results = [String]()
+            dawg.anagramsOf(instance.lettersIn(player.rackTiles),
                 length: player.rackTiles.count, prefix: [Character](), fixedLetters: fixedLetters,
-                fixedCount: 0, root: nil, results: &results)
+                fixedCount: 0, root: dawg.rootNode, results: &results)
             
             print(player.rackTiles)
             
-            guard let _ = try? lexicon.defined("DISARMS") else { assert(false) }
+            if dawg.lookup("disarms") == false { assert(false) }
             XCTAssert(true)
-            XCTAssert(results.map({$0.0}).contains("DISARMS"))
+            XCTAssert(results.contains("disarms"))
             
-            let possibles = instance.possibleMoves(forPlayer: player, lexicon: lexicon)
+            let possibles = instance.possibleMoves(forPlayer: player, dawg: dawg)
             
             print("Best: \(possibles.first)")
         }
@@ -337,11 +347,11 @@ class PapyrusTests: XCTestCase {
         
         playableBoundaries.forEach {
             let fixedLetters = instance.indexesAndCharacters(forBoundary: $0)
-            var results = [(String, String)]()
+            var results = [String]()
             for length in 0..<letters.count {
-                lexicon.anagramsOf(Array(letters[0...length]), length: length,
+                odawg!.anagramsOf(Array(letters[0...length]), length: length,
                     prefix: [Character](), fixedLetters: fixedLetters, fixedCount: fixedLetters.count,
-                    root: nil, results: &results)
+                    root: odawg!.rootNode, results: &results)
             }
             if (results.count > 0) {
                 print("\(fixedLetters):  \(results)")

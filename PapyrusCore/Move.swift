@@ -33,7 +33,7 @@ extension Papyrus {
     /// - parameter boundary: Boundary to check.
     /// - parameter lexicon: Dictionary to use for validating words.
     /// - returns: Success flag and array of moves.
-    private func intersectingMoves(forBoundary boundary: Boundary, lexicon: Lexicon) -> (Bool, [Move]) {
+    private func intersectingMoves(forBoundary boundary: Boundary, dawg: Dawg) -> (Bool, [Move]) {
         var valid = true
         var intersectingMoves = [Move]()
         let intersections = findIntersections(forBoundary: boundary).filter({$0.length > 1})
@@ -47,9 +47,7 @@ extension Papyrus {
             assert(intersectingLetters.count > 1 &&
                 intersectingLetters.count == intersection.length)
             
-            do {
-                let intersectingDefinition = try lexicon.defined(intersectingWord)
-                
+            if dawg.lookup(intersectingWord) {
                 var intersectingScore = 0
                 if intersectingTiles.all({$0.placement == Placement.Fixed}) == false {
                     intersectingScore = score(intersection)
@@ -64,12 +62,11 @@ extension Papyrus {
                     squares: filteredSquares,
                     tiles: filteredTiles,
                     word: intersectingWord,
-                    definition: intersectingDefinition,
+                    definition: "",
                     score: intersectingScore)
                 
                 intersectingMoves.append(intersectingMove)
-            } catch {
-                print("## INVALID \(intersectingWord)")
+            } else {
                 valid = false
                 break
             }
@@ -81,18 +78,18 @@ extension Papyrus {
     /// - parameter player: Player whose tiles we will use to determine viable options.
     /// - parameter lexicon: Dictionary used for validating words and finding anagrams.
     /// - returns: All valid possible moves in the current state of the board.
-    public func possibleMoves(forPlayer player: Player, lexicon: Lexicon) -> [Possibility] {
+    public func possibleMoves(forPlayer player: Player, dawg: Dawg) -> [Possibility] {
         let letters = player.rackTiles.map({$0.letter})
         var possibilities = [Possibility]()
         allPlayableBoundaries().forEach { (boundary) in
             let fixedLetters = indexesAndCharacters(forBoundary: boundary)
-            var results = [(String, String)]()
-            lexicon.anagramsOf(letters, length: boundary.length,
+            var results = [String]()
+            dawg.anagramsOf(letters, length: boundary.length,
                 prefix: [Character](), fixedLetters: fixedLetters, fixedCount: fixedLetters.count,
-                root: nil, results: &results)
+                root: dawg.rootNode, results: &results)
             if (results.count > 0) {
                 let indexes = fixedLetters.map({$0.0})
-                for (mainWord, mainDefinition) in results {
+                for mainWord in results {
                     //print("-----\nPLAY: \(mainWord) --- \(fixedLetters)")
                     
                     // Temporarily place them on board for validation
@@ -129,7 +126,7 @@ extension Papyrus {
                     
                     let (valid, intersectingMoves) =
                     self.intersectingMoves(forBoundary: boundary,
-                        lexicon: lexicon)
+                        dawg: dawg)
                     
                     // Restore state
                     temporarySquareTiles.forEach({ (square, tile, _) -> () in
@@ -150,7 +147,7 @@ extension Papyrus {
                             squares: temporarySquareTiles.map({$0.0}),
                             tiles: temporarySquareTiles.map({$0.1}),
                             word: mainWord,
-                            definition: mainDefinition,
+                            definition: "",
                             score: mainScore)
                         
                         let total = move.score + intersectingMoves.map({$0.score}).reduce(0, combine: +)

@@ -8,11 +8,11 @@
 
 import Foundation
 
-func == (lhs: DawgNode, rhs: DawgNode) -> Bool {
+public func == (lhs: DawgNode, rhs: DawgNode) -> Bool {
     return lhs.hashValue == rhs.hashValue
 }
 
-class DawgNode: CustomStringConvertible, Hashable {
+public class DawgNode: CustomStringConvertible, Hashable {
     static var nextId = 0;
     
     typealias Edges = [Character: DawgNode]
@@ -80,16 +80,16 @@ class DawgNode: CustomStringConvertible, Hashable {
         updateDescription()
     }
     
-    var description: String {
+    public var description: String {
         return descr
     }
     
-    var hashValue: Int {
+    public var hashValue: Int {
         return descr.hashValue
     }
 }
 
-class Dawg {
+public class Dawg {
     var rootNode: DawgNode
     var previousWord = ""
     
@@ -97,7 +97,7 @@ class Dawg {
     lazy var minimizedNodes = [DawgNode: DawgNode]()
     
     /// Initialize a new instance.
-    init() {
+    public init() {
         rootNode = DawgNode()
     }
     
@@ -109,7 +109,7 @@ class Dawg {
     
     /// Attempt to save structure to file.
     /// - parameter path: Path to write to.
-    func save(path: String) -> Bool {
+    public func save(path: String) -> Bool {
         do {
             let data = try NSJSONSerialization.dataWithJSONObject(rootNode.serialize(), options: NSJSONWritingOptions.init(rawValue: 0))
             data.writeToFile(path, atomically: true)
@@ -123,7 +123,7 @@ class Dawg {
     /// Attempt to load structure from file.
     /// - parameter path: Path of file to read.
     /// - returns: New Dawg with initialized rootNode or nil.
-    class func load(path: String) -> Dawg? {
+    public class func load(path: String) -> Dawg? {
         do {
             if let data = NSData(contentsOfFile: path),
                 contents = try NSJSONSerialization.JSONObjectWithData(data,
@@ -152,7 +152,7 @@ class Dawg {
     
     /// Insert a word into the graph, words must be inserted in order.
     /// - parameter word: Word to insert.
-    func insert(word: String) {
+    public func insert(word: String) {
         if word == "" { return }
         assert(previousWord == "" || previousWord < word, "Words must be inserted alphabetically")
         
@@ -183,9 +183,9 @@ class Dawg {
     
     /// - parameter word: Word to check.
     /// - returns: True if the word exists.
-    func lookup(word: String) -> Bool {
+    public func lookup(word: String) -> Bool {
         var node = rootNode
-        for letter in word.characters {
+        for letter in word.lowercaseString.characters {
             guard let edgeNode = node.edges[letter] else { return false }
             node = edgeNode
         }
@@ -193,7 +193,7 @@ class Dawg {
     }
     
     
-    func anagramsOf(letters: [Character],
+    public func anagramsOf(letters: [Character],
         length: Int,
         prefix: [Character],
         fixedLetters: [(Int, Character)],

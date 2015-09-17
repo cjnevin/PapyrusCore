@@ -9,6 +9,7 @@
 import XCTest
 @testable import PapyrusCore
 
+/*
 class DawgTests: XCTestCase {
 
     override func setUp() {
@@ -107,3 +108,4 @@ class DawgTests: XCTestCase {
         assert(dawg2.lookup("CATER"))
     }
 }
+*/

@@ -11,11 +11,17 @@ import XCTest
 
 class LexiconTests: XCTestCase {
     
-    let lexicon: Lexicon = Lexicon(withFilePath: NSBundle(forClass: LexiconTests.self).pathForResource("CSW12", ofType: "plist")!)!
-    
+    var odawg: Dawg?
+
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
+        
+        let array: NSArray = try! NSJSONSerialization.JSONObjectWithData(NSData(contentsOfFile: NSBundle(forClass: LexiconTests.self).pathForResource("output", ofType: "json")!)!,
+            options: NSJSONReadingOptions.AllowFragments) as! NSArray
+        var cached = [Int: DawgNode]()
+        let root = DawgNode.deserialize(array, cached: &cached)
+        odawg = Dawg(withRootNode: root)
     }
     
     override func tearDown() {
@@ -26,41 +32,38 @@ class LexiconTests: XCTestCase {
     func testAnagrams() {
         var fixedLetters: [(Int, Character)] = []
         var rootPrefix = [Character]()
-        var results = [(String, String)]()
-        lexicon.anagramsOf(Array("CAT".characters), length: 3, prefix: rootPrefix,
-            fixedLetters: fixedLetters, fixedCount: 0, root: lexicon.dictionary!, results: &results)
-        XCTAssert(results.mapFilter({$0.0}).sort() == ["ACT", "CAT"])
+        var results = [String]()
+        let dawg = odawg!
+        
+        dawg.anagramsOf(Array("CAT".characters), length: 3, prefix: rootPrefix,
+            fixedLetters: fixedLetters, fixedCount: 0, root: dawg.rootNode, results: &results)
+        XCTAssert(results.mapFilter({$0}).sort() == ["ACT", "CAT"])
         
         fixedLetters.append((2, "R"))
-        results = [(String, String)]()
-        lexicon.anagramsOf(Array("TAC".characters), length: 4, prefix: rootPrefix,
-            fixedLetters: fixedLetters, fixedCount: 1, root: lexicon.dictionary!, results: &results)
-        XCTAssert(results.mapFilter({$0.0}) == ["CART"])
+        results.removeAll()
+        dawg.anagramsOf(Array("TAC".characters), length: 4, prefix: rootPrefix,
+            fixedLetters: fixedLetters, fixedCount: 1, root: dawg.rootNode, results: &results)
+        XCTAssert(results.mapFilter({$0}) == ["CART"])
         
-        results = [(String, String)]()
-        lexicon.anagramsOf(Array("TACPOSW".characters), length: 3, prefix: rootPrefix,
-            fixedLetters: fixedLetters, fixedCount: 1, root: lexicon.dictionary!, results: &results)
-        XCTAssert(results.mapFilter({$0.0}).sort() == ["CAR", "COR", "OAR", "PAR", "SAR", "TAR", "TOR", "WAR"])
+        results.removeAll()
+        dawg.anagramsOf(Array("TACPOSW".characters), length: 3, prefix: rootPrefix,
+            fixedLetters: fixedLetters, fixedCount: 1, root: dawg.rootNode, results: &results)
+        XCTAssert(results.mapFilter({$0}).sort() == ["CAR", "COR", "OAR", "PAR", "SAR", "TAR", "TOR", "WAR"])
         
-        results = [(String, String)]()
-        lexicon.anagramsOf(Array("PATIERS".characters), length: 8, prefix: rootPrefix,
-            fixedLetters: fixedLetters, fixedCount: 1, root: lexicon.dictionary!, results: &results)
-        XCTAssert(results.mapFilter({$0.0}) == ["PARTIERS"])
+        results.removeAll()
+        dawg.anagramsOf(Array("PATIERS".characters), length: 8, prefix: rootPrefix,
+            fixedLetters: fixedLetters, fixedCount: 1, root: dawg.rootNode, results: &results)
+        XCTAssert(results.mapFilter({$0}) == ["PARTIERS"])
         
-        results = [(String, String)]()
+        results.removeAll()
         fixedLetters.append((0, "C"))
-        lexicon.anagramsOf(Array("AEIOU".characters), length: 3, prefix: rootPrefix,
-            fixedLetters: fixedLetters, fixedCount: 1, root: lexicon.dictionary!, results: &results)
-        XCTAssert(results.mapFilter({$0.0}).sort() == ["CAR", "COR", "CUR"])
+        dawg.anagramsOf(Array("AEIOU".characters), length: 3, prefix: rootPrefix,
+            fixedLetters: fixedLetters, fixedCount: 1, root: dawg.rootNode, results: &results)
+        XCTAssert(results.mapFilter({$0}).sort() == ["CAR", "COR", "CUR"])
     }
 
     func wrappedDefined(str: String) -> Bool {
-        do {
-            return !(try lexicon.defined(str).isEmpty)
-        }
-        catch {
-            return false
-        }
+        return odawg?.lookup(str) == true
     }
     
     func testDefinitions() {
