@@ -167,7 +167,7 @@ class PapyrusTests: XCTestCase {
         
         instance.returnTiles(player.rackTiles, forPlayer: player)
         
-        let toDraw: [Character] = ["C", "A", "R", "D", "D", "I", "S"]
+        let toDraw: [Character] = ["c", "a", "r", "d", "d", "i", "s"]
         toDraw.forEach { (letter) -> () in
             let tile = instance.bagTiles.filter({$0.letter == letter}).first!
             player.tiles.insert(tile)
@@ -176,10 +176,10 @@ class PapyrusTests: XCTestCase {
         
         let positions: [(Position?, Character)] =
         [
-            (Position(horizontal: true, iterable: 4, fixed: 7), "C"),
-            (Position(horizontal: true, iterable: 5, fixed: 7), "A"),
-            (Position(horizontal: true, iterable: 6, fixed: 7), "R"),
-            (Position(horizontal: true, iterable: 7, fixed: 7), "D")
+            (Position(horizontal: true, iterable: 4, fixed: 7), "c"),
+            (Position(horizontal: true, iterable: 5, fixed: 7), "a"),
+            (Position(horizontal: true, iterable: 6, fixed: 7), "r"),
+            (Position(horizontal: true, iterable: 7, fixed: 7), "d")
         ]
         
         var boundary = Boundary(start: positions.first?.0, end: positions.last?.0)!
@@ -230,7 +230,7 @@ class PapyrusTests: XCTestCase {
             XCTAssert(player.rackTiles.count == 3)
             print(player.rackTiles)
             
-            let armsToDraw: [Character] = ["A", "R", "M", "S"]
+            let armsToDraw: [Character] = ["a", "r", "m", "s"]
             armsToDraw.forEach { (letter) -> () in
                 let tile = instance.bagTiles.filter({$0.letter == letter}).first!
                 player.tiles.insert(tile)
@@ -266,7 +266,7 @@ class PapyrusTests: XCTestCase {
         
         instance.returnTiles(instance.player!.rackTiles, forPlayer: instance.player!)
         
-        let toDraw: [Character] = ["D", "I", "S", "L", "Y", "S", "P"]
+        let toDraw: [Character] = ["d", "i", "s", "l", "y", "s", "p"]
         toDraw.forEach { (letter) -> () in
             let tile = instance.bagTiles.filter({$0.letter == letter}).first!
             instance.player?.tiles.insert(tile)
@@ -275,13 +275,13 @@ class PapyrusTests: XCTestCase {
         
         let items: [[(Position?, Character)]] = [
             [
-                (Position(horizontal: true, iterable: 2, fixed: 9), "R"),
-                (Position(horizontal: true, iterable: 3, fixed: 9), "E"),
-                (Position(horizontal: true, iterable: 4, fixed: 9), "S"),
-                (Position(horizontal: true, iterable: 5, fixed: 9), "U"),
-                (Position(horizontal: true, iterable: 6, fixed: 9), "M"),
-                (Position(horizontal: true, iterable: 7, fixed: 9), "E"),
-                (Position(horizontal: true, iterable: 8, fixed: 9), "S")
+                (Position(horizontal: true, iterable: 2, fixed: 9), "r"),
+                (Position(horizontal: true, iterable: 3, fixed: 9), "e"),
+                (Position(horizontal: true, iterable: 4, fixed: 9), "s"),
+                (Position(horizontal: true, iterable: 5, fixed: 9), "u"),
+                (Position(horizontal: true, iterable: 6, fixed: 9), "m"),
+                (Position(horizontal: true, iterable: 7, fixed: 9), "e"),
+                (Position(horizontal: true, iterable: 8, fixed: 9), "s")
             ],/* [
                 (Position(horizontal: false, iterable: 5, fixed: 7), "A"),
                 (Position(horizontal: false, iterable: 6, fixed: 7), "R"),
@@ -296,12 +296,12 @@ class PapyrusTests: XCTestCase {
                 (Position(horizontal: true, iterable: 9, fixed: 7), "R"),
                 (Position(horizontal: true, iterable: 10, fixed: 7), "D"),
             ],*/ [
-                (Position(horizontal: false, iterable: 4, fixed: 10), "D"),
-                (Position(horizontal: false, iterable: 5, fixed: 10), "E"),
-                (Position(horizontal: false, iterable: 6, fixed: 10), "A"),
-                (Position(horizontal: false, iterable: 7, fixed: 10), "D"),
-                (Position(horizontal: false, iterable: 8, fixed: 10), "E"),
-                (Position(horizontal: false, iterable: 9, fixed: 10), "R"),
+                (Position(horizontal: false, iterable: 4, fixed: 10), "d"),
+                (Position(horizontal: false, iterable: 5, fixed: 10), "e"),
+                (Position(horizontal: false, iterable: 6, fixed: 10), "a"),
+                (Position(horizontal: false, iterable: 7, fixed: 10), "d"),
+                (Position(horizontal: false, iterable: 8, fixed: 10), "e"),
+                (Position(horizontal: false, iterable: 9, fixed: 10), "r"),
             ]/*, [
                 (Position(horizontal: true, iterable: 7, fixed: 5), "A"),
                 (Position(horizontal: true, iterable: 8, fixed: 5), "R"),

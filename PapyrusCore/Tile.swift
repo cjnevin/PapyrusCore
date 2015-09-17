@@ -30,7 +30,7 @@ public final class Tile: CustomDebugStringConvertible, Equatable, Hashable {
     class func createTiles() -> [Tile] {
         return TileConfiguration.flatMap { e in
             (0..<e.0).map({ _ in
-                Tile(e.2, e.1)
+                Tile(Character(String(e.2).lowercaseString), e.1)
             })
             }.sort({_, _ in arc4random() % 2 == 0})
     }

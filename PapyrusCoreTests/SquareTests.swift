@@ -31,7 +31,7 @@ class SquareTests: XCTestCase {
         XCTAssert(corner.type == Modifier.Wordx3, "Expected x3 for corner")
         XCTAssert(corner.type.wordMultiplier == 3, "Expected x3 for corner")
         XCTAssert(corner.wordMultiplier == 0, "Expected zero when no tile is there")
-        corner.tile = Tile("T", 2)
+        corner.tile = Tile("t", 2)
         corner.tile?.placement = Placement.Board
         //XCTAssert(corner.debugDescription == "T")
         XCTAssert(corner.wordMultiplier == 3, "Expected x3 when tile is there")
@@ -44,7 +44,7 @@ class SquareTests: XCTestCase {
         XCTAssert(letterx2.type == Modifier.Letterx2, "Expected x2")
         XCTAssert(letterx2.type.letterMultiplier == 2, "Expected x2")
         XCTAssert(letterx2.letterValue == 0, "Expected zero when no tile is there")
-        letterx2.tile = Tile("Z", 10)
+        letterx2.tile = Tile("z", 10)
         letterx2.tile?.placement = Placement.Board
         XCTAssert(letterx2.wordMultiplier == 1, "Expected x1")
         XCTAssert(letterx2.letterValue == 20, "Expected 20")
@@ -56,7 +56,7 @@ class SquareTests: XCTestCase {
         XCTAssert(wordx2.type == Modifier.Wordx2, "Expected x2 for corner")
         XCTAssert(wordx2.type.wordMultiplier == 2, "Expected x2 for corner")
         XCTAssert(wordx2.wordMultiplier == 0, "Expected zero when no tile is there")
-        wordx2.tile = Tile("T", 2)
+        wordx2.tile = Tile("t", 2)
         wordx2.tile?.placement = Placement.Board
         XCTAssert(wordx2.wordMultiplier == 2, "Expected x2 when tile is there")
         XCTAssert(wordx2.letterValue == 2, "Expected 2 for letter value")
@@ -68,7 +68,7 @@ class SquareTests: XCTestCase {
         XCTAssert(letterx3.type == Modifier.Letterx3, "Expected x3")
         XCTAssert(letterx3.type.letterMultiplier == 3, "Expected x3")
         XCTAssert(letterx3.letterValue == 0, "Expected zero when no tile is there")
-        letterx3.tile = Tile("Z", 10)
+        letterx3.tile = Tile("z", 10)
         letterx3.tile?.placement = Placement.Board
         XCTAssert(letterx3.wordMultiplier == 1, "Expected x1")
         XCTAssert(letterx3.letterValue == 30, "Expected 30")
@@ -80,7 +80,7 @@ class SquareTests: XCTestCase {
         XCTAssert(center.type == Modifier.Center, "Expected x2 for corner")
         XCTAssert(center.type.wordMultiplier == 2, "Expected x2 for corner")
         XCTAssert(center.wordMultiplier == 0, "Expected zero when no tile is there")
-        center.tile = Tile("T", 2)
+        center.tile = Tile("t", 2)
         center.tile?.placement = Placement.Board
         XCTAssert(center.wordMultiplier == 2, "Expected x2 when tile is there")
         XCTAssert(center.letterValue == 2, "Expected 2 for letter value")
