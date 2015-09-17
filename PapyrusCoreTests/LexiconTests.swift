@@ -35,45 +35,38 @@ class LexiconTests: XCTestCase {
         var results = [String]()
         let dawg = odawg!
         
-        dawg.anagramsOf(Array("CAT".characters), length: 3, prefix: rootPrefix,
+        dawg.anagramsOf(Array("cat".characters), length: 3, prefix: rootPrefix,
             fixedLetters: fixedLetters, fixedCount: 0, root: dawg.rootNode, results: &results)
-        XCTAssert(results.mapFilter({$0}).sort() == ["ACT", "CAT"])
+        XCTAssert(results.mapFilter({$0}).sort() == ["act", "cat"])
         
-        fixedLetters.append((2, "R"))
+        fixedLetters.append((2, "r"))
         results.removeAll()
-        dawg.anagramsOf(Array("TAC".characters), length: 4, prefix: rootPrefix,
+        dawg.anagramsOf(Array("tac".characters), length: 4, prefix: rootPrefix,
             fixedLetters: fixedLetters, fixedCount: 1, root: dawg.rootNode, results: &results)
-        XCTAssert(results.mapFilter({$0}) == ["CART"])
-        
-        results.removeAll()
-        dawg.anagramsOf(Array("TACPOSW".characters), length: 3, prefix: rootPrefix,
-            fixedLetters: fixedLetters, fixedCount: 1, root: dawg.rootNode, results: &results)
-        XCTAssert(results.mapFilter({$0}).sort() == ["CAR", "COR", "OAR", "PAR", "SAR", "TAR", "TOR", "WAR"])
+        XCTAssert(results.mapFilter({$0}) == ["cart"])
         
         results.removeAll()
-        dawg.anagramsOf(Array("PATIERS".characters), length: 8, prefix: rootPrefix,
+        dawg.anagramsOf(Array("tacposw".characters), length: 3, prefix: rootPrefix,
             fixedLetters: fixedLetters, fixedCount: 1, root: dawg.rootNode, results: &results)
-        XCTAssert(results.mapFilter({$0}) == ["PARTIERS"])
+        XCTAssert(results.mapFilter({$0}).sort() == ["car", "cor", "oar", "par", "sar", "tar", "tor", "war"])
         
         results.removeAll()
-        fixedLetters.append((0, "C"))
-        dawg.anagramsOf(Array("AEIOU".characters), length: 3, prefix: rootPrefix,
+        dawg.anagramsOf(Array("patiers".characters), length: 8, prefix: rootPrefix,
             fixedLetters: fixedLetters, fixedCount: 1, root: dawg.rootNode, results: &results)
-        XCTAssert(results.mapFilter({$0}).sort() == ["CAR", "COR", "CUR"])
+        XCTAssert(results.mapFilter({$0}) == ["partiers"])
+        
+        results.removeAll()
+        fixedLetters.append((0, "c"))
+        dawg.anagramsOf(Array("aeiou".characters), length: 3, prefix: rootPrefix,
+            fixedLetters: fixedLetters, fixedCount: 1, root: dawg.rootNode, results: &results)
+        XCTAssert(results.mapFilter({$0}).sort() == ["car", "cor", "cur"])
+        
+        XCTAssert(!dawg.lookup(""))
+        XCTAssert(dawg.lookup("cat"))
+        XCTAssert(!dawg.lookup("catx"))
+        XCTAssert(!dawg.lookup("actper"))
+        XCTAssert(dawg.lookup("periodontal"))
+        XCTAssert(dawg.lookup("partier"))
+        XCTAssert(!dawg.lookup("SUPERCALIFRAGILISTICEXPIALIDOCIOUS"))
     }
-
-    func wrappedDefined(str: String) -> Bool {
-        return odawg?.lookup(str) == true
-    }
-    
-    func testDefinitions() {
-        XCTAssert(!wrappedDefined(""))
-        XCTAssert(wrappedDefined("CAT"))
-        XCTAssert(!wrappedDefined("CATX"))
-        XCTAssert(!wrappedDefined("ACTPER"))
-        XCTAssert(wrappedDefined("PERIODONTAL"))
-        XCTAssert(wrappedDefined("PARTIER"))
-        XCTAssert(!wrappedDefined("SUPERCALIFRAGILISTICEXPIALIDOCIOUS"))
-    }
-    
 }
