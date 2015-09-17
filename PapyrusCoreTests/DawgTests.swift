@@ -31,10 +31,12 @@ class DawgTests: XCTestCase {
     func testCreateDawg() {
         
         let dawg = Dawg()
-        /*let path: String = (NSSearchPathForDirectoriesInDomains(
+        let path: String = (NSSearchPathForDirectoriesInDomains(
             .DocumentDirectory, .UserDomainMask, true).first! as NSString)
-            .stringByAppendingPathComponent("dawg.dat")
-        print(path)*/
+            .stringByAppendingPathComponent("dawg.json")
+        
+        print(path)
+        
         let bundle = NSBundle(forClass: DawgTests.self)
         let sowpods = bundle.pathForResource("sowpods", ofType: "txt")!
         let lines = try! NSString(contentsOfFile: sowpods, encoding: NSUTF8StringEncoding).componentsSeparatedByCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
@@ -46,6 +48,15 @@ class DawgTests: XCTestCase {
             c++
             if (c % 1000 == 0) {
                 print(line, c, (Double(c) / Double(lines.count)) * 100)
+                assert(dawg.lookup(line))
+                
+                
+                NSJSONWritingOptions.PrettyPrinted
+                let serialized = try! NSJSONSerialization.dataWithJSONObject(dawg.rootNode.serialize(),
+                    options: NSJSONWritingOptions.init(rawValue: 0))
+                
+                serialized.writeToFile(path, atomically: true)
+                
             }
         }
         
@@ -60,6 +71,12 @@ class DawgTests: XCTestCase {
         
         //dawg.save(path)
         //print(path)
+        
+        let serialized = dawg.rootNode.serialize()
+        let dawg2 = Dawg(withRootNode: DawgNode(withArray: serialized))
+        
+        printNode(dawg2.rootNode, "root")
+        assert(dawg2.lookup("cater"))
     }
     
     func testDawg() {
@@ -77,9 +94,16 @@ class DawgTests: XCTestCase {
         dawg.insert("CATS")
         dawg.insert("CITE")
         
+        assert(dawg.lookup("CAD"))
+        
         printNode(dawg.rootNode, "root")
         
         print("---")
         
+        let serialized = dawg.rootNode.serialize()
+        let dawg2 = Dawg(withRootNode: DawgNode(withArray: serialized))
+        
+        printNode(dawg2.rootNode, "root")
+        assert(dawg2.lookup("CATER"))
     }
 }
