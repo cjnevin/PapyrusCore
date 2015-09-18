@@ -13,16 +13,16 @@ public func == (lhs: DawgNode, rhs: DawgNode) -> Bool {
 }
 
 public class DawgNode: CustomStringConvertible, Hashable {
-    static var nextId = 0;
+    private static var nextId = 0;
     
     typealias Edges = [Character: DawgNode]
     
-    lazy var edges = Edges()
-    var final: Bool = false
-    var id: Int
-    var descr: String = ""
+    internal lazy var edges = Edges()
+    internal var final: Bool = false
+    internal var id: Int
+    private var descr: String = ""
     
-    init() {
+    public init() {
         self.id = self.dynamicType.nextId
         self.dynamicType.nextId += 1
         updateDescription()
@@ -35,7 +35,7 @@ public class DawgNode: CustomStringConvertible, Hashable {
         updateDescription()
     }
     
-    class func deserialize(serialized: NSArray, inout cached: [Int: DawgNode]) -> DawgNode {
+    public class func deserialize(serialized: NSArray, inout cached: [Int: DawgNode]) -> DawgNode {
         let id = serialized.firstObject! as! Int
         guard let cache = cached[id] else {
             var edges: Edges?
@@ -55,7 +55,7 @@ public class DawgNode: CustomStringConvertible, Hashable {
         return cache
     }
     
-    func serialize() -> NSArray {
+    public func serialize() -> NSArray {
         let serialized = NSMutableArray()
         serialized.addObject(id)
         serialized.addObject(final ? 1 : 0)
@@ -69,13 +69,13 @@ public class DawgNode: CustomStringConvertible, Hashable {
         return serialized
     }
     
-    func updateDescription() {
+    private func updateDescription() {
         var arr = [final ? "1" : "0"]
         arr.appendContentsOf(edges.map({ "\($0.0)_\($0.1)" }))
         descr = arr.joinWithSeparator("_")
     }
     
-    func setEdge(letter: Character, node: DawgNode) {
+    internal func setEdge(letter: Character, node: DawgNode) {
         edges[letter] = node
         updateDescription()
     }
@@ -90,11 +90,11 @@ public class DawgNode: CustomStringConvertible, Hashable {
 }
 
 public class Dawg {
-    var rootNode: DawgNode
-    var previousWord = ""
+    private var rootNode: DawgNode
+    private var previousWord = ""
     
-    lazy var uncheckedNodes = [(parent: DawgNode, letter: Character, child: DawgNode)]()
-    lazy var minimizedNodes = [DawgNode: DawgNode]()
+    private lazy var uncheckedNodes = [(parent: DawgNode, letter: Character, child: DawgNode)]()
+    private lazy var minimizedNodes = [DawgNode: DawgNode]()
     
     /// Initialize a new instance.
     public init() {
@@ -103,7 +103,7 @@ public class Dawg {
     
     /// Initialize with an existing root node, carrying over all hierarchy information.
     /// - parameter rootNode: Node to use.
-    init(withRootNode rootNode: DawgNode) {
+    private init(withRootNode rootNode: DawgNode) {
         self.rootNode = rootNode
     }
     
@@ -138,7 +138,7 @@ public class Dawg {
     /// Replace redundant nodes in uncheckedNodes with ones existing in minimizedNodes
     /// then truncate.
     /// - parameter downTo: Iterate from count to this number (truncates these items).
-    func minimize(downTo: Int) {
+    private func minimize(downTo: Int) {
         for i in (downTo..<uncheckedNodes.count).reverse() {
             let (_, letter, child) = uncheckedNodes[i]
             if let minNode = minimizedNodes[child] {
