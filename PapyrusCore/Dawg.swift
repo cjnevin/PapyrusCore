@@ -191,7 +191,7 @@ public class Dawg {
         }
         return node.final
     }
-    
+
     /// Calculates all possible words given a set of rack letters
     /// optionally providing fixed letters which can be used
     /// to indicate that these positions are already filled.
