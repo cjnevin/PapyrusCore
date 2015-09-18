@@ -31,38 +31,41 @@ class DawgTests: XCTestCase {
     }
 
     func testAnagrams() {
-        var fixedLetters = [Int: Character]()
-        var results = [String]()
         let dawg = odawg!
         
-        dawg.anagramsOf(Array("cat".characters), length: 3,
-            results: &results)
-        XCTAssert(results.mapFilter({$0}).sort() == ["act", "cat"])
-        
-        fixedLetters[2] = "r"
-        results.removeAll()
-        dawg.anagramsOf(Array("tac".characters), length: 4,
-            filledLetters: fixedLetters, results: &results)
-        XCTAssert(results == ["cart"])
-        
-        results.removeAll()
-        dawg.anagramsOf(Array("tacposw".characters), length: 3,
-            filledLetters: fixedLetters, results: &results)
-        XCTAssert(results.sort() == ["car", "cor", "oar", "par", "sar", "tar", "tor", "war"])
-        
-        results.removeAll()
-        dawg.anagramsOf(Array("patiers".characters), length: 8,
-            filledLetters: fixedLetters, results: &results)
-        XCTAssert(results == ["partiers"])
-        
-        results.removeAll()
-        fixedLetters[0] = "c"
-        dawg.anagramsOf(Array("aeiou".characters), length: 3,
-            filledLetters: fixedLetters, results: &results)
-        XCTAssert(results.sort() == ["car", "cor", "cur"])
-        
-        XCTAssert(dawg.lookup("cart") == true)
-        XCTAssert(dawg.lookup("xyza") == false)
-        XCTAssert(dawg.lookup("CAT") == true)
+        measureBlock { () -> Void in
+            var fixedLetters = [Int: Character]()
+            var results = [String]()
+            
+            dawg.anagramsOf(Array("cat".characters), length: 3,
+                results: &results)
+            XCTAssert(results.mapFilter({$0}).sort() == ["act", "cat"])
+            
+            fixedLetters[2] = "r"
+            results.removeAll()
+            dawg.anagramsOf(Array("tac".characters), length: 4,
+                filledLetters: fixedLetters, results: &results)
+            XCTAssert(results == ["cart"])
+            
+            results.removeAll()
+            dawg.anagramsOf(Array("tacposw".characters), length: 3,
+                filledLetters: fixedLetters, results: &results)
+            XCTAssert(results.sort() == ["car", "cor", "oar", "par", "sar", "tar", "tor", "war"])
+            
+            results.removeAll()
+            dawg.anagramsOf(Array("patiers".characters), length: 8,
+                filledLetters: fixedLetters, results: &results)
+            XCTAssert(results == ["partiers"])
+            
+            results.removeAll()
+            fixedLetters[0] = "c"
+            dawg.anagramsOf(Array("aeiou".characters), length: 3,
+                filledLetters: fixedLetters, results: &results)
+            XCTAssert(results.sort() == ["car", "cor", "cur"])
+            
+            XCTAssert(dawg.lookup("cart") == true)
+            XCTAssert(dawg.lookup("xyza") == false)
+            XCTAssert(dawg.lookup("CAT") == true)
+        }
     }
 }
