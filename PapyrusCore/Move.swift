@@ -1,6 +1,6 @@
 //
 //  Move.swift
-//  Papyrus
+//  PapyrusCore
 //
 //  Created by Chris Nevin on 17/08/2015.
 //  Copyright © 2015 CJNevin. All rights reserved.

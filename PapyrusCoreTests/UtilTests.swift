@@ -1,6 +1,6 @@
 //
 //  UtilTests.swift
-//  Papyrus
+//  PapyrusCore
 //
 //  Created by Chris Nevin on 12/09/2015.
 //  Copyright © 2015 CJNevin. All rights reserved.

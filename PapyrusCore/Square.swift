@@ -1,6 +1,6 @@
 //
 //  Square.swift
-//  Papyrus
+//  PapyrusCore
 //
 //  Created by Chris Nevin on 14/08/2015.
 //  Copyright © 2015 CJNevin. All rights reserved.

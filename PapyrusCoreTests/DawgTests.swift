@@ -9,12 +9,20 @@
 import XCTest
 @testable import PapyrusCore
 
-/*
 class DawgTests: XCTestCase {
+    
+    var odawg: Dawg?
 
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
+        
+        let array: NSArray = try! NSJSONSerialization.JSONObjectWithData(NSData(contentsOfFile:
+            NSBundle(forClass: DawgTests.self).pathForResource("output", ofType: "json")!)!,
+            options: NSJSONReadingOptions.AllowFragments) as! NSArray
+        var cached = [Int: DawgNode]()
+        let root = DawgNode.deserialize(array, cached: &cached)
+        odawg = Dawg(withRootNode: root)
     }
     
     override func tearDown() {
@@ -22,90 +30,39 @@ class DawgTests: XCTestCase {
         super.tearDown()
     }
 
-    func printNode(node: DawgNode, _ prefix: String) {
-        print("\(prefix): \(node)")
-        node.edges.forEach({ (key, value) in
-            printNode(value, "-\(prefix)")
-        })
-    }
-    
-    func testCreateDawg() {
+    func testAnagrams() {
+        var fixedLetters = [Int: Character]()
+        var results = [String]()
+        let dawg = odawg!
         
-        let dawg = Dawg()
-        let path: String = (NSSearchPathForDirectoriesInDomains(
-            .DocumentDirectory, .UserDomainMask, true).first! as NSString)
-            .stringByAppendingPathComponent("dawg.json")
+        dawg.anagramsOf(Array("cat".characters), length: 3,
+            results: &results)
+        XCTAssert(results.mapFilter({$0}).sort() == ["act", "cat"])
         
-        print(path)
+        fixedLetters[2] = "r"
+        results.removeAll()
+        dawg.anagramsOf(Array("tac".characters), length: 4,
+            filledLetters: fixedLetters, results: &results)
+        XCTAssert(results == ["cart"])
         
-        let bundle = NSBundle(forClass: DawgTests.self)
-        let sowpods = bundle.pathForResource("sowpods", ofType: "txt")!
-        let lines = try! NSString(contentsOfFile: sowpods, encoding: NSUTF8StringEncoding).componentsSeparatedByCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-        var c = 0
-        var last = NSDate().timeIntervalSinceReferenceDate
+        results.removeAll()
+        dawg.anagramsOf(Array("tacposw".characters), length: 3,
+            filledLetters: fixedLetters, results: &results)
+        XCTAssert(results.sort() == ["car", "cor", "oar", "par", "sar", "tar", "tor", "war"])
         
-        for line in lines {
-            dawg.insert(line)
-            c++
-            if (c % 1000 == 0) {
-                print(line, c, (Double(c) / Double(lines.count)) * 100)
-                assert(dawg.lookup(line))
-                
-                
-                NSJSONWritingOptions.PrettyPrinted
-                let serialized = try! NSJSONSerialization.dataWithJSONObject(dawg.rootNode.serialize(),
-                    options: NSJSONWritingOptions.init(rawValue: 0))
-                
-                serialized.writeToFile(path, atomically: true)
-                
-            }
-        }
+        results.removeAll()
+        dawg.anagramsOf(Array("patiers".characters), length: 8,
+            filledLetters: fixedLetters, results: &results)
+        XCTAssert(results == ["partiers"])
         
-        last = NSDate().timeIntervalSinceReferenceDate - last
-        print("Imported \(lines.count) in \(last)")
+        results.removeAll()
+        fixedLetters[0] = "c"
+        dawg.anagramsOf(Array("aeiou".characters), length: 3,
+            filledLetters: fixedLetters, results: &results)
+        XCTAssert(results.sort() == ["car", "cor", "cur"])
         
-        measureBlock { () -> Void in
-            dawg.lookup("quincentennial")
-            dawg.lookup("zeal")
-            dawg.lookup("starter")
-        }
-        
-        //dawg.save(path)
-        //print(path)
-        
-        let serialized = dawg.rootNode.serialize()
-        let dawg2 = Dawg(withRootNode: DawgNode(withArray: serialized))
-        
-        printNode(dawg2.rootNode, "root")
-        assert(dawg2.lookup("cater"))
-    }
-    
-    func testDawg() {
-        
-        let dawg = Dawg()
-        dawg.insert("CAD")
-        dawg.insert("CADE")
-        dawg.insert("CAR")
-        dawg.insert("CARE")
-        dawg.insert("CART")
-        dawg.insert("CAT")
-        dawg.insert("CATE")
-        dawg.insert("CATER")
-        dawg.insert("CATERS")
-        dawg.insert("CATS")
-        dawg.insert("CITE")
-        
-        assert(dawg.lookup("CAD"))
-        
-        printNode(dawg.rootNode, "root")
-        
-        print("---")
-        
-        let serialized = dawg.rootNode.serialize()
-        let dawg2 = Dawg(withRootNode: DawgNode(withArray: serialized))
-        
-        printNode(dawg2.rootNode, "root")
-        assert(dawg2.lookup("CATER"))
+        XCTAssert(dawg.lookup("cart") == true)
+        XCTAssert(dawg.lookup("xyza") == false)
+        XCTAssert(dawg.lookup("CAT") == true)
     }
 }
-*/

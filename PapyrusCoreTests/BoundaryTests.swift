@@ -1,6 +1,6 @@
 //
 //  BoundaryTests.swift
-//  Papyrus
+//  PapyrusCore
 //
 //  Created by Chris Nevin on 11/09/2015.
 //  Copyright © 2015 CJNevin. All rights reserved.
