@@ -30,35 +30,34 @@ class LexiconTests: XCTestCase {
     }
 
     func testAnagrams() {
-        var fixedLetters: [(Int, Character)] = []
-        var rootPrefix = [Character]()
+        var fixedLetters = [Int: Character]()
         var results = [String]()
         let dawg = odawg!
         
-        dawg.anagramsOf(Array("cat".characters), length: 3, prefix: rootPrefix,
-            fixedLetters: fixedLetters, fixedCount: 0, root: dawg.rootNode, results: &results)
+        dawg.anagramsOf(Array("cat".characters), length: 3,
+            results: &results)
         XCTAssert(results.mapFilter({$0}).sort() == ["act", "cat"])
         
-        fixedLetters.append((2, "r"))
+        fixedLetters[2] = "r"
         results.removeAll()
-        dawg.anagramsOf(Array("tac".characters), length: 4, prefix: rootPrefix,
-            fixedLetters: fixedLetters, fixedCount: 1, root: dawg.rootNode, results: &results)
+        dawg.anagramsOf(Array("tac".characters), length: 4,
+            filledLetters: fixedLetters, results: &results)
         XCTAssert(results.mapFilter({$0}) == ["cart"])
         
         results.removeAll()
-        dawg.anagramsOf(Array("tacposw".characters), length: 3, prefix: rootPrefix,
-            fixedLetters: fixedLetters, fixedCount: 1, root: dawg.rootNode, results: &results)
+        dawg.anagramsOf(Array("tacposw".characters), length: 3,
+            filledLetters: fixedLetters, results: &results)
         XCTAssert(results.mapFilter({$0}).sort() == ["car", "cor", "oar", "par", "sar", "tar", "tor", "war"])
         
         results.removeAll()
-        dawg.anagramsOf(Array("patiers".characters), length: 8, prefix: rootPrefix,
-            fixedLetters: fixedLetters, fixedCount: 1, root: dawg.rootNode, results: &results)
+        dawg.anagramsOf(Array("patiers".characters), length: 8,
+            filledLetters: fixedLetters, results: &results)
         XCTAssert(results.mapFilter({$0}) == ["partiers"])
         
         results.removeAll()
-        fixedLetters.append((0, "c"))
-        dawg.anagramsOf(Array("aeiou".characters), length: 3, prefix: rootPrefix,
-            fixedLetters: fixedLetters, fixedCount: 1, root: dawg.rootNode, results: &results)
+        fixedLetters[0] = "c"
+        dawg.anagramsOf(Array("aeiou".characters), length: 3,
+            filledLetters: fixedLetters, results: &results)
         XCTAssert(results.mapFilter({$0}).sort() == ["car", "cor", "cur"])
         
         //XCTAssert(!dawg.lookup(""))

@@ -192,46 +192,77 @@ public class Dawg {
         return node.final
     }
     
-    
+    /// Calculates all possible words given a set of rack letters
+    /// optionally providing fixed letters which can be used
+    /// to indicate that these positions are already filled.
+    /// - parameters:
+    ///     - letters: Letter in rack to use.
+    ///     - length: Length of word to return.
+    ///     - prefix: Letters of current result already realised.
+    ///     - fixedLetters: Letters that are already filled at given positions.
+    ///     - root: Node in the Dawg tree we are currently using.
+    /// - returns: Array of possible words.
     public func anagramsOf(letters: [Character],
         length: Int,
-        prefix: [Character],
-        fixedLetters: [(Int, Character)],
-        fixedCount: Int,
-        root: DawgNode,
+        prefix: [Character]? = nil,
+        filledLetters: [Int: Character]? = nil,
+        filledCount: Int? = nil,
+        root: DawgNode? = nil,
         inout results: [String])
     {
-        let source = root ?? rootNode
-        let prefixLength = prefix.count
-        if let c = fixedLetters.filter({$0.0 == prefixLength}).map({$0.1}).first,
-            newSource = source.edges[c] {
-                var newPrefix = prefix
-                newPrefix.append(c)
-                //let newPrefix = prefix + String(c)
-                let reverseFiltered = fixedLetters.filter({$0.0 != prefixLength})
-                anagramsOf(letters, length: length, prefix: newPrefix,
-                    fixedLetters: reverseFiltered, fixedCount: fixedCount,
-                    root: newSource, results: &results)
-                return
+        // Realise any fields that are empty on first run.
+        let _prefix = prefix ?? [Character]()
+        let _prefixLength = _prefix.count
+        var _filled = filledLetters ?? [Int: Character]()
+        let _numFilled = filledCount ?? _filled.count
+        let _source = root ?? rootNode
+        
+        // See if position exists in filled array.
+        if let letter = _filled[_prefixLength],
+            newSource = _source.edges[letter]
+        {
+            // Add letter to prefix
+            var newPrefix = _prefix
+            newPrefix.append(letter)
+            _filled.removeValueForKey(_prefixLength)
+            // Recurse with new prefix/letters
+            anagramsOf(letters,
+                length: length,
+                prefix: newPrefix,
+                filledLetters: _filled,
+                filledCount: _numFilled,
+                root: newSource,
+                results: &results)
+            return
         }
         
-        // See if word exists
-        if source.final && fixedLetters.count == 0 &&
-            prefixLength == length &&
-            prefixLength > fixedCount {
-                results.append(String(prefix))
+        // Check if the current prefix is actually a word.
+        if _source.final &&
+            _filled.count == 0 &&
+            _prefixLength == length &&
+            _prefixLength > _numFilled
+        {
+            results.append(String(_prefix))
         }
         
-        source.edges.forEach { (letter, node) in
-            // Search for ? or letter
+        // Check each edge of this node to see if any of the letters
+        // exist in our rack letters (or we have a '?').
+        _source.edges.forEach { (letter, node) in
             if let index = letters.indexOf(letter) ?? letters.indexOf("?") {
-                var newPrefix = prefix
+                // Copy letters, removing this letter
                 var newLetters = letters
-                newPrefix.append(letter)
                 newLetters.removeAtIndex(index)
-                anagramsOf(newLetters, length: length, prefix: newPrefix,
-                    fixedLetters: fixedLetters, fixedCount: fixedCount,
-                    root: node, results: &results)
+                // Add letter to prefix
+                var newPrefix = _prefix
+                newPrefix.append(letter)
+                // Recurse with new prefix/letters
+                anagramsOf(newLetters,
+                    length: length,
+                    prefix: newPrefix,
+                    filledLetters: _filled,
+                    filledCount: _numFilled,
+                    root: node,
+                    results: &results)
             }
         }
     }

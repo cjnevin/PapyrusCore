@@ -238,11 +238,9 @@ class PapyrusTests: XCTestCase {
             }
             XCTAssert(player.rackTiles.count == 7)
             
-            let fixedLetters: [(Int, Character)] = []
             var results = [String]()
             dawg.anagramsOf(instance.lettersIn(player.rackTiles),
-                length: player.rackTiles.count, prefix: [Character](), fixedLetters: fixedLetters,
-                fixedCount: 0, root: dawg.rootNode, results: &results)
+                length: player.rackTiles.count, results: &results)
             
             print(player.rackTiles)
             
@@ -349,9 +347,10 @@ class PapyrusTests: XCTestCase {
             let fixedLetters = instance.indexesAndCharacters(forBoundary: $0)
             var results = [String]()
             for length in 0..<letters.count {
-                odawg!.anagramsOf(Array(letters[0...length]), length: length,
-                    prefix: [Character](), fixedLetters: fixedLetters, fixedCount: fixedLetters.count,
-                    root: odawg!.rootNode, results: &results)
+                odawg!.anagramsOf(Array(letters[0...length]),
+                    length: length,
+                    filledLetters: fixedLetters,
+                    results: &results)
             }
             if (results.count > 0) {
                 print("\(fixedLetters):  \(results)")

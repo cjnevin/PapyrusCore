@@ -202,11 +202,13 @@ public struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
 extension Papyrus {
     /// - parameter boundary: Find filled tiles then return the index and characters for the boundary.
     /// - returns: Array of indexes and characters.
-    func indexesAndCharacters(forBoundary boundary: Boundary) -> [(Int, Character)] {
-        return boundary.positions().mapFilter { (position) -> (Int, Character)? in
-            guard let letter = letterAt(position) else { return nil }
-            return (position.iterable - boundary.start.iterable, letter)
+    func indexesAndCharacters(forBoundary boundary: Boundary) -> [Int: Character] {
+        var positionValues = [Int: Character]()
+        boundary.positions().forEach { (position) in
+            guard let letter = letterAt(position) else { return }
+            positionValues[position.iterable - boundary.start.iterable] = letter
         }
+        return positionValues
     }
     
     /// - parameter boundary: Boundary containing tiles that have been dropped on the board.
