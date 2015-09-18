@@ -165,6 +165,7 @@ class PapyrusTests: XCTestCase {
         instance.createPlayer()
         
         let player = instance.player!
+        player.difficulty = .Champion
         
         instance.returnTiles(player.rackTiles, forPlayer: player)
         

@@ -79,6 +79,7 @@ extension Papyrus {
     /// - parameter lexicon: Dictionary used for validating words and finding anagrams.
     /// - returns: All valid possible moves in the current state of the board.
     public func possibleMoves(forPlayer player: Player, dawg: Dawg) -> [Possibility] {
+        assert(player.difficulty != .Human)
         let letters = player.rackTiles.map({$0.letter})
         var possibilities = [Possibility]()
         allPlayableBoundaries().forEach { (boundary) in
