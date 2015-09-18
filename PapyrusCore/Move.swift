@@ -84,9 +84,10 @@ extension Papyrus {
         allPlayableBoundaries().forEach { (boundary) in
             let fixedLetters = indexesAndCharacters(forBoundary: boundary)
             var results = [String]()
-            dawg.anagramsOf(letters, length: boundary.length,
-                prefix: [Character](), filledLetters: fixedLetters, filledCount: fixedLetters.count,
-                root: dawg.rootNode, results: &results)
+            dawg.anagramsOf(letters,
+                length: boundary.length,
+                filledLetters: fixedLetters,
+                results: &results)
             if (results.count > 0) {
                 let indexes = fixedLetters.map({$0.0})
                 for mainWord in results {

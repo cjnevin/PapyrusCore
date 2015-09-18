@@ -103,7 +103,7 @@ public class Dawg {
     
     /// Initialize with an existing root node, carrying over all hierarchy information.
     /// - parameter rootNode: Node to use.
-    private init(withRootNode rootNode: DawgNode) {
+    internal init(withRootNode rootNode: DawgNode) {
         self.rootNode = rootNode
     }
     

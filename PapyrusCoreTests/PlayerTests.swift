@@ -24,6 +24,8 @@ class PlayerTests: XCTestCase {
     func testPlayer() {
         XCTAssert(Player(score: 10).score == 10)
         XCTAssert(Player().score == 0)
+        XCTAssert(Player(difficulty: .Champion).difficulty == .Champion)
+        XCTAssert(Player().difficulty == .Human)
     }
 
 }

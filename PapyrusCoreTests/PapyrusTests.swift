@@ -18,7 +18,8 @@ class PapyrusTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
-        let array: NSArray = try! NSJSONSerialization.JSONObjectWithData(NSData(contentsOfFile: NSBundle(forClass: LexiconTests.self).pathForResource("output", ofType: "json")!)!,
+        let array: NSArray = try! NSJSONSerialization.JSONObjectWithData(NSData(contentsOfFile:
+            NSBundle(forClass: PapyrusTests.self).pathForResource("output", ofType: "json")!)!,
             options: NSJSONReadingOptions.AllowFragments) as! NSArray
         var cached = [Int: DawgNode]()
         let root = DawgNode.deserialize(array, cached: &cached)

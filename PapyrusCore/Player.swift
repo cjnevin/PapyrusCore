@@ -12,13 +12,21 @@ public func == (lhs: Player, rhs: Player) -> Bool {
     return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
 }
 
+public enum Difficulty {
+    case Human
+    case Newbie
+    case Average
+    case Champion
+}
+
 /// An instance of a Player which has a score and can be assigned to tiles.
 /// - SeeAlso: Papyrus.player is the current Player.
 public final class Player: Equatable {
+    public internal(set) var difficulty: Difficulty
     /// Players current score.
-    public var score: Int = 0
+    public internal(set) var score: Int = 0
     /// All tiles played by this player.
-    public lazy var tiles = Set<Tile>()
+    public internal(set) lazy var tiles = Set<Tile>()
     /// Current rack tiles.
     public var rackTiles: [Tile] {
         return tiles.filter({$0.placement == Placement.Rack})
@@ -37,14 +45,15 @@ public final class Player: Equatable {
     func firstRackTile(withLetter letter: Character) -> Tile? {
         return rackTiles.filter({$0.letter == letter}).first
     }
-    public init(score: Int? = 0) {
+    public init(score: Int? = 0, difficulty: Difficulty = .Human) {
         self.score = score!
+        self.difficulty = difficulty
     }
 }
 
 extension Papyrus {
     /// - returns: A new player with their rack pre-filled. Or an error if refill fails.
-    public func createPlayer() -> Player {
+    public func createPlayer(difficult: Difficulty = .Human) -> Player {
         let newPlayer = Player()
         replenishRack(newPlayer)
         players.append(newPlayer)
