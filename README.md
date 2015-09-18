@@ -9,10 +9,8 @@ Initialising a game of scrabble can be done using this class, simply call the ne
 ### Boundary 
 A boundary is a representation of two positions which is used internally for a myriad of different tasks.
 
-### Lexicon
-This module is essentially the dictionary, but naming it that would have been confusing in Swift, it provides a lookup method and a way of returning anagrams given a set of parameters. 
-
-Currently using a Trie (proposed by Appel & Guy "The World's Fastest Scrabble Algorithm", 1988) but there is a plan to change to a modified GADDAG (proposed by Steven Gordon, 1994) to provide bidirectional lookup, reduce memory consumption and download size.
+### Dawg
+This module is essentially the word list, it provides a lookup method and a way of returning anagrams given a set of parameters.
 
 ### Move
 This module determines possible moves on the current board for a player and dictionary. This is what the AI will use in determining the best possible play.
