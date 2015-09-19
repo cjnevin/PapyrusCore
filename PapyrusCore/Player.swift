@@ -63,13 +63,30 @@ public final class Player: Equatable {
         }
         score += move.total
     }
+    /// Move tiles from a players rack to the bag.
+    public func returnTiles(tiles: [Tile]) {
+        self.tiles.subtractInPlace(tiles)
+        tiles.forEach({$0.placement = .Bag})
+    }
+    /// Add tiles to a players rack from the bag.
+    /// - returns: Number of tiles able to be drawn for a player.
+    func replenishTiles(fromBag bagTiles: [Tile]) -> Int {
+        let needed = PapyrusRackAmount - rackTiles.count
+        var count = 0
+        for i in 0..<tiles.count where bagTiles[i].placement == .Bag && count < needed {
+            bagTiles[i].placement = .Rack
+            tiles.insert(bagTiles[i])
+            count++
+        }
+        return count
+    }
 }
 
 extension Papyrus {
     /// - returns: A new player with their rack pre-filled. Or an error if refill fails.
     public func createPlayer(difficult: Difficulty = .Human) -> Player {
         let newPlayer = Player()
-        replenishRack(newPlayer)
+        draw(newPlayer)
         players.append(newPlayer)
         return newPlayer
     }
@@ -87,7 +104,7 @@ extension Papyrus {
     /// - parameter player: Player's rack to fill.
     public func draw(player: Player) {
         // If we have no tiles left in the bag complete game
-        if replenishRack(player) == 0 && player.rackTiles.count == 0 {
+        if player.replenishTiles(fromBag: bagTiles()) == 0 && player.rackTiles.count == 0 {
             // Subtract remaining tiles in racks
             for player in players {
                 player.score = player.rackTiles.mapFilter({$0.value}).reduce(player.score, combine: -)
@@ -95,24 +112,5 @@ extension Papyrus {
             // Complete the game
             lifecycleCallback?(.Completed, self)
         }
-    }
-    
-    /// Add tiles to a players rack from the bag.
-    /// - returns: Number of tiles able to be drawn for a player.
-    func replenishRack(player: Player) -> Int {
-        let needed = PapyrusRackAmount - player.rackTiles.count
-        var count = 0
-        for i in 0..<tiles.count where tiles[i].placement == .Bag && count < needed {
-            tiles[i].placement = .Rack
-            player.tiles.insert(tiles[i])
-            count++
-        }
-        return count
-    }
-    
-    /// Move tiles from a players rack to the bag.
-    public func returnTiles(tiles: [Tile], forPlayer player: Player) {
-        player.tiles.subtractInPlace(tiles)
-        tiles.forEach({$0.placement = .Bag})
     }
 }
