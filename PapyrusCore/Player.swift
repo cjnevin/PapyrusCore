@@ -82,8 +82,8 @@ public final class Player: Equatable {
 
 extension Papyrus {
     /// - returns: A new player with their rack pre-filled. Or an error if refill fails.
-    public func createPlayer(difficult: Difficulty = .Human) -> Player {
-        let newPlayer = Player()
+    public func createPlayer(difficulty: Difficulty = .Human) -> Player {
+        let newPlayer = Player(difficulty: difficulty)
         draw(newPlayer)
         players.append(newPlayer)
         return newPlayer

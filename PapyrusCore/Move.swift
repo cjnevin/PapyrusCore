@@ -22,21 +22,24 @@ public enum ValidationError: ErrorType {
 }
 
 public struct Word {
-    let boundary: Boundary
+    public let boundary: Boundary
     
     // Contains only the 'Board' placed tiles.
-    let characters: [Character]
-    let squares: [Square]
-    let tiles: [Tile]
+    public let characters: [Character]
+    public let squares: [Square]
+    public let tiles: [Tile]
     
-    let word: String
-    let score: Int
+    public let word: String
+    public let score: Int
+    public var length: Int {
+        return characters.count
+    }
 }
 
 public struct Move {
-    let total: Int
-    let word: Word
-    let intersections: [Word]
+    public let total: Int
+    public let word: Word
+    public let intersections: [Word]
 }
 
 extension Papyrus {

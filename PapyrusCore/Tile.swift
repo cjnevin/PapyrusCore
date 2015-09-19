@@ -35,7 +35,7 @@ public final class Tile: CustomDebugStringConvertible, Equatable, Hashable {
             }.sort({_, _ in arc4random() % 2 == 0})
     }
     public internal(set) var letter: Character
-    public internal(set) var placement: Placement
+    public var placement: Placement
     public let value: Int
     public init(_ letter: Character, _ value: Int) {
         self.letter = letter

@@ -147,7 +147,7 @@ extension Papyrus {
         if initial.iterable == PapyrusDimensions - 1 { return initial }
         var counter = player!.rackTiles.count
         var position: Position? = initial
-        while (counter > 0 && position != nil) {
+        while (counter > 0 && position != nil && position?.iterable != PapyrusDimensions - 1) {
             if emptyAt(position!) { counter-- }
             if counter > 0 {
                 position?.nextInPlace()
@@ -177,7 +177,7 @@ extension Papyrus {
         if initial.iterable == 0 { return initial }
         var counter = player!.rackTiles.count
         var position: Position? = initial
-        while (counter > 0 && position != nil) {
+        while (counter > 0 && position != nil && position?.iterable != 0) {
             if emptyAt(position!) { counter-- }
             if counter > 0 {
                 position?.previousInPlace()
