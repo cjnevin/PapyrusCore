@@ -90,9 +90,7 @@ extension Papyrus {
         squareTileCharacters.forEach({ (square, tile, _) -> () in
             square.tile = nil
             tile.placement = .Rack
-            if tile.value == 0 {
-                tile.letter = PapyrusBlankLetter
-            }
+            tile.changeLetter(PapyrusBlankLetter)
         })
     }
     
@@ -125,9 +123,7 @@ extension Papyrus {
                     assert(false)
             }
             let tile = rackTiles[rackIndex]
-            if tile.value == 0 {
-                tile.letter = char
-            }
+            tile.changeLetter(char)
             assert(square.tile == nil)
             assert(tile.placement == .Rack)
             square.tile = tile

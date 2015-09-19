@@ -88,25 +88,25 @@ class PapyrusTests: XCTestCase {
         XCTAssert(player2.tiles.count == player2.rackTiles.count)
         XCTAssert(instance.bagTiles().count == totalTiles - (PapyrusRackAmount * 2))
         
-        instance.returnTiles(player2.rackTiles, forPlayer: player2)
+        player2.returnTiles(player2.rackTiles)
         XCTAssert(player2.tiles.count == 0, "Expected tiles to be empty")
         XCTAssert(player2.rackTiles.count == 0, "Expected rack to be empty")
         XCTAssert(instance.bagTiles().count == totalTiles - PapyrusRackAmount, "Expected bag to be missing first players rack tiles")
         
-        instance.replenishRack(player2)
+        player2.replenishTiles(fromBag: instance.bagTiles())
         XCTAssert(player2.rackTiles.count == PapyrusRackAmount, "Expected rack to contain default amount")
         XCTAssert(instance.bagTiles().count == totalTiles - (PapyrusRackAmount * 2), "Expected bag to be missing both players rack tiles")
         
         instance.nextPlayer()
         XCTAssert(instance.player == player, "Expected to return to first player")
         
-        instance.returnTiles(player.rackTiles, forPlayer: player)
+        player.returnTiles(player.rackTiles)
         XCTAssert(player.rackTiles.count == 0)
         
         instance.draw(player)
         XCTAssert(player.rackTiles.count == PapyrusRackAmount)
         
-        instance.returnTiles([player.rackTiles.first!], forPlayer: player)
+        player.returnTiles([player.rackTiles.first!])
         XCTAssert(player.rackTiles.count == PapyrusRackAmount - 1)
     }
     
@@ -168,7 +168,7 @@ class PapyrusTests: XCTestCase {
         instance.createPlayer()
         let player = instance.player!
         player.difficulty = .Champion
-        instance.returnTiles(player.rackTiles, forPlayer: player)
+        player.returnTiles(player.rackTiles)
         
         let toDraw: [Character] = ["c", "a", "r", "d", "d", "i", "s"]
         toDraw.forEach { (letter) -> () in
@@ -227,7 +227,7 @@ class PapyrusTests: XCTestCase {
                 XCTAssert(player.rackTiles.count == PapyrusRackAmount)
                 
                 instance.nextPlayer()
-                instance.returnTiles(player.rackTiles, forPlayer: player)
+                player.returnTiles(player.rackTiles)
                 XCTAssert(player.rackTiles.count == 0)
                 
                 let dogToDraw: [Character] = ["d","o","g"]

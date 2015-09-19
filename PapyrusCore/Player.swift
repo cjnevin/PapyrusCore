@@ -45,16 +45,14 @@ public final class Player: Equatable {
     func firstRackTile(withLetter letter: Character) -> Tile? {
         return rackTiles.filter({$0.letter == letter}).first
     }
-    public init(score: Int? = 0, difficulty: Difficulty = .Human) {
+    init(score: Int? = 0, difficulty: Difficulty = .Human) {
         self.score = score!
         self.difficulty = difficulty
     }
     /// Submit a move, drop all tiles on the board and increment score.
     public func submit(move: Move) {
         zip(move.word.tiles, move.word.characters).forEach { (tile, character) -> () in
-            if tile.value == 0 {
-                tile.letter = character
-            }
+            tile.changeLetter(character)
             assert(tile.letter == character)
         }
         zip(move.word.squares, move.word.tiles).forEach { (square, tile) -> () in
@@ -73,7 +71,7 @@ public final class Player: Equatable {
     func replenishTiles(fromBag bagTiles: [Tile]) -> Int {
         let needed = PapyrusRackAmount - rackTiles.count
         var count = 0
-        for i in 0..<tiles.count where bagTiles[i].placement == .Bag && count < needed {
+        for i in 0..<bagTiles.count where bagTiles[i].placement == .Bag && count < needed {
             bagTiles[i].placement = .Rack
             tiles.insert(bagTiles[i])
             count++
