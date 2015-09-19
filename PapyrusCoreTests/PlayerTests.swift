@@ -1,6 +1,6 @@
 //
 //  PlayerTests.swift
-//  Papyrus
+//  PapyrusCore
 //
 //  Created by Chris Nevin on 13/09/2015.
 //  Copyright © 2015 CJNevin. All rights reserved.
@@ -24,6 +24,8 @@ class PlayerTests: XCTestCase {
     func testPlayer() {
         XCTAssert(Player(score: 10).score == 10)
         XCTAssert(Player().score == 0)
+        XCTAssert(Player(difficulty: .Champion).difficulty == .Champion)
+        XCTAssert(Player().difficulty == .Human)
     }
 
 }

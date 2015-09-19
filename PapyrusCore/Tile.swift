@@ -1,6 +1,6 @@
 //
 //  Tile.swift
-//  Papyrus
+//  PapyrusCore
 //
 //  Created by Chris Nevin on 14/08/2015.
 //  Copyright © 2015 CJNevin. All rights reserved.
@@ -30,17 +30,23 @@ public final class Tile: CustomDebugStringConvertible, Equatable, Hashable {
     class func createTiles() -> [Tile] {
         return TileConfiguration.flatMap { e in
             (0..<e.0).map({ _ in
-                Tile(e.2, e.1)
+                Tile(Character(String(e.2).lowercaseString), e.1)
             })
             }.sort({_, _ in arc4random() % 2 == 0})
     }
-    public var letter: Character
+    public internal(set) var letter: Character
     public var placement: Placement
     public let value: Int
     public init(_ letter: Character, _ value: Int) {
         self.letter = letter
         self.value = value
         self.placement = .Bag
+    }
+    /// Change blank tile to display another letter.
+    public func changeLetter(to: Character) {
+        if value == 0 {
+            letter = to
+        }
     }
     public var debugDescription: String {
         return String(letter)
@@ -52,54 +58,59 @@ public final class Tile: CustomDebugStringConvertible, Equatable, Hashable {
 
 extension Papyrus {
     /// - returns: All tiles in the bag.
-    public var bagTiles: [Tile] {
+    func bagTiles() -> [Tile] {
         return tiles.filter({$0.placement == Placement.Bag})
     }
     
     /// - returns: All tiles currently dropped on the board.
-    public func droppedTiles() -> [Tile] {
+    func droppedTiles() -> [Tile] {
         return tiles.filter({$0.placement == Placement.Board})
+    }
+    
+    /// - returns: All tiles currently fixed on the board.
+    func fixedTiles() -> [Tile] {
+        return tiles.filter({$0.placement == Placement.Fixed})
     }
     
     /// - parameter position: Position to check.
     /// - returns: Whether there is a tile at a given position.
-    public func emptyAt(position: Position) -> Bool {
+    func emptyAt(position: Position) -> Bool {
         return tileAt(position) == nil
     }
     
     /// - parameter position: Position to check.
     /// - returns: Letter at given position.
-    public func letterAt(position: Position?) -> Character? {
+    func letterAt(position: Position?) -> Character? {
         return tileAt(position)?.letter
     }
     
     /// - parameter position: Position to check.
     /// - returns: Tile at a given position.
-    public func tileAt(position: Position?) -> Tile? {
+    func tileAt(position: Position?) -> Tile? {
         return squareAt(position)?.tile
     }
     
     /// - parameter squares: Squares to check.
     /// - returns: All tiles for given squares.
-    public func tilesIn(squares: [Square]) -> [Tile] {
+    func tilesIn(squares: [Square]) -> [Tile] {
         return squares.mapFilter({$0.tile})
     }
     
     /// - parameter boundary: Boundary to check.
     /// - returns: All tiles in a given boundary.
-    public func tilesIn(boundary: Boundary) -> [Tile] {
+    func tilesIn(boundary: Boundary) -> [Tile] {
         return squaresIn(boundary).mapFilter({$0.tile})
     }
     
     /// - parameter tiles: Tiles to get the letter values of.
     /// - returns: All letters for given tiles.
-    public func lettersIn(tiles: [Tile]) -> [Character] {
+    func lettersIn(tiles: [Tile]) -> [Character] {
         return tiles.mapFilter({$0.letter})
     }
     
     /// - parameter boundary: Boundary to check.
     /// - returns: All letters in a given boundary.
-    public func lettersIn(boundary: Boundary) -> [Character] {
+    func lettersIn(boundary: Boundary) -> [Character] {
         return tilesIn(boundary).mapFilter({$0.letter})
     }
 }

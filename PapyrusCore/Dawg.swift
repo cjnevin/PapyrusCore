@@ -8,21 +8,21 @@
 
 import Foundation
 
-func == (lhs: DawgNode, rhs: DawgNode) -> Bool {
+public func == (lhs: DawgNode, rhs: DawgNode) -> Bool {
     return lhs.hashValue == rhs.hashValue
 }
 
-class DawgNode: CustomStringConvertible, Hashable {
-    static var nextId = 0;
+public class DawgNode: CustomStringConvertible, Hashable {
+    private static var nextId = 0;
     
     typealias Edges = [Character: DawgNode]
     
-    lazy var edges = Edges()
-    var final: Bool = false
-    var id: Int
-    var descr: String = ""
+    internal lazy var edges = Edges()
+    internal var final: Bool = false
+    internal var id: Int
+    private var descr: String = ""
     
-    init() {
+    public init() {
         self.id = self.dynamicType.nextId
         self.dynamicType.nextId += 1
         updateDescription()
@@ -35,7 +35,7 @@ class DawgNode: CustomStringConvertible, Hashable {
         updateDescription()
     }
     
-    class func deserialize(serialized: NSArray, inout cached: [Int: DawgNode]) -> DawgNode {
+    public class func deserialize(serialized: NSArray, inout cached: [Int: DawgNode]) -> DawgNode {
         let id = serialized.firstObject! as! Int
         guard let cache = cached[id] else {
             var edges: Edges?
@@ -55,7 +55,7 @@ class DawgNode: CustomStringConvertible, Hashable {
         return cache
     }
     
-    func serialize() -> NSArray {
+    public func serialize() -> NSArray {
         let serialized = NSMutableArray()
         serialized.addObject(id)
         serialized.addObject(final ? 1 : 0)
@@ -69,47 +69,47 @@ class DawgNode: CustomStringConvertible, Hashable {
         return serialized
     }
     
-    func updateDescription() {
+    private func updateDescription() {
         var arr = [final ? "1" : "0"]
         arr.appendContentsOf(edges.map({ "\($0.0)_\($0.1)" }))
         descr = arr.joinWithSeparator("_")
     }
     
-    func setEdge(letter: Character, node: DawgNode) {
+    internal func setEdge(letter: Character, node: DawgNode) {
         edges[letter] = node
         updateDescription()
     }
     
-    var description: String {
+    public var description: String {
         return descr
     }
     
-    var hashValue: Int {
+    public var hashValue: Int {
         return descr.hashValue
     }
 }
 
-class Dawg {
-    var rootNode: DawgNode
-    var previousWord = ""
+public class Dawg {
+    private var rootNode: DawgNode
+    private var previousWord = ""
     
-    lazy var uncheckedNodes = [(parent: DawgNode, letter: Character, child: DawgNode)]()
-    lazy var minimizedNodes = [DawgNode: DawgNode]()
+    private lazy var uncheckedNodes = [(parent: DawgNode, letter: Character, child: DawgNode)]()
+    private lazy var minimizedNodes = [DawgNode: DawgNode]()
     
     /// Initialize a new instance.
-    init() {
+    public init() {
         rootNode = DawgNode()
     }
     
     /// Initialize with an existing root node, carrying over all hierarchy information.
     /// - parameter rootNode: Node to use.
-    init(withRootNode rootNode: DawgNode) {
+    internal init(withRootNode rootNode: DawgNode) {
         self.rootNode = rootNode
     }
     
     /// Attempt to save structure to file.
     /// - parameter path: Path to write to.
-    func save(path: String) -> Bool {
+    public func save(path: String) -> Bool {
         do {
             let data = try NSJSONSerialization.dataWithJSONObject(rootNode.serialize(), options: NSJSONWritingOptions.init(rawValue: 0))
             data.writeToFile(path, atomically: true)
@@ -123,22 +123,26 @@ class Dawg {
     /// Attempt to load structure from file.
     /// - parameter path: Path of file to read.
     /// - returns: New Dawg with initialized rootNode or nil.
-    class func load(path: String) -> Dawg? {
+    public class func load(path: String) -> Dawg? {
+        guard let stream = NSInputStream(fileAtPath: path) else { return nil }
+        defer {
+            stream.close()
+        }
+        stream.open()
         do {
-            if let data = NSData(contentsOfFile: path),
-                contents = try NSJSONSerialization.JSONObjectWithData(data,
-                    options: NSJSONReadingOptions.AllowFragments) as? NSArray {
-                        var cache = [Int: DawgNode]()
-                        return Dawg(withRootNode: DawgNode.deserialize(contents, cached: &cache))
-            }
-        } catch { }
-        return nil
+            guard let contents = try NSJSONSerialization.JSONObjectWithStream(stream,
+                options: NSJSONReadingOptions.AllowFragments) as? NSArray else { return nil }
+            var cache = [Int: DawgNode]()
+            return Dawg(withRootNode: DawgNode.deserialize(contents, cached: &cache))
+        } catch {
+            return nil
+        }
     }
     
     /// Replace redundant nodes in uncheckedNodes with ones existing in minimizedNodes
     /// then truncate.
     /// - parameter downTo: Iterate from count to this number (truncates these items).
-    func minimize(downTo: Int) {
+    private func minimize(downTo: Int) {
         for i in (downTo..<uncheckedNodes.count).reverse() {
             let (_, letter, child) = uncheckedNodes[i]
             if let minNode = minimizedNodes[child] {
@@ -152,7 +156,7 @@ class Dawg {
     
     /// Insert a word into the graph, words must be inserted in order.
     /// - parameter word: Word to insert.
-    func insert(word: String) {
+    public func insert(word: String) {
         if word == "" { return }
         assert(previousWord == "" || previousWord < word, "Words must be inserted alphabetically")
         
@@ -183,55 +187,89 @@ class Dawg {
     
     /// - parameter word: Word to check.
     /// - returns: True if the word exists.
-    func lookup(word: String) -> Bool {
+    public func lookup(word: String) -> Bool {
         var node = rootNode
-        for letter in word.characters {
+        for letter in word.lowercaseString.characters {
             guard let edgeNode = node.edges[letter] else { return false }
             node = edgeNode
         }
         return node.final
     }
-    
-    
-    func anagramsOf(letters: [Character],
+
+    /// Calculates all possible words given a set of rack letters
+    /// optionally providing fixed letters which can be used
+    /// to indicate that these positions are already filled.
+    /// - parameters:
+    ///     - letters: Letter in rack to use.
+    ///     - length: Length of word to return.
+    ///     - prefix: (Optional) Letters of current result already realised.
+    ///     - fixedLetters: (Optional) Letters that are already filled at given positions.
+    ///     - fixedCount: (Ignore) Number of fixed letters, recalculated by method.
+    ///     - root: Node in the Dawg tree we are currently using.
+    ///     - blankLetter: (Optional) Letter to use instead of ?.
+    /// - returns: Array of possible words.
+    public func anagramsOf(letters: [Character],
         length: Int,
-        prefix: [Character],
-        fixedLetters: [(Int, Character)],
-        fixedCount: Int,
-        root: DawgNode,
+        prefix: [Character]? = nil,
+        filledLetters: [Int: Character]? = nil,
+        filledCount: Int? = nil,
+        root: DawgNode? = nil,
+        blankLetter: Character = "?",
         inout results: [String])
     {
-        let source = root ?? rootNode
-        let prefixLength = prefix.count
-        if let c = fixedLetters.filter({$0.0 == prefixLength}).map({$0.1}).first,
-            newSource = source.edges[c] {
-                var newPrefix = prefix
-                newPrefix.append(c)
-                //let newPrefix = prefix + String(c)
-                let reverseFiltered = fixedLetters.filter({$0.0 != prefixLength})
-                anagramsOf(letters, length: length, prefix: newPrefix,
-                    fixedLetters: reverseFiltered, fixedCount: fixedCount,
-                    root: newSource, results: &results)
-                return
+        // Realise any fields that are empty on first run.
+        let _prefix = prefix ?? [Character]()
+        let _prefixLength = _prefix.count
+        var _filled = filledLetters ?? [Int: Character]()
+        let _numFilled = filledCount ?? _filled.count
+        let _source = root ?? rootNode
+        
+        // See if position exists in filled array.
+        if let letter = _filled[_prefixLength],
+            newSource = _source.edges[letter]
+        {
+            // Add letter to prefix
+            var newPrefix = _prefix
+            newPrefix.append(letter)
+            _filled.removeValueForKey(_prefixLength)
+            // Recurse with new prefix/letters
+            anagramsOf(letters,
+                length: length,
+                prefix: newPrefix,
+                filledLetters: _filled,
+                filledCount: _numFilled,
+                root: newSource,
+                results: &results)
+            return
         }
         
-        // See if word exists
-        if source.final && fixedLetters.count == 0 &&
-            prefixLength == length &&
-            prefixLength > fixedCount {
-                results.append(String(prefix))
+        // Check if the current prefix is actually a word.
+        if _source.final &&
+            _filled.count == 0 &&
+            _prefixLength == length &&
+            _prefixLength > _numFilled
+        {
+            results.append(String(_prefix))
         }
         
-        source.edges.forEach { (letter, node) in
-            // Search for ? or letter
-            if let index = letters.indexOf(letter) ?? letters.indexOf("?") {
-                var newPrefix = prefix
+        // Check each edge of this node to see if any of the letters
+        // exist in our rack letters (or we have a '?').
+        _source.edges.forEach { (letter, node) in
+            if let index = letters.indexOf(letter) ?? letters.indexOf(blankLetter) {
+                // Copy letters, removing this letter
                 var newLetters = letters
-                newPrefix.append(letter)
                 newLetters.removeAtIndex(index)
-                anagramsOf(newLetters, length: length, prefix: newPrefix,
-                    fixedLetters: fixedLetters, fixedCount: fixedCount,
-                    root: node, results: &results)
+                // Add letter to prefix
+                var newPrefix = _prefix
+                newPrefix.append(letter)
+                // Recurse with new prefix/letters
+                anagramsOf(newLetters,
+                    length: length,
+                    prefix: newPrefix,
+                    filledLetters: _filled,
+                    filledCount: _numFilled,
+                    root: node,
+                    results: &results)
             }
         }
     }

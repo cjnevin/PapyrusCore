@@ -1,6 +1,6 @@
 //
 //  Boundary.swift
-//  Papyrus
+//  PapyrusCore
 //
 //  Created by Chris Nevin on 14/08/2015.
 //  Copyright © 2015 CJNevin. All rights reserved.
@@ -202,11 +202,13 @@ public struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
 extension Papyrus {
     /// - parameter boundary: Find filled tiles then return the index and characters for the boundary.
     /// - returns: Array of indexes and characters.
-    func indexesAndCharacters(forBoundary boundary: Boundary) -> [(Int, Character)] {
-        return boundary.positions().mapFilter { (position) -> (Int, Character)? in
-            guard let letter = letterAt(position) else { return nil }
-            return (position.iterable - boundary.start.iterable, letter)
+    func indexesAndCharacters(forBoundary boundary: Boundary) -> [Int: Character] {
+        var positionValues = [Int: Character]()
+        boundary.positions().forEach { (position) in
+            guard let letter = letterAt(position) else { return }
+            positionValues[position.iterable - boundary.start.iterable] = letter
         }
+        return positionValues
     }
     
     /// - parameter boundary: Boundary containing tiles that have been dropped on the board.
@@ -222,8 +224,8 @@ extension Papyrus {
     
     /// Calculate score for a given boundary.
     /// - parameter boundary: The boundary you want the score of.
-    func score(boundary: Boundary) -> Int {
-        guard let player = player else { return 0 }
+    func score(boundary: Boundary) throws -> Int {
+        guard let player = player else { throw ValidationError.NoPlayer }
         let affectedSquares = squaresIn(boundary)
         var value = affectedSquares.mapFilter({$0.letterValue}).reduce(0, combine: +)
         value = affectedSquares.mapFilter({$0.wordMultiplier}).reduce(value, combine: *)
