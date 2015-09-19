@@ -29,6 +29,10 @@ class DawgTests: XCTestCase {
             var fixedLetters = [Int: Character]()
             var results = [String]()
             
+            self.dawg.anagramsOf(Array("sc?resheets".characters), length: 11, results: &results)
+            XCTAssert(results.contains("scoresheets"))
+            
+            results.removeAll()
             self.dawg.anagramsOf(Array("cat".characters), length: 3,
                 results: &results)
             XCTAssert(results.mapFilter({$0}).sort() == ["act", "cat"])
