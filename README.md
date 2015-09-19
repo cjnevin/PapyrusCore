@@ -10,10 +10,10 @@ Initialising a game of scrabble can be done using this class, simply call the ne
 A boundary is a representation of two positions which is used internally for a myriad of different tasks.
 
 ### Dawg
-This module is essentially the word list, it provides a lookup method and a way of returning anagrams given a set of parameters.
+This module is essentially a wrapper for the word list, it provides a lookup method and a way of returning anagrams given a set of parameters. Dawg stands for directed acyclic word graph.
 
 ### Move
-This module determines possible moves on the current board for a player and dictionary. This is what the AI will use in determining the best possible play.
+This module determines possible moves on the current board for a player and dawg. This is what the AI will use in determining the best possible play.
 
 ### Play
 This module provides methods for submitting plays for Papyrus to validate and execute internally.
