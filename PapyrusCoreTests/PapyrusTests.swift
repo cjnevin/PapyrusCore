@@ -196,8 +196,44 @@ class PapyrusTests: XCTestCase {
             XCTAssert(results.contains("disarms"))
             
             let possibles = instance.possibleMoves(forPlayer: player, dawg: dawg)
-            
-            print("Best: \(possibles.first)")
+            if let best = possibles.first {
+                print("Best: \(best)")
+                instance.submitPossibility(best)
+                
+                XCTAssert(player.rackTiles.count == 0)
+                
+                print(instance.fixedTiles().mapFilter({$0.letter}).sort())
+                var allTiles = (toDraw + armsToDraw).sort()
+                XCTAssert(instance.fixedTiles().mapFilter({$0.letter}).sort() == allTiles)
+                
+                instance.draw(player)
+                XCTAssert(player.rackTiles.count == 7)
+                instance.returnTiles(player.rackTiles, forPlayer: player)
+                XCTAssert(player.rackTiles.count == 0)
+                
+                let dogToDraw: [Character] = ["d","o","g"]
+                dogToDraw.forEach { (letter) -> () in
+                    let tile = instance.bagTiles.filter({$0.letter == letter}).first!
+                    player.tiles.insert(tile)
+                    tile.placement = .Rack
+                }
+                let dogPossibles = instance.possibleMoves(forPlayer: player, dawg: dawg)
+                for possible in dogPossibles {
+                    if possible.move.word == "dog" {
+                        if possible.intersections.count == 1 {
+                            if possible.intersections[0].word == "cards" {
+                                instance.submitPossibility(possible)
+                                print(possible)
+                                allTiles += possible.move.tiles.mapFilter({$0.letter})
+                                allTiles.sortInPlace()
+                                XCTAssert(instance.fixedTiles().mapFilter({$0.letter}).sort() == allTiles)
+                                break
+                            }
+                        }
+                    }
+                }
+                
+            }
         }
         catch {
             XCTFail("Unexpected error")

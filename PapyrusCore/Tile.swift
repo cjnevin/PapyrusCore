@@ -61,6 +61,11 @@ extension Papyrus {
         return tiles.filter({$0.placement == Placement.Board})
     }
     
+    /// - returns: All tiles currently fixed on the board.
+    public func fixedTiles() -> [Tile] {
+        return tiles.filter({$0.placement == Placement.Fixed})
+    }
+    
     /// - parameter position: Position to check.
     /// - returns: Whether there is a tile at a given position.
     public func emptyAt(position: Position) -> Bool {

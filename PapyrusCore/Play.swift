@@ -86,8 +86,7 @@ extension Papyrus {
         throw ValidationError.NoOptions
     }
     
-    public func draw() {
-        guard let player = player else { assert(false) }
+    public func draw(player: Player) {
         if replenishRack(player) == 0 && player.rackTiles.count == 0 {
             // Subtract remaining tiles in racks
             for player in players {
@@ -97,7 +96,6 @@ extension Papyrus {
             lifecycleCallback?(.Completed, self)
         }
     }
-    
     
     public func submitPossibility(possibility: Possibility) {
         zip(possibility.move.tiles, possibility.move.characters).forEach { (tile, character) -> () in
