@@ -124,15 +124,19 @@ public class Dawg {
     /// - parameter path: Path of file to read.
     /// - returns: New Dawg with initialized rootNode or nil.
     public class func load(path: String) -> Dawg? {
+        guard let stream = NSInputStream(fileAtPath: path) else { return nil }
+        defer {
+            stream.close()
+        }
+        stream.open()
         do {
-            if let data = NSData(contentsOfFile: path),
-                contents = try NSJSONSerialization.JSONObjectWithData(data,
-                    options: NSJSONReadingOptions.AllowFragments) as? NSArray {
-                        var cache = [Int: DawgNode]()
-                        return Dawg(withRootNode: DawgNode.deserialize(contents, cached: &cache))
-            }
-        } catch { }
-        return nil
+            guard let contents = try NSJSONSerialization.JSONObjectWithStream(stream,
+                options: NSJSONReadingOptions.AllowFragments) as? NSArray else { return nil }
+            var cache = [Int: DawgNode]()
+            return Dawg(withRootNode: DawgNode.deserialize(contents, cached: &cache))
+        } catch {
+            return nil
+        }
     }
     
     /// Replace redundant nodes in uncheckedNodes with ones existing in minimizedNodes

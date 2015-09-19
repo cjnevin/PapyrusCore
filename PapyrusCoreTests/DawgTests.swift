@@ -17,19 +17,15 @@ class DawgTests: XCTestCase {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
         
-        let array: NSArray = try! NSJSONSerialization.JSONObjectWithData(NSData(contentsOfFile:
-            NSBundle(forClass: DawgTests.self).pathForResource("output", ofType: "json")!)!,
-            options: NSJSONReadingOptions.AllowFragments) as! NSArray
-        var cached = [Int: DawgNode]()
-        let root = DawgNode.deserialize(array, cached: &cached)
-        odawg = Dawg(withRootNode: root)
+        let path = NSBundle(forClass: DawgTests.self).pathForResource("output", ofType: "json")!
+        self.odawg = Dawg.load(path)
     }
     
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
     }
-
+    
     func testAnagrams() {
         let dawg = odawg!
         
