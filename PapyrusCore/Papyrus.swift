@@ -29,6 +29,7 @@ public final class Papyrus {
     let innerOperations = NSOperationQueue()
     let wordOperations = NSOperationQueue()
     
+    var dawg: Dawg?
     lazy var tiles = [Tile]()
     
     lazy var players = [Player]()
@@ -44,9 +45,10 @@ public final class Papyrus {
     
     /// Create a new game.
     /// - parameter callback: Callback which will be called throughout all stages of game lifecycle.
-    public func newGame(callback: LifecycleCallback) {
+    public func newGame(dawg: Dawg, callback: LifecycleCallback) {
         squares.flatMap({$0}).forEach({$0.tile = nil})
         inProgress = true
+        self.dawg = dawg
         lifecycleCallback?(.Cleanup, self)
         lifecycleCallback = callback
         lifecycleCallback?(.Preparing, self)

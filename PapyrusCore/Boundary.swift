@@ -224,8 +224,8 @@ extension Papyrus {
     
     /// Calculate score for a given boundary.
     /// - parameter boundary: The boundary you want the score of.
-    func score(boundary: Boundary) -> Int {
-        guard let player = player else { return 0 }
+    func score(boundary: Boundary) throws -> Int {
+        guard let player = player else { throw ValidationError.NoPlayer }
         let affectedSquares = squaresIn(boundary)
         var value = affectedSquares.mapFilter({$0.letterValue}).reduce(0, combine: +)
         value = affectedSquares.mapFilter({$0.wordMultiplier}).reduce(value, combine: *)

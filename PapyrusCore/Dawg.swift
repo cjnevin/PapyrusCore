@@ -202,9 +202,11 @@ public class Dawg {
     /// - parameters:
     ///     - letters: Letter in rack to use.
     ///     - length: Length of word to return.
-    ///     - prefix: Letters of current result already realised.
-    ///     - fixedLetters: Letters that are already filled at given positions.
+    ///     - prefix: (Optional) Letters of current result already realised.
+    ///     - fixedLetters: (Optional) Letters that are already filled at given positions.
+    ///     - fixedCount: (Ignore) Number of fixed letters, recalculated by method.
     ///     - root: Node in the Dawg tree we are currently using.
+    ///     - blankLetter: (Optional) Letter to use instead of ?.
     /// - returns: Array of possible words.
     public func anagramsOf(letters: [Character],
         length: Int,
@@ -212,6 +214,7 @@ public class Dawg {
         filledLetters: [Int: Character]? = nil,
         filledCount: Int? = nil,
         root: DawgNode? = nil,
+        blankLetter: Character = "?",
         inout results: [String])
     {
         // Realise any fields that are empty on first run.
@@ -252,7 +255,7 @@ public class Dawg {
         // Check each edge of this node to see if any of the letters
         // exist in our rack letters (or we have a '?').
         _source.edges.forEach { (letter, node) in
-            if let index = letters.indexOf(letter) ?? letters.indexOf("?") {
+            if let index = letters.indexOf(letter) ?? letters.indexOf(blankLetter) {
                 // Copy letters, removing this letter
                 var newLetters = letters
                 newLetters.removeAtIndex(index)

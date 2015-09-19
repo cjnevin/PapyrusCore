@@ -49,6 +49,20 @@ public final class Player: Equatable {
         self.score = score!
         self.difficulty = difficulty
     }
+    /// Submit a move, drop all tiles on the board and increment score.
+    public func submit(move: Move) {
+        zip(move.word.tiles, move.word.characters).forEach { (tile, character) -> () in
+            if tile.value == 0 {
+                tile.letter = character
+            }
+            assert(tile.letter == character)
+        }
+        zip(move.word.squares, move.word.tiles).forEach { (square, tile) -> () in
+            square.tile = tile
+            tile.placement = .Fixed
+        }
+        score += move.total
+    }
 }
 
 extension Papyrus {
@@ -59,6 +73,7 @@ extension Papyrus {
         players.append(newPlayer)
         return newPlayer
     }
+    
     /// Advances to next player's turn.
     public func nextPlayer() {
         playerIndex++
@@ -67,6 +82,21 @@ extension Papyrus {
         }
         lifecycleCallback?(.ChangedPlayer, self)
     }
+    
+    /// Draw tiles from the bag.
+    /// - parameter player: Player's rack to fill.
+    public func draw(player: Player) {
+        // If we have no tiles left in the bag complete game
+        if replenishRack(player) == 0 && player.rackTiles.count == 0 {
+            // Subtract remaining tiles in racks
+            for player in players {
+                player.score = player.rackTiles.mapFilter({$0.value}).reduce(player.score, combine: -)
+            }
+            // Complete the game
+            lifecycleCallback?(.Completed, self)
+        }
+    }
+    
     /// Add tiles to a players rack from the bag.
     /// - returns: Number of tiles able to be drawn for a player.
     func replenishRack(player: Player) -> Int {
@@ -81,7 +111,7 @@ extension Papyrus {
     }
     
     /// Move tiles from a players rack to the bag.
-    func returnTiles(tiles: [Tile], forPlayer player: Player) {
+    public func returnTiles(tiles: [Tile], forPlayer player: Player) {
         player.tiles.subtractInPlace(tiles)
         tiles.forEach({$0.placement = .Bag})
     }

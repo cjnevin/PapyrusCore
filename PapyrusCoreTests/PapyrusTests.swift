@@ -11,22 +11,18 @@ import XCTest
 
 class PapyrusTests: XCTestCase {
 
-    var odawg: Dawg?
     let instance = Papyrus()
-    //let lexicon: Lexicon = Lexicon(withFilePath: NSBundle(forClass: LexiconTests.self).pathForResource("CSW12", ofType: "plist")!)!
+    var dawg: Dawg {
+        if instance.dawg == nil {
+            instance.dawg = Dawg.load(NSBundle(forClass: PapyrusTests.self).pathForResource("output", ofType: "json")!)!
+        }
+        return instance.dawg!
+    }
     
     override func setUp() {
         super.setUp()
-        
-        let array: NSArray = try! NSJSONSerialization.JSONObjectWithData(NSData(contentsOfFile:
-            NSBundle(forClass: PapyrusTests.self).pathForResource("output", ofType: "json")!)!,
-            options: NSJSONReadingOptions.AllowFragments) as! NSArray
-        var cached = [Int: DawgNode]()
-        let root = DawgNode.deserialize(array, cached: &cached)
-        odawg = Dawg(withRootNode: root)
-        
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        instance.newGame { (state, game) -> () in
+        instance.newGame(dawg, callback: { (state, game) -> () in
             switch state {
             case .Cleanup:
                 print("Cleanup")
@@ -39,7 +35,7 @@ class PapyrusTests: XCTestCase {
             case .Completed:
                 print("Completed")
             }
-        }
+        })
     }
     
     override func tearDown() {
@@ -47,7 +43,27 @@ class PapyrusTests: XCTestCase {
         super.tearDown()
     }
     
-    func testBagAndRack() {
+    func testPrintBoard() {
+        let playedBoundaries = instance.filledBoundaries()
+        // Now determine playable boundaries
+        for row in 0..<PapyrusDimensions {
+            var line = [Character]()
+            for col in 0..<PapyrusDimensions {
+                var letter: Character = "_"
+                for boundary in playedBoundaries {
+                    let position = Position(horizontal: boundary.horizontal, row: row, col: col)!
+                    if boundary.contains(position) {
+                        letter = instance.letterAt(position) ?? "#"
+                        break
+                    }
+                }
+                line.append(letter)
+            }
+            print(line)
+        }
+    }
+    
+    func testPlayerTiles() {
         XCTAssert(instance.squareAt(nil) == nil)
         XCTAssert(instance.squareAt(Position(horizontal: false, iterable: 0, fixed: 0)) != nil)
         
@@ -83,9 +99,18 @@ class PapyrusTests: XCTestCase {
         
         instance.nextPlayer()
         XCTAssert(instance.player == player, "Expected to return to first player")
+        
+        instance.returnTiles(player.rackTiles, forPlayer: player)
+        XCTAssert(player.rackTiles.count == 0)
+        
+        instance.draw(player)
+        XCTAssert(player.rackTiles.count == PapyrusRackAmount)
+        
+        instance.returnTiles([player.rackTiles.first!], forPlayer: player)
+        XCTAssert(player.rackTiles.count == PapyrusRackAmount - 1)
     }
     
-    func testInstanceBoundaryMethods() {
+    func testBoundaryMethods() {
         XCTAssert(instance.previousWhileEmpty(Position(horizontal: true, iterable: 5, fixed: 5))?.iterable == 0)
         XCTAssert(instance.nextWhileEmpty(Position(horizontal: true, iterable: 5, fixed: 5))?.iterable == PapyrusDimensions - 1)
         XCTAssert(instance.previousWhileFilled(Position(horizontal: true, iterable: 5, fixed: 5)) == nil)
@@ -112,7 +137,7 @@ class PapyrusTests: XCTestCase {
     
     func testWhileMethods() {
         instance.createPlayer()
-        XCTAssert(instance.player?.rackTiles.count == 7, "Expected 7 rack tiles")
+        XCTAssert(instance.player?.rackTiles.count == PapyrusRackAmount, "Expected 7 rack tiles")
         XCTAssert(instance.previousWhileTilesInRack(Position(horizontal: true, row: 7, col: 7)!)?.iterable == 1, "Expected (7)-7 to land on square 1")
         XCTAssert(instance.nextWhileTilesInRack(Position(horizontal: true, row: 7, col: 7)!)?.iterable == PapyrusDimensions - 2, "Expected (7)+7 to land on square 13")
     }
@@ -140,12 +165,9 @@ class PapyrusTests: XCTestCase {
     }
     
     func testCardPlay() {
-        
         instance.createPlayer()
-        
         let player = instance.player!
         player.difficulty = .Champion
-        
         instance.returnTiles(player.rackTiles, forPlayer: player)
         
         let toDraw: [Character] = ["c", "a", "r", "d", "d", "i", "s"]
@@ -155,8 +177,7 @@ class PapyrusTests: XCTestCase {
             tile.placement = .Rack
         }
         
-        let positions: [(Position?, Character)] =
-        [
+        let positions: [(Position?, Character)] = [
             (Position(horizontal: true, iterable: 4, fixed: 7), "c"),
             (Position(horizontal: true, iterable: 5, fixed: 7), "a"),
             (Position(horizontal: true, iterable: 6, fixed: 7), "r"),
@@ -171,11 +192,10 @@ class PapyrusTests: XCTestCase {
         })
         
         do {
-            let dawg = odawg!
-            
-            try instance.play(boundary, submit: true, dawg: dawg)
+            let move = try instance.getMove(forBoundary: boundary)
+            player.submit(move)
             XCTAssert(player.rackTiles.count == 3)
-            print(player.rackTiles)
+            XCTAssert(instance.fixedTiles().count == move.word.characters.count)
             
             let armsToDraw: [Character] = ["a", "r", "m", "s"]
             armsToDraw.forEach { (letter) -> () in
@@ -183,31 +203,30 @@ class PapyrusTests: XCTestCase {
                 player.tiles.insert(tile)
                 tile.placement = .Rack
             }
-            XCTAssert(player.rackTiles.count == 7)
+            XCTAssert(player.rackTiles.count == PapyrusRackAmount)
             
             var results = [String]()
             dawg.anagramsOf(instance.lettersIn(player.rackTiles),
                 length: player.rackTiles.count, results: &results)
             
-            print(player.rackTiles)
-            
             if dawg.lookup("disarms") == false { assert(false) }
-            XCTAssert(true)
             XCTAssert(results.contains("disarms"))
+            XCTAssert(true)
             
-            let possibles = instance.possibleMoves(forPlayer: player, dawg: dawg)
+            let possibles = try instance.getAIMoves()
             if let best = possibles.first {
+                XCTAssert(best.word.word == "disarms")
                 print("Best: \(best)")
-                instance.submitPossibility(best)
-                
+                player.submit(best)
                 XCTAssert(player.rackTiles.count == 0)
                 
-                print(instance.fixedTiles().mapFilter({$0.letter}).sort())
                 var allTiles = (toDraw + armsToDraw).sort()
                 XCTAssert(instance.fixedTiles().mapFilter({$0.letter}).sort() == allTiles)
                 
                 instance.draw(player)
-                XCTAssert(player.rackTiles.count == 7)
+                XCTAssert(player.rackTiles.count == PapyrusRackAmount)
+                
+                instance.nextPlayer()
                 instance.returnTiles(player.rackTiles, forPlayer: player)
                 XCTAssert(player.rackTiles.count == 0)
                 
@@ -217,22 +236,24 @@ class PapyrusTests: XCTestCase {
                     player.tiles.insert(tile)
                     tile.placement = .Rack
                 }
-                let dogPossibles = instance.possibleMoves(forPlayer: player, dawg: dawg)
+                
+                let dogPossibles = try instance.getAIMoves()
                 for possible in dogPossibles {
-                    if possible.move.word == "dog" {
+                    if possible.word.word == "dog" {
                         if possible.intersections.count == 1 {
                             if possible.intersections[0].word == "cards" {
-                                instance.submitPossibility(possible)
-                                print(possible)
-                                allTiles += possible.move.tiles.mapFilter({$0.letter})
+                                player.submit(possible)
+                                print("Dog: \(possible)")
+                                allTiles += possible.word.tiles.mapFilter({$0.letter})
                                 allTiles.sortInPlace()
                                 XCTAssert(instance.fixedTiles().mapFilter({$0.letter}).sort() == allTiles)
-                                break
+                                testPrintBoard()
+                                return
                             }
                         }
                     }
                 }
-                
+                XCTFail("Broken possibilities")
             }
         }
         catch {
