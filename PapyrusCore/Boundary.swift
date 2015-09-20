@@ -15,6 +15,7 @@ public func == (lhs: Boundary, rhs: Boundary) -> Bool {
 public struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
     public let start: Position
     public let end: Position
+    
     public var horizontal: Bool {
         return start.horizontal
     }
