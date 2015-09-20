@@ -219,6 +219,7 @@ extension Papyrus {
     public func getMove(forBoundary boundary: Boundary) throws -> Move {
         // Throw error if no player...
         guard let player = player, dawg = dawg else { throw ValidationError.NoPlayer }
+        
         let playedBoundaries = filledBoundaries()
         
         // If no words have been played, this boundary must intersect middle.

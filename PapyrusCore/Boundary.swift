@@ -266,18 +266,31 @@ extension Papyrus {
         return boundaries
     }
     
+    public func stretchWhileFilled(boundary: Boundary?) -> Boundary? {
+        guard let
+            boundary = boundary,
+            adjustedStart = previousWhileFilled(boundary.start),
+            adjustedEnd = nextWhileFilled(boundary.end),
+            adjustedBoundary = Boundary(start: adjustedStart, end: adjustedEnd) else {
+                return nil
+        }
+        return adjustedBoundary
+    }
+    
     /// - returns: All possible boundaries we may be able to place tiles in, stemming off of all existing words.
     public func allPlayableBoundaries() -> [Boundary] {
         let playable = filledBoundaries().mapFilter({ (boundary) -> ([Boundary]?) in
             var allBoundaries = [Boundary]()
+            // Main boundary already includes all possible tiles.
             if let mainBoundaries = playableBoundaries(forBoundary: boundary) {
                 allBoundaries.appendContentsOf(mainBoundaries)
             }
-            if let adjacentPrevious = boundary.previous(),
+            // Adjacent boundaries do not, so we should pad them.
+            if let adjacentPrevious = stretchWhileFilled(boundary.previous()),
                 adjacentBoundaries = playableBoundaries(forBoundary: adjacentPrevious) {
                 allBoundaries.appendContentsOf(adjacentBoundaries)
             }
-            if let adjacentNext = boundary.next(),
+            if let adjacentNext = stretchWhileFilled(boundary.next()),
                 adjacentBoundaries = playableBoundaries(forBoundary: adjacentNext) {
                 allBoundaries.appendContentsOf(adjacentBoundaries)
             }

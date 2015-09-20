@@ -16,9 +16,9 @@ public func == (lhs: Position, rhs: Position) -> Bool {
 }
 
 public struct Position: Equatable, Hashable {
-    let horizontal: Bool
-    let iterable: Int
-    let fixed: Int
+    public let horizontal: Bool
+    public let iterable: Int
+    public let fixed: Int
     
     public init?(horizontal: Bool, iterable: Int, fixed: Int) {
         self.horizontal = horizontal
@@ -105,24 +105,24 @@ public struct Position: Equatable, Hashable {
     // MARK: Adjustment
     
     /// Swap iterable and fixed when axis changes (row: 5, col: 2) == (col: 2, row: 5).
-    func positionWithHorizontal(newValue: Bool) -> Position? {
+    public func positionWithHorizontal(newValue: Bool) -> Position? {
         if newValue == horizontal { return self }
         return Position(horizontal: newValue, iterable: fixed, fixed: iterable)
     }
-    func positionWithFixed(newValue: Int) -> Position? {
+    public func positionWithFixed(newValue: Int) -> Position? {
         if newValue == fixed { return self }
         if isInvalid(newValue) { return nil }
         return Position(horizontal: horizontal, iterable: iterable, fixed: newValue)
     }
-    func positionWithIterable(newValue: Int) -> Position? {
+    public func positionWithIterable(newValue: Int) -> Position? {
         if newValue == iterable { return self }
         if isInvalid(newValue) { return nil }
         return Position(horizontal: horizontal, iterable: newValue, fixed: fixed)
     }
-    func positionWithMinIterable(newValue: Int) -> Position? {
+    public func positionWithMinIterable(newValue: Int) -> Position? {
         return positionWithIterable(min(iterable, newValue))
     }
-    func positionWithMaxIterable(newValue: Int) -> Position? {
+    public func positionWithMaxIterable(newValue: Int) -> Position? {
         return positionWithIterable(max(iterable, newValue))
     }
 }
