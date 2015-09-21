@@ -204,7 +204,7 @@ extension Papyrus {
         guard let player = player, dawg = dawg else { throw ValidationError.NoPlayer }
         assert(player.difficulty != .Human)
         let letters = player.rackTiles.map({$0.letter})
-        return allPlayableBoundaries().mapFilter { (boundary) -> ([Move]?) in
+        let items = allPlayableBoundaries().mapFilter { (boundary) -> ([Move]?) in
             let fixedLetters = indexesAndCharacters(forBoundary: boundary)
             var results = [String]()
             dawg.anagramsOf(letters,
@@ -217,6 +217,10 @@ extension Papyrus {
                 try? possibleAIMove(forBoundary: boundary, filledIndexes: indexes, word: $0)
             })
         }.flatten().sort({$0.total > $1.total})
+        if items.count == 0 {
+            lifecycleCallback?(.NoMoves, self)
+        }
+        return items
     }
     
     /// - parameter boundary: Boundary to check.

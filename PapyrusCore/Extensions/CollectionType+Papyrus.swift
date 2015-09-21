@@ -1,5 +1,5 @@
 //
-//  ArrayExtensions.swift
+//  CollectionType+Papyrus.swift
 //  Papyrus
 //
 //  Created by Chris Nevin on 25/07/2015.

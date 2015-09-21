@@ -19,7 +19,9 @@ public enum Lifecycle {
     case Preparing
     case Ready
     case ChangedPlayer
+    case EndedTurn
     case Completed
+    case NoMoves
 }
 
 public final class Papyrus {
@@ -29,6 +31,7 @@ public final class Papyrus {
     }
     
     var lifecycleCallback: LifecycleCallback?
+    public internal(set) var lifecycle: Lifecycle?
     public internal(set) var inProgress: Bool = false
     public let squares: [[Square]]
     
@@ -58,5 +61,10 @@ public final class Papyrus {
         playerIndex = 0
         tiles.appendContentsOf(Tile.createTiles())
         lifecycleCallback?(.Ready, self)
+    }
+    
+    public func changeState(state: Lifecycle) {
+        lifecycle = state
+        lifecycleCallback?(state, self)
     }
 }

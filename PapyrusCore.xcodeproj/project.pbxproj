@@ -26,7 +26,7 @@
 		99FD432C1BA58AF200F50DCF /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD43221BA58AF200F50DCF /* Position.swift */; };
 		99FD432D1BA58AF200F50DCF /* Square.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD43231BA58AF200F50DCF /* Square.swift */; };
 		99FD432E1BA58AF200F50DCF /* Tile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD43241BA58AF200F50DCF /* Tile.swift */; };
-		99FD43311BA58AFC00F50DCF /* ArrayExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD43301BA58AFC00F50DCF /* ArrayExtensions.swift */; };
+		99FD43311BA58AFC00F50DCF /* CollectionType+Papyrus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD43301BA58AFC00F50DCF /* CollectionType+Papyrus.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,7 +62,7 @@
 		99FD43221BA58AF200F50DCF /* Position.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Position.swift; sourceTree = "<group>"; };
 		99FD43231BA58AF200F50DCF /* Square.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Square.swift; sourceTree = "<group>"; };
 		99FD43241BA58AF200F50DCF /* Tile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tile.swift; sourceTree = "<group>"; };
-		99FD43301BA58AFC00F50DCF /* ArrayExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayExtensions.swift; sourceTree = "<group>"; };
+		99FD43301BA58AFC00F50DCF /* CollectionType+Papyrus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CollectionType+Papyrus.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,7 +148,7 @@
 		99FD432F1BA58AFC00F50DCF /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				99FD43301BA58AFC00F50DCF /* ArrayExtensions.swift */,
+				99FD43301BA58AFC00F50DCF /* CollectionType+Papyrus.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -267,7 +267,7 @@
 				99FD43271BA58AF200F50DCF /* Move.swift in Sources */,
 				99FD43291BA58AF200F50DCF /* Papyrus.swift in Sources */,
 				99FD432B1BA58AF200F50DCF /* Player.swift in Sources */,
-				99FD43311BA58AFC00F50DCF /* ArrayExtensions.swift in Sources */,
+				99FD43311BA58AFC00F50DCF /* CollectionType+Papyrus.swift in Sources */,
 				99FD43251BA58AF200F50DCF /* Boundary.swift in Sources */,
 				99FD432D1BA58AF200F50DCF /* Square.swift in Sources */,
 				99FD432E1BA58AF200F50DCF /* Tile.swift in Sources */,
