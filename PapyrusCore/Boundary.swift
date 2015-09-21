@@ -238,32 +238,26 @@ extension Papyrus {
         return value
     }
     
+    private func boundary(withHorizontal horizontal: Bool, fixed: Int) -> Boundary? {
+        return Boundary(
+            start: nextWhileEmpty(Position(horizontal: horizontal,
+                iterable: 0, fixed: fixed))?.next(),
+            end: previousWhileEmpty(Position(horizontal: horizontal,
+                iterable: PapyrusDimensions - 1, fixed: fixed))?.previous())
+    }
+    
     /// - returns: All boundaries for filled tiles in both axes.
     func filledBoundaries() -> [Boundary] {
-        var boundaries = [Boundary]()
+        var boundaries = Set<Boundary>()
         (0..<PapyrusDimensions).forEach({ (fixed) in
-            if let verticalBoundary = Boundary(
-                start: nextWhileEmpty(
-                    Position(horizontal: false, iterable: 0, fixed: fixed)
-                    )?.next(),
-                end: previousWhileEmpty(
-                    Position(horizontal: false, iterable: PapyrusDimensions - 1, fixed: fixed)
-                    )?.previous()
-                ) {
-                    boundaries.append(verticalBoundary)
+            if let verticalBoundary = boundary(withHorizontal: false, fixed: fixed) {
+                boundaries.insert(verticalBoundary)
             }
-            if let horizontalBoundary = Boundary(
-                start: nextWhileEmpty(
-                    Position(horizontal: true, iterable: 0, fixed: fixed)
-                    )?.next(),
-                end: previousWhileEmpty(
-                    Position(horizontal: true, iterable: PapyrusDimensions - 1, fixed: fixed)
-                    )?.previous()
-                ) {
-                    boundaries.append(horizontalBoundary)
+            if let horizontalBoundary = boundary(withHorizontal: true, fixed: fixed) {
+                boundaries.insert(horizontalBoundary)
             }
         })
-        return boundaries
+        return Array(boundaries)
     }
     
     public func stretchWhileFilled(boundary: Boundary?) -> Boundary? {
@@ -278,47 +272,37 @@ extension Papyrus {
     }
     
     public func stretchIfFilled(boundary: Boundary?) -> Boundary? {
-        guard let boundary = boundary else { return nil }
-        var _start = boundary.start, _end = boundary.end
-        if !emptyAt(boundary.start) {
-            if let start = previousWhileFilled(boundary.start) {
-                _start = start
-            }
-        }
-        if !emptyAt(boundary.end) {
-            if let end = nextWhileFilled(boundary.end) {
-                _end = end
-            }
-        }
-        return Boundary(start: _start, end: _end)
+        return Boundary(
+            start: previousWhileFilled(boundary?.start) ?? boundary?.start,
+            end: nextWhileFilled(boundary?.end) ?? boundary?.end)
     }
     
     /// - returns: All possible boundaries we may be able to place tiles in, stemming off of all existing words.
     public func allPlayableBoundaries() -> [Boundary] {
-        let playable = filledBoundaries().mapFilter({ (boundary) -> ([Boundary]?) in
-            var allBoundaries = [Boundary]()
+        var allBoundaries = Set<Boundary>()
+        filledBoundaries().forEach { (boundary) in
             // Main boundary already includes all possible tiles.
             if let mainBoundaries = playableBoundaries(forBoundary: boundary) {
-                allBoundaries.appendContentsOf(mainBoundaries)
+                allBoundaries.unionInPlace(mainBoundaries)
             }
             // Adjacent boundaries do not, so we should pad them.
             if let adjacentPrevious = stretchIfFilled(boundary.previous()),
                 adjacentBoundaries = playableBoundaries(forBoundary: adjacentPrevious) {
-                allBoundaries.appendContentsOf(adjacentBoundaries)
+                allBoundaries.unionInPlace(adjacentBoundaries)
             }
             if let adjacentNext = stretchIfFilled(boundary.next()),
                 adjacentBoundaries = playableBoundaries(forBoundary: adjacentNext) {
-                allBoundaries.appendContentsOf(adjacentBoundaries)
+                allBoundaries.unionInPlace(adjacentBoundaries)
             }
-            return allBoundaries.count > 0 ? allBoundaries : nil
-        })
-        return Array(Set(playable.flatMap({$0})))
+        }
+        return Array(allBoundaries)
     }
     
     /// - returns: All possible boundaries we may be able to place tiles in, stemming off of a given boundary.
     func playableBoundaries(forBoundary boundary: Boundary) -> [Boundary]? {
-        guard let newStart = self.previousWhileTilesInRack(boundary.start),
-            newEnd = self.nextWhileTilesInRack(boundary.end),
+        guard let
+            newStart = previousWhileTilesInRack(boundary.start),
+            newEnd = nextWhileTilesInRack(boundary.end),
             newBoundary = boundary.stretch(newStart, newEnd: newEnd) else
         {
             return nil

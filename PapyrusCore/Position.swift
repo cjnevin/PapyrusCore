@@ -153,7 +153,7 @@ extension Papyrus {
                 position?.nextInPlace()
             }
         }
-        return position
+        return nextWhileFilled(position) ?? position
     }
     
     
@@ -183,6 +183,6 @@ extension Papyrus {
                 position?.previousInPlace()
             }
         }
-        return position
+        return previousWhileFilled(position) ?? position
     }
 }

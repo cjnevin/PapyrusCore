@@ -101,7 +101,8 @@ extension Papyrus {
     /// - parameter filledIndexes: Indexes of fixed characters in the boundary.
     /// - parameter word: Word to check.
     /// - returns: Returns a Move object for a given word.
-    private func possibleAIMove(forBoundary boundary: Boundary,
+    private func possibleAIMove(
+        forBoundary boundary: Boundary,
         filledIndexes: [Int]? = nil,
         word mainWord: String) throws -> Move
     {
@@ -135,11 +136,16 @@ extension Papyrus {
             return (square, tile, tile.letter)
         })
         
+        // Stretch to ensure it includes the entire boundary
+        guard let stretched = stretchIfFilled(boundary) else {
+            throw ValidationError.InvalidArrangement
+        }
+        
         var intersections: [Word]
         var mainScore: Int
         do {
-            intersections = try intersectingWords(forBoundary: boundary)
-            mainScore = try score(boundary)
+            intersections = try intersectingWords(forBoundary: stretched)
+            mainScore = try score(stretched)
             restoreState(squareTileCharacters)
             assert(droppedTiles().count == 0)
         } catch {
@@ -148,7 +154,7 @@ extension Papyrus {
             throw error
         }
         
-        let word: Word = Word(boundary: boundary,
+        let word: Word = Word(boundary: stretched,
             characters: squareTileCharacters.map({$0.2}),
             squares: squareTileCharacters.map({$0.0}),
             tiles: squareTileCharacters.map({$0.1}),
@@ -220,7 +226,7 @@ extension Papyrus {
         // Throw error if no player...
         guard let player = player, dawg = dawg else { throw ValidationError.NoPlayer }
         
-        let playedBoundaries = filledBoundaries()
+        let playedBoundaries = filledBoundaries().filter({$0.length > 1})
         
         // If no words have been played, this boundary must intersect middle.
         let m = PapyrusMiddle - 1
@@ -248,13 +254,16 @@ extension Papyrus {
         // If words have been played, it must intersect one of these played words.
         // Assumption: Previous boundaries have passed validation.
         let intersections = findIntersections(forBoundary: boundary)
-        if playedBoundaries.count > 0 && intersections.count == 0 {
+        if intersections.count == 0 && playedBoundaries != [boundary] {
             throw ValidationError.NoIntersection
+        }
+        if intersections.count == 0 && boundary.length < 2 {
+            throw ValidationError.InvalidArrangement
         }
         
         // Validate words, will throw if any are invalid...
         let mainWord = String(tiles.mapFilter({$0.letter}))
-        if !dawg.lookup(mainWord) {
+        if boundary.length > 1 && !dawg.lookup(mainWord) {
             throw ValidationError.UndefinedWord(mainWord)
         }
         
