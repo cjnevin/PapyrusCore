@@ -277,6 +277,22 @@ extension Papyrus {
         return adjustedBoundary
     }
     
+    public func stretchIfFilled(boundary: Boundary?) -> Boundary? {
+        guard let boundary = boundary else { return nil }
+        var _start = boundary.start, _end = boundary.end
+        if !emptyAt(boundary.start) {
+            if let start = previousWhileFilled(boundary.start) {
+                _start = start
+            }
+        }
+        if !emptyAt(boundary.end) {
+            if let end = nextWhileFilled(boundary.end) {
+                _end = end
+            }
+        }
+        return Boundary(start: _start, end: _end)
+    }
+    
     /// - returns: All possible boundaries we may be able to place tiles in, stemming off of all existing words.
     public func allPlayableBoundaries() -> [Boundary] {
         let playable = filledBoundaries().mapFilter({ (boundary) -> ([Boundary]?) in
@@ -286,11 +302,11 @@ extension Papyrus {
                 allBoundaries.appendContentsOf(mainBoundaries)
             }
             // Adjacent boundaries do not, so we should pad them.
-            if let adjacentPrevious = stretchWhileFilled(boundary.previous()),
+            if let adjacentPrevious = stretchIfFilled(boundary.previous()),
                 adjacentBoundaries = playableBoundaries(forBoundary: adjacentPrevious) {
                 allBoundaries.appendContentsOf(adjacentBoundaries)
             }
-            if let adjacentNext = stretchWhileFilled(boundary.next()),
+            if let adjacentNext = stretchIfFilled(boundary.next()),
                 adjacentBoundaries = playableBoundaries(forBoundary: adjacentNext) {
                 allBoundaries.appendContentsOf(adjacentBoundaries)
             }
