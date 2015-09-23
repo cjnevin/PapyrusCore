@@ -34,6 +34,10 @@ class PapyrusTests: XCTestCase {
                 print("Player changed")
             case .Completed:
                 print("Completed")
+            case .EndedTurn:
+                print("Ended Turn")
+            case .NoMoves:
+                print("No Moves")
             }
         }
     }

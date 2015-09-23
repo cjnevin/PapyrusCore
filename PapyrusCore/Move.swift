@@ -95,6 +95,7 @@ extension Papyrus {
             tile.placement = .Rack
             tile.changeLetter(PapyrusBlankLetter)
         })
+        assert(droppedTiles().count == 0)
     }
     
     /// - parameter boundary: Boundary to check.
@@ -106,10 +107,12 @@ extension Papyrus {
         filledIndexes: [Int]? = nil,
         word mainWord: String) throws -> Move
     {
-        guard let player = player else { throw ValidationError.NoPlayer }
+        guard let player = player else {
+            throw ValidationError.NoPlayer
+        }
         
         let chars = Array(mainWord.characters)
-        let indexes = filledIndexes ?? indexesAndCharacters(forBoundary: boundary).map({$0.0})
+        let indexes = filledIndexes ?? allLetters(inBoundary: boundary).map({$0.0})
         var rackTiles = player.rackTiles
         
         assert(rackTiles.count > 0)
@@ -136,9 +139,23 @@ extension Papyrus {
             return (square, tile, tile.letter)
         })
         
+        // FIXME: Bug
+        // There is a bug here where it sometimes doesn't stretch to include all letters
+        // just had 'HOEDFAT' instead of 'HOED' played.
+        
         // Stretch to ensure it includes the entire boundary
         guard let stretched = stretchIfFilled(boundary) else {
+            restoreState(squareTileCharacters)
             throw ValidationError.InvalidArrangement
+        }
+        
+        // FIXME: Move?
+        // This should probably be moved to the playable boundaries method, only returning boundaries if we
+        // hit two consecutive empty squares or an edge of the board.
+        let stretchedWord = String(lettersIn(stretched))
+        if dawg?.lookup(stretchedWord) == false {
+            restoreState(squareTileCharacters)
+            throw ValidationError.UndefinedWord(stretchedWord)
         }
         
         var intersections: [Word]
@@ -147,10 +164,8 @@ extension Papyrus {
             intersections = try intersectingWords(forBoundary: stretched)
             mainScore = try score(stretched)
             restoreState(squareTileCharacters)
-            assert(droppedTiles().count == 0)
         } catch {
             restoreState(squareTileCharacters)
-            assert(droppedTiles().count == 0)
             throw error
         }
         
@@ -158,7 +173,7 @@ extension Papyrus {
             characters: squareTileCharacters.map({$0.2}),
             squares: squareTileCharacters.map({$0.0}),
             tiles: squareTileCharacters.map({$0.1}),
-            word: mainWord,
+            word: stretchedWord,
             score: mainScore)
         
         let total = word.score + intersections.map({$0.score}).reduce(0, combine: +)
@@ -205,7 +220,7 @@ extension Papyrus {
         assert(player.difficulty != .Human)
         let letters = player.rackTiles.map({$0.letter})
         let items = allPlayableBoundaries().mapFilter { (boundary) -> ([Move]?) in
-            let fixedLetters = indexesAndCharacters(forBoundary: boundary)
+            let fixedLetters = allLetters(inBoundary: boundary)
             var results = [String]()
             dawg.anagramsOf(letters,
                 length: boundary.length,
