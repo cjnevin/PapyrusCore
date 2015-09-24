@@ -9,21 +9,23 @@
 import Foundation
 
 public func == (lhs: DawgNode, rhs: DawgNode) -> Bool {
-    return lhs.hashValue == rhs.hashValue
+    return lhs.description == rhs.description
 }
 
 public class DawgNode: CustomStringConvertible, Hashable {
-    private static var nextId = 0;
+    private static var nextId = 0
     
     typealias Edges = [Character: DawgNode]
     
     private lazy var edges = Edges()
     internal var final: Bool = false
     internal var id: Int
+    var descr: String = ""
     
-    public init() {
+    internal init() {
         self.id = self.dynamicType.nextId
         self.dynamicType.nextId += 1
+        updateDescription()
     }
     
     private init(withId id: Int, final: Bool, edges: Edges?) {
@@ -33,7 +35,7 @@ public class DawgNode: CustomStringConvertible, Hashable {
         if edges?.count > 0 { self.edges = edges! }
     }
     
-    public class func deserialize(serialized: NSArray, inout cached: [Int: DawgNode]) -> DawgNode {
+    internal class func deserialize(serialized: NSArray, inout cached: [Int: DawgNode]) -> DawgNode {
         let id = serialized.firstObject! as! Int
         guard let cache = cached[id] else {
             var edges = Edges()
@@ -53,7 +55,7 @@ public class DawgNode: CustomStringConvertible, Hashable {
         return cache
     }
     
-    public func serialize() -> NSArray {
+    internal func serialize() -> NSArray {
         let serialized = NSMutableArray()
         serialized.addObject(id)
         serialized.addObject(final ? 1 : 0)
@@ -67,10 +69,19 @@ public class DawgNode: CustomStringConvertible, Hashable {
         return serialized
     }
     
-    public var description: String {
+    private func updateDescription() {
         var arr = [final ? "1" : "0"]
-        arr.appendContentsOf(edges.map({ "\($0.0)_\($0.1.hashValue)" }))
-        return arr.joinWithSeparator("_")
+        arr.appendContentsOf(edges.map({ "\($0.0)_\($0.1.id)" }))
+        descr = arr.joinWithSeparator("_")
+    }
+    
+    internal func setEdge(letter: Character, node: DawgNode) {
+        edges[letter] = node
+        updateDescription()
+    }
+    
+    public var description: String {
+        return descr
     }
     
     public var hashValue: Int {
@@ -79,7 +90,7 @@ public class DawgNode: CustomStringConvertible, Hashable {
 }
 
 public class Dawg {
-    private var rootNode: DawgNode
+    private let rootNode: DawgNode
     private var previousWord: String = ""
     private var previousChars: [Character] = []
     
@@ -100,6 +111,7 @@ public class Dawg {
     /// Attempt to save structure to file.
     /// - parameter path: Path to write to.
     public func save(path: String) -> Bool {
+        minimize(0)
         do {
             let data = try NSJSONSerialization.dataWithJSONObject(rootNode.serialize(), options: NSJSONWritingOptions.init(rawValue: 0))
             data.writeToFile(path, atomically: true)
@@ -132,18 +144,18 @@ public class Dawg {
     /// Replace redundant nodes in uncheckedNodes with ones existing in minimizedNodes
     /// then truncate.
     /// - parameter downTo: Iterate from count to this number (truncates these items).
-    private func minimize(downTo: Int) {
+    public func minimize(downTo: Int) {
         for i in (downTo..<uncheckedNodes.count).reverse() {
             let (parent, letter, child) = uncheckedNodes[i]
             if let node = minimizedNodes[child] {
-                parent.edges[letter] = node
+                parent.setEdge(letter, node: node)
             } else {
                 minimizedNodes[child] = child
             }
             uncheckedNodes.popLast()
         }
     }
-    
+
     /// Insert a word into the graph, words must be inserted in order.
     /// - parameter word: Word to insert.
     public func insert(word: String) {
@@ -160,11 +172,18 @@ public class Dawg {
         // Minimize nodes before continuing.
         minimize(commonPrefix)
         
+        var node: DawgNode
+        if uncheckedNodes.count == 0 {
+            node = rootNode
+        } else {
+            node = uncheckedNodes.last!.child
+        }
+        
         // Add the suffix, starting from the correct node mid-way through the graph.
-        var node = uncheckedNodes.last?.child ?? rootNode
+        //var node = uncheckedNodes.last?.child ?? rootNode
         chars[commonPrefix..<chars.count].forEach {
             let nextNode = DawgNode()
-            node.edges[$0] = nextNode
+            node.setEdge($0, node: nextNode)
             uncheckedNodes.append((node, $0, nextNode))
             node = nextNode
         }

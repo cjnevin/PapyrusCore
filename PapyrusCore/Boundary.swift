@@ -12,7 +12,7 @@ public func == (lhs: Boundary, rhs: Boundary) -> Bool {
     return lhs.hashValue == rhs.hashValue
 }
 
-public struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
+public struct Boundary: CustomDebugStringConvertible, Hashable {
     public let start: Position
     public let end: Position
     
