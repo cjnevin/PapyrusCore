@@ -17,33 +17,31 @@ public class DawgNode: CustomStringConvertible, Hashable {
     
     typealias Edges = [Character: DawgNode]
     
-    internal lazy var edges = Edges()
+    private lazy var edges = Edges()
     internal var final: Bool = false
     internal var id: Int
-    private var descr: String = ""
     
     public init() {
         self.id = self.dynamicType.nextId
         self.dynamicType.nextId += 1
-        updateDescription()
     }
     
     private init(withId id: Int, final: Bool, edges: Edges?) {
+        self.dynamicType.nextId = max(self.dynamicType.nextId, id)
         self.id = id
         self.final = final
         if edges?.count > 0 { self.edges = edges! }
-        updateDescription()
     }
     
     public class func deserialize(serialized: NSArray, inout cached: [Int: DawgNode]) -> DawgNode {
         let id = serialized.firstObject! as! Int
         guard let cache = cached[id] else {
-            var edges: Edges?
+            var edges = Edges()
             if serialized.count == 3 {
                 edges = Edges()
                 if let serializedEdges = serialized.objectAtIndex(2) as? [String: NSArray] {
                     for (letter, array) in serializedEdges {
-                        edges?[Character(letter)] = DawgNode.deserialize(array, cached: &cached)
+                        edges[Character(letter)] = DawgNode.deserialize(array, cached: &cached)
                     }
                 }
             }
@@ -69,29 +67,21 @@ public class DawgNode: CustomStringConvertible, Hashable {
         return serialized
     }
     
-    private func updateDescription() {
-        var arr = [final ? "1" : "0"]
-        arr.appendContentsOf(edges.map({ "\($0.0)_\($0.1)" }))
-        descr = arr.joinWithSeparator("_")
-    }
-    
-    internal func setEdge(letter: Character, node: DawgNode) {
-        edges[letter] = node
-        updateDescription()
-    }
-    
     public var description: String {
-        return descr
+        var arr = [final ? "1" : "0"]
+        arr.appendContentsOf(edges.map({ "\($0.0)_\($0.1.hashValue)" }))
+        return arr.joinWithSeparator("_")
     }
     
     public var hashValue: Int {
-        return descr.hashValue
+        return self.description.hashValue
     }
 }
 
 public class Dawg {
     private var rootNode: DawgNode
-    private var previousWord = ""
+    private var previousWord: String = ""
+    private var previousChars: [Character] = []
     
     private lazy var uncheckedNodes = [(parent: DawgNode, letter: Character, child: DawgNode)]()
     private lazy var minimizedNodes = [DawgNode: DawgNode]()
@@ -144,9 +134,9 @@ public class Dawg {
     /// - parameter downTo: Iterate from count to this number (truncates these items).
     private func minimize(downTo: Int) {
         for i in (downTo..<uncheckedNodes.count).reverse() {
-            let (_, letter, child) = uncheckedNodes[i]
-            if let minNode = minimizedNodes[child] {
-                uncheckedNodes[i].parent.setEdge(letter, node: minNode)
+            let (parent, letter, child) = uncheckedNodes[i]
+            if let node = minimizedNodes[child] {
+                parent.edges[letter] = node
             } else {
                 minimizedNodes[child] = child
             }
@@ -157,13 +147,11 @@ public class Dawg {
     /// Insert a word into the graph, words must be inserted in order.
     /// - parameter word: Word to insert.
     public func insert(word: String) {
-        if word == "" { return }
-        assert(previousWord == "" || previousWord < word, "Words must be inserted alphabetically")
+        assert(previousWord == "" || (previousWord != "" && previousWord < word))
         
         // Find common prefix for word and previous word.
-        var commonPrefix = 0
         let chars = Array(word.characters)
-        let previousChars = Array(previousWord.characters)
+        var commonPrefix = 0
         for i in 0..<min(chars.count, previousChars.count) {
             if chars[i] != previousChars[i] { break }
             commonPrefix++
@@ -174,15 +162,16 @@ public class Dawg {
         
         // Add the suffix, starting from the correct node mid-way through the graph.
         var node = uncheckedNodes.last?.child ?? rootNode
-        for letter in chars[commonPrefix..<chars.count] {
+        chars[commonPrefix..<chars.count].forEach {
             let nextNode = DawgNode()
-            node.setEdge(letter, node: nextNode)
-            uncheckedNodes.append((node, letter, nextNode))
+            node.edges[$0] = nextNode
+            uncheckedNodes.append((node, $0, nextNode))
             node = nextNode
         }
         
-        node.final = true
         previousWord = word
+        previousChars = chars
+        node.final = true
     }
     
     /// - parameter word: Word to check.
