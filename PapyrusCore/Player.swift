@@ -84,7 +84,7 @@ extension Papyrus {
     /// - returns: A new player with their rack pre-filled. Or an error if refill fails.
     public func createPlayer(difficulty: Difficulty = .Human) -> Player {
         let newPlayer = Player(difficulty: difficulty)
-        draw(newPlayer)
+        draw(newPlayer, endTurn: false)
         players.append(newPlayer)
         return newPlayer
     }
@@ -100,7 +100,7 @@ extension Papyrus {
     
     /// Draw tiles from the bag.
     /// - parameter player: Player's rack to fill.
-    public func draw(player: Player) {
+    public func draw(player: Player, endTurn: Bool = true) {
         // If we have no tiles left in the bag complete game
         if player.replenishTiles(fromBag: bagTiles()) == 0 && player.rackTiles.count == 0 {
             // Subtract remaining tiles in racks
@@ -109,6 +109,10 @@ extension Papyrus {
             }
             // Complete the game
             lifecycleCallback?(.Completed, self)
+            return
+        }
+        if endTurn {
+            lifecycleCallback?(.EndedTurn, self)
         }
     }
 }

@@ -12,9 +12,10 @@ public func == (lhs: Boundary, rhs: Boundary) -> Bool {
     return lhs.hashValue == rhs.hashValue
 }
 
-public struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
+public struct Boundary: CustomDebugStringConvertible, Hashable {
     public let start: Position
     public let end: Position
+    
     public var horizontal: Bool {
         return start.horizontal
     }
@@ -200,15 +201,48 @@ public struct Boundary: CustomDebugStringConvertible, Equatable, Hashable {
 }
 
 extension Papyrus {
-    /// - parameter boundary: Find filled tiles then return the index and characters for the boundary.
-    /// - returns: Array of indexes and characters.
-    func indexesAndCharacters(forBoundary boundary: Boundary) -> [Int: Character] {
-        var positionValues = [Int: Character]()
-        boundary.positions().forEach { (position) in
-            guard let letter = letterAt(position) else { return }
-            positionValues[position.iterable - boundary.start.iterable] = letter
+    
+    // MARK:- Stretch
+    // These methods favour the greater values of the two (min/max).
+    
+    /// - returns: All boundaries for filled tiles in both axes.
+    func filledBoundaries() -> [Boundary] {
+        func boundary(withHorizontal horizontal: Bool, fixed: Int) -> Boundary? {
+            return Boundary(
+                start: nextWhileEmpty(Position(horizontal: horizontal,
+                    iterable: 0, fixed: fixed))?.next(),
+                end: previousWhileEmpty(Position(horizontal: horizontal,
+                    iterable: PapyrusDimensions - 1, fixed: fixed))?.previous())
         }
-        return positionValues
+        var boundaries = Set<Boundary>()
+        (0..<PapyrusDimensions).forEach({ (fixed) in
+            if let verticalBoundary = boundary(withHorizontal: false, fixed: fixed) {
+                boundaries.insert(verticalBoundary)
+            }
+            if let horizontalBoundary = boundary(withHorizontal: true, fixed: fixed) {
+                boundaries.insert(horizontalBoundary)
+            }
+        })
+        return Array(boundaries)
+    }
+    
+    /// Stretch in either direction until the start/end postions are not filled.
+    public func stretchIfFilled(boundary: Boundary?) -> Boundary? {
+        return Boundary(
+            start: previousWhileFilled(boundary?.start) ?? boundary?.start,
+            end: nextWhileFilled(boundary?.end) ?? boundary?.end)
+    }
+    
+    /// Stretch in either direction while the start/end positions are filled.
+    public func stretchWhileFilled(boundary: Boundary?) -> Boundary? {
+        guard let
+            boundary = boundary,
+            adjustedStart = previousWhileFilled(boundary.start),
+            adjustedEnd = nextWhileFilled(boundary.end),
+            adjustedBoundary = Boundary(start: adjustedStart, end: adjustedEnd) else {
+                return nil
+        }
+        return adjustedBoundary
     }
     
     /// - parameter boundary: Boundary containing tiles that have been dropped on the board.
@@ -237,72 +271,60 @@ extension Papyrus {
         return value
     }
     
-    /// - returns: All boundaries for filled tiles in both axes.
-    func filledBoundaries() -> [Boundary] {
-        var boundaries = [Boundary]()
-        (0..<PapyrusDimensions).forEach({ (fixed) in
-            if let verticalBoundary = Boundary(
-                start: nextWhileEmpty(
-                    Position(horizontal: false, iterable: 0, fixed: fixed)
-                    )?.next(),
-                end: previousWhileEmpty(
-                    Position(horizontal: false, iterable: PapyrusDimensions - 1, fixed: fixed)
-                    )?.previous()
-                ) {
-                    boundaries.append(verticalBoundary)
-            }
-            if let horizontalBoundary = Boundary(
-                start: nextWhileEmpty(
-                    Position(horizontal: true, iterable: 0, fixed: fixed)
-                    )?.next(),
-                end: previousWhileEmpty(
-                    Position(horizontal: true, iterable: PapyrusDimensions - 1, fixed: fixed)
-                    )?.previous()
-                ) {
-                    boundaries.append(horizontalBoundary)
-            }
-        })
-        return boundaries
+    // MARK: - Playable
+    
+    /// - parameter boundary: Find filled tiles then return the index and characters for the boundary.
+    /// - returns: Array of indexes and characters.
+    func allLetters(inBoundary boundary: Boundary) -> [Int: Character] {
+        var positionValues = [Int: Character]()
+        boundary.positions().forEach { (position) in
+            guard let letter = letterAt(position) else { return }
+            positionValues[position.iterable - boundary.start.iterable] = letter
+        }
+        return positionValues
     }
     
     /// - returns: All possible boundaries we may be able to place tiles in, stemming off of all existing words.
+    // FIXME: Seems to not return all possibilities, we should make tiles glow to provide visual
+    // while debugging.
     public func allPlayableBoundaries() -> [Boundary] {
-        let playable = filledBoundaries().mapFilter({ (boundary) -> ([Boundary]?) in
-            var allBoundaries = [Boundary]()
+        var allBoundaries = Set<Boundary>()
+        filledBoundaries().forEach { (boundary) in
+            // Main boundary already includes all possible tiles.
             if let mainBoundaries = playableBoundaries(forBoundary: boundary) {
-                allBoundaries.appendContentsOf(mainBoundaries)
+                allBoundaries.unionInPlace(mainBoundaries)
             }
-            if let adjacentPrevious = boundary.previous(),
+            // Adjacent boundaries do not, so we should pad them.
+            if let adjacentPrevious = stretchIfFilled(boundary.previous()),
                 adjacentBoundaries = playableBoundaries(forBoundary: adjacentPrevious) {
-                allBoundaries.appendContentsOf(adjacentBoundaries)
+                allBoundaries.unionInPlace(adjacentBoundaries)
             }
-            if let adjacentNext = boundary.next(),
+            if let adjacentNext = stretchIfFilled(boundary.next()),
                 adjacentBoundaries = playableBoundaries(forBoundary: adjacentNext) {
-                allBoundaries.appendContentsOf(adjacentBoundaries)
+                allBoundaries.unionInPlace(adjacentBoundaries)
             }
-            return allBoundaries.count > 0 ? allBoundaries : nil
-        })
-        return Array(Set(playable.flatMap({$0})))
+        }
+        return Array(allBoundaries)
     }
     
     /// - returns: All possible boundaries we may be able to place tiles in, stemming off of a given boundary.
     func playableBoundaries(forBoundary boundary: Boundary) -> [Boundary]? {
-        guard let newStart = self.previousWhileTilesInRack(boundary.start),
-            newEnd = self.nextWhileTilesInRack(boundary.end),
+        guard let
+            newStart = previousWhileTilesInRack(boundary.start),
+            newEnd = nextWhileTilesInRack(boundary.end),
             newBoundary = boundary.stretch(newStart, newEnd: newEnd) else
         {
             return nil
         }
         let rackCount = player!.rackTiles.count
         let boundaryTileCount = tilesIn(boundary).count
+
         // Get maximum word size, then shift the iterable index
         var maxLength = boundary.length + rackCount
-        
         // Adjust for existing tiles on the board
         maxLength += tilesIn(newBoundary).count - boundaryTileCount
         
         let lengthRange = 0..<maxLength
-        
         return newBoundary.iterableRange.flatMap({ (startIterable) -> ([Boundary]) in
             lengthRange.mapFilter({ (length) -> (Boundary?) in
                 let endIterable = startIterable + length

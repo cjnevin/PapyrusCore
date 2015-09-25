@@ -11,8 +11,7 @@ import XCTest
 
 class DawgTests: XCTestCase {
     
-    let dawg = Dawg.load(NSBundle(forClass: DawgTests.self)
-        .pathForResource("output", ofType: "json")!)!
+    let dawg = Dawg.load(NSBundle(forClass: DawgTests.self).pathForResource("sowpods", ofType: "json")!)!
 
     override func setUp() {
         super.setUp()
@@ -22,6 +21,45 @@ class DawgTests: XCTestCase {
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
+    }
+    
+    func testCreation() {
+        let sowpods = NSBundle(forClass: DawgTests.self).pathForResource("sowpods", ofType: "txt")!
+        let dawg3 = Dawg.load("/Users/chrisnevin/Documents/Projects/iOS/Mine/Papyrus/Papyrus/Resources/Dictionaries/sowpods.json")!
+        let data = try! NSString(contentsOfFile: sowpods, encoding: NSUTF8StringEncoding)
+        let lines = data.componentsSeparatedByString("\n").sort()
+        lines.forEach { (line) -> () in
+            assert(dawg3.lookup(line))
+        }
+    }
+    
+    
+    func createBuilder() {
+        let sowpods = NSBundle(forClass: DawgTests.self).pathForResource("sowpods", ofType: "txt")!
+        //let dawg3 = Dawg.load("/Users/chrisnevin/Documents/twl06.json")!
+        let data = try! NSString(contentsOfFile: sowpods, encoding: NSUTF8StringEncoding)
+        let lines = data.componentsSeparatedByString("\n").sort()
+        var index = 0
+        lines.forEach { (line) -> () in
+            //assert(dawg3.lookup(line))
+            
+            //if index % 10 == 0 {
+            dawg.insert(line)
+            //XCTAssert(dawg.lookup(line), line)
+            if index % 100 == 0 {
+                print(line, lines.count - index)
+            }
+            //}
+            index++
+        }
+        //index = 0
+        dawg.save("/Users/chrisnevin/Documents/sowpods.json")
+        lines.forEach { (line) -> () in
+            //if index % 10 == 0 {
+            XCTAssert(dawg.lookup(line), line)
+            //}
+            //index++
+        }
     }
     
     func testAnagrams() {

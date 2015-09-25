@@ -13,16 +13,16 @@ class PapyrusTests: XCTestCase {
 
     let instance = Papyrus()
     var dawg: Dawg {
-        if instance.dawg == nil {
-            instance.dawg = Dawg.load(NSBundle(forClass: PapyrusTests.self).pathForResource("output", ofType: "json")!)!
+        if Papyrus.dawg == nil {
+            Papyrus.dawg = Dawg.load(NSBundle(forClass: PapyrusTests.self).pathForResource("output", ofType: "json")!)!
         }
-        return instance.dawg!
+        return Papyrus.dawg!
     }
     
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        instance.newGame(dawg, callback: { (state, game) -> () in
+        instance.newGame { (state, game) -> () in
             switch state {
             case .Cleanup:
                 print("Cleanup")
@@ -34,8 +34,12 @@ class PapyrusTests: XCTestCase {
                 print("Player changed")
             case .Completed:
                 print("Completed")
+            case .EndedTurn:
+                print("Ended Turn")
+            case .NoMoves:
+                print("No Moves")
             }
-        })
+        }
     }
     
     override func tearDown() {
@@ -165,6 +169,7 @@ class PapyrusTests: XCTestCase {
     }
     
     func testCardPlay() {
+        dawg
         instance.createPlayer()
         let player = instance.player!
         player.difficulty = .Champion
@@ -196,6 +201,7 @@ class PapyrusTests: XCTestCase {
             player.submit(move)
             XCTAssert(player.rackTiles.count == 3)
             XCTAssert(instance.fixedTiles().count == move.word.characters.count)
+            testPrintBoard()
             
             let armsToDraw: [Character] = ["a", "r", "m", "s"]
             armsToDraw.forEach { (letter) -> () in
@@ -219,6 +225,7 @@ class PapyrusTests: XCTestCase {
                 print("Best: \(best)")
                 player.submit(best)
                 XCTAssert(player.rackTiles.count == 0)
+                testPrintBoard()
                 
                 var allTiles = (toDraw + armsToDraw).sort()
                 XCTAssert(instance.fixedTiles().mapFilter({$0.letter}).sort() == allTiles)
@@ -257,7 +264,7 @@ class PapyrusTests: XCTestCase {
             }
         }
         catch {
-            XCTFail("Unexpected error")
+            XCTFail("Unexpected error \(error)")
         }
         
     }

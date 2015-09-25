@@ -95,20 +95,24 @@ extension Papyrus {
             tile.placement = .Rack
             tile.changeLetter(PapyrusBlankLetter)
         })
+        assert(droppedTiles().count == 0)
     }
     
     /// - parameter boundary: Boundary to check.
     /// - parameter filledIndexes: Indexes of fixed characters in the boundary.
     /// - parameter word: Word to check.
     /// - returns: Returns a Move object for a given word.
-    private func possibleAIMove(forBoundary boundary: Boundary,
+    private func possibleAIMove(
+        forBoundary boundary: Boundary,
         filledIndexes: [Int]? = nil,
         word mainWord: String) throws -> Move
     {
-        guard let player = player else { throw ValidationError.NoPlayer }
+        guard let player = player else {
+            throw ValidationError.NoPlayer
+        }
         
         let chars = Array(mainWord.characters)
-        let indexes = filledIndexes ?? indexesAndCharacters(forBoundary: boundary).map({$0.0})
+        let indexes = filledIndexes ?? allLetters(inBoundary: boundary).map({$0.0})
         var rackTiles = player.rackTiles
         
         assert(rackTiles.count > 0)
@@ -135,24 +139,41 @@ extension Papyrus {
             return (square, tile, tile.letter)
         })
         
+        // FIXME: Bug
+        // There is a bug here where it sometimes doesn't stretch to include all letters
+        // just had 'HOEDFAT' instead of 'HOED' played.
+        
+        // Stretch to ensure it includes the entire boundary
+        guard let stretched = stretchIfFilled(boundary) else {
+            restoreState(squareTileCharacters)
+            throw ValidationError.InvalidArrangement
+        }
+        
+        // FIXME: Move?
+        // This should probably be moved to the playable boundaries method, only returning boundaries if we
+        // hit two consecutive empty squares or an edge of the board.
+        let stretchedWord = String(lettersIn(stretched))
+        if dawg?.lookup(stretchedWord) == false {
+            restoreState(squareTileCharacters)
+            throw ValidationError.UndefinedWord(stretchedWord)
+        }
+        
         var intersections: [Word]
         var mainScore: Int
         do {
-            intersections = try intersectingWords(forBoundary: boundary)
-            mainScore = try score(boundary)
+            intersections = try intersectingWords(forBoundary: stretched)
+            mainScore = try score(stretched)
             restoreState(squareTileCharacters)
-            assert(droppedTiles().count == 0)
         } catch {
             restoreState(squareTileCharacters)
-            assert(droppedTiles().count == 0)
             throw error
         }
         
-        let word: Word = Word(boundary: boundary,
+        let word: Word = Word(boundary: stretched,
             characters: squareTileCharacters.map({$0.2}),
             squares: squareTileCharacters.map({$0.0}),
             tiles: squareTileCharacters.map({$0.1}),
-            word: mainWord,
+            word: stretchedWord,
             score: mainScore)
         
         let total = word.score + intersections.map({$0.score}).reduce(0, combine: +)
@@ -198,8 +219,8 @@ extension Papyrus {
         guard let player = player, dawg = dawg else { throw ValidationError.NoPlayer }
         assert(player.difficulty != .Human)
         let letters = player.rackTiles.map({$0.letter})
-        return allPlayableBoundaries().mapFilter { (boundary) -> ([Move]?) in
-            let fixedLetters = indexesAndCharacters(forBoundary: boundary)
+        let items = allPlayableBoundaries().mapFilter { (boundary) -> ([Move]?) in
+            let fixedLetters = allLetters(inBoundary: boundary)
             var results = [String]()
             dawg.anagramsOf(letters,
                 length: boundary.length,
@@ -211,6 +232,10 @@ extension Papyrus {
                 try? possibleAIMove(forBoundary: boundary, filledIndexes: indexes, word: $0)
             })
         }.flatten().sort({$0.total > $1.total})
+        if items.count == 0 {
+            lifecycleCallback?(.NoMoves, self)
+        }
+        return items
     }
     
     /// - parameter boundary: Boundary to check.
@@ -219,7 +244,8 @@ extension Papyrus {
     public func getMove(forBoundary boundary: Boundary) throws -> Move {
         // Throw error if no player...
         guard let player = player, dawg = dawg else { throw ValidationError.NoPlayer }
-        let playedBoundaries = filledBoundaries()
+        
+        let playedBoundaries = filledBoundaries().filter({$0.length > 1})
         
         // If no words have been played, this boundary must intersect middle.
         let m = PapyrusMiddle - 1
@@ -247,13 +273,16 @@ extension Papyrus {
         // If words have been played, it must intersect one of these played words.
         // Assumption: Previous boundaries have passed validation.
         let intersections = findIntersections(forBoundary: boundary)
-        if playedBoundaries.count > 0 && intersections.count == 0 {
+        if intersections.count == 0 && playedBoundaries != [boundary] {
             throw ValidationError.NoIntersection
+        }
+        if intersections.count == 0 && boundary.length < 2 {
+            throw ValidationError.InvalidArrangement
         }
         
         // Validate words, will throw if any are invalid...
         let mainWord = String(tiles.mapFilter({$0.letter}))
-        if !dawg.lookup(mainWord) {
+        if boundary.length > 1 && !dawg.lookup(mainWord) {
             throw ValidationError.UndefinedWord(mainWord)
         }
         
