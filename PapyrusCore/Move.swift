@@ -221,11 +221,8 @@ extension Papyrus {
         let letters = player.rackTiles.map({$0.letter})
         let items = allPlayableBoundaries().mapFilter { (boundary) -> ([Move]?) in
             let fixedLetters = allLetters(inBoundary: boundary)
-            var results = [String]()
-            dawg.anagramsOf(letters,
-                length: boundary.length,
-                filledLetters: fixedLetters,
-                results: &results)
+            let results = dawg.anagrams(withLetters: letters,
+                wordLength: boundary.length, filledLetters: fixedLetters)
             if results.count == 0 { return nil }
             let indexes = fixedLetters.map({$0.0})
             return results.mapFilter({

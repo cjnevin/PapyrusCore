@@ -8,12 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		993CB5EB1BB4776D00692603 /* twl06.txt in Resources */ = {isa = PBXBuildFile; fileRef = 993CB5EA1BB4776D00692603 /* twl06.txt */; };
+		995DD8371BB62121009B409D /* sowpods.bin in Resources */ = {isa = PBXBuildFile; fileRef = 995DD8351BB62121009B409D /* sowpods.bin */; };
+		995DD8381BB62121009B409D /* twl06.bin in Resources */ = {isa = PBXBuildFile; fileRef = 995DD8361BB62121009B409D /* twl06.bin */; };
+		995DD8481BB68C69009B409D /* Dawg.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995DD8441BB68C69009B409D /* Dawg.swift */; };
+		995DD8491BB68C69009B409D /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 995DD8451BB68C69009B409D /* LICENSE */; };
+		995DD84A1BB68C69009B409D /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 995DD8461BB68C69009B409D /* README.md */; };
 		9960AD6E1BA589D800765614 /* PapyrusCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 9960AD6D1BA589D800765614 /* PapyrusCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9960AD751BA589D800765614 /* PapyrusCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9960AD6A1BA589D800765614 /* PapyrusCore.framework */; };
 		996E23AA1BAA334A0052F1E2 /* sowpods.txt in Resources */ = {isa = PBXBuildFile; fileRef = 996E23A91BAA334A0052F1E2 /* sowpods.txt */; };
-		99B2A9E31BB4B31F00EFB0C2 /* sowpods.json in Resources */ = {isa = PBXBuildFile; fileRef = 99B2A9E21BB4B31F00EFB0C2 /* sowpods.json */; };
-		99B2A9E51BB4B3C900EFB0C2 /* twl06.json in Resources */ = {isa = PBXBuildFile; fileRef = 99B2A9E41BB4B3C900EFB0C2 /* twl06.json */; };
-		99CFE8C91BA9F20100BE522C /* Dawg.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99CFE8C81BA9F20100BE522C /* Dawg.swift */; };
 		99FD43141BA58A6400F50DCF /* BoundaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD430D1BA58A6400F50DCF /* BoundaryTests.swift */; };
 		99FD43151BA58A6400F50DCF /* DawgTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD430E1BA58A6400F50DCF /* DawgTests.swift */; };
 		99FD43161BA58A6400F50DCF /* PapyrusTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD430F1BA58A6400F50DCF /* PapyrusTests.swift */; };
@@ -43,15 +45,17 @@
 
 /* Begin PBXFileReference section */
 		993CB5EA1BB4776D00692603 /* twl06.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = twl06.txt; sourceTree = "<group>"; };
+		995DD8351BB62121009B409D /* sowpods.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = sowpods.bin; sourceTree = "<group>"; };
+		995DD8361BB62121009B409D /* twl06.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = twl06.bin; sourceTree = "<group>"; };
+		995DD8441BB68C69009B409D /* Dawg.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dawg.swift; sourceTree = "<group>"; };
+		995DD8451BB68C69009B409D /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		995DD8461BB68C69009B409D /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		9960AD6A1BA589D800765614 /* PapyrusCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PapyrusCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9960AD6D1BA589D800765614 /* PapyrusCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PapyrusCore.h; sourceTree = "<group>"; };
 		9960AD6F1BA589D800765614 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9960AD741BA589D800765614 /* PapyrusCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapyrusCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9960AD7B1BA589D800765614 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		996E23A91BAA334A0052F1E2 /* sowpods.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = sowpods.txt; sourceTree = "<group>"; };
-		99B2A9E21BB4B31F00EFB0C2 /* sowpods.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sowpods.json; sourceTree = "<group>"; };
-		99B2A9E41BB4B3C900EFB0C2 /* twl06.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = twl06.json; sourceTree = "<group>"; };
-		99CFE8C81BA9F20100BE522C /* Dawg.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dawg.swift; sourceTree = "<group>"; };
 		99FD430D1BA58A6400F50DCF /* BoundaryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoundaryTests.swift; sourceTree = "<group>"; };
 		99FD430E1BA58A6400F50DCF /* DawgTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DawgTests.swift; sourceTree = "<group>"; };
 		99FD430F1BA58A6400F50DCF /* PapyrusTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusTests.swift; sourceTree = "<group>"; };
@@ -88,6 +92,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		995DD8421BB68C69009B409D /* Dawg */ = {
+			isa = PBXGroup;
+			children = (
+				995DD8441BB68C69009B409D /* Dawg.swift */,
+				995DD8451BB68C69009B409D /* LICENSE */,
+				995DD8461BB68C69009B409D /* README.md */,
+			);
+			path = Dawg;
+			sourceTree = SOURCE_ROOT;
+		};
 		9960AD601BA589D800765614 = {
 			isa = PBXGroup;
 			children = (
@@ -111,7 +125,7 @@
 			children = (
 				9960AD6D1BA589D800765614 /* PapyrusCore.h */,
 				99FD431B1BA58AF200F50DCF /* Boundary.swift */,
-				99CFE8C81BA9F20100BE522C /* Dawg.swift */,
+				995DD8421BB68C69009B409D /* Dawg */,
 				99FD431D1BA58AF200F50DCF /* Move.swift */,
 				99FD431F1BA58AF200F50DCF /* Papyrus.swift */,
 				99FD43211BA58AF200F50DCF /* Player.swift */,
@@ -143,10 +157,10 @@
 		99F53A0A1BABEED300A88AA2 /* TestDictionaries */ = {
 			isa = PBXGroup;
 			children = (
-				99B2A9E41BB4B3C900EFB0C2 /* twl06.json */,
-				993CB5EA1BB4776D00692603 /* twl06.txt */,
-				99B2A9E21BB4B31F00EFB0C2 /* sowpods.json */,
+				995DD8351BB62121009B409D /* sowpods.bin */,
 				996E23A91BAA334A0052F1E2 /* sowpods.txt */,
+				995DD8361BB62121009B409D /* twl06.bin */,
+				993CB5EA1BB4776D00692603 /* twl06.txt */,
 			);
 			name = TestDictionaries;
 			sourceTree = "<group>";
@@ -250,6 +264,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				995DD8491BB68C69009B409D /* LICENSE in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -258,9 +273,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				993CB5EB1BB4776D00692603 /* twl06.txt in Resources */,
+				995DD8381BB62121009B409D /* twl06.bin in Resources */,
 				996E23AA1BAA334A0052F1E2 /* sowpods.txt in Resources */,
-				99B2A9E31BB4B31F00EFB0C2 /* sowpods.json in Resources */,
-				99B2A9E51BB4B3C900EFB0C2 /* twl06.json in Resources */,
+				995DD8371BB62121009B409D /* sowpods.bin in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -271,14 +286,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				99CFE8C91BA9F20100BE522C /* Dawg.swift in Sources */,
 				99FD43271BA58AF200F50DCF /* Move.swift in Sources */,
 				99FD43291BA58AF200F50DCF /* Papyrus.swift in Sources */,
 				99FD432B1BA58AF200F50DCF /* Player.swift in Sources */,
 				99FD43311BA58AFC00F50DCF /* CollectionType+Papyrus.swift in Sources */,
 				99FD43251BA58AF200F50DCF /* Boundary.swift in Sources */,
 				99FD432D1BA58AF200F50DCF /* Square.swift in Sources */,
+				995DD8481BB68C69009B409D /* Dawg.swift in Sources */,
 				99FD432E1BA58AF200F50DCF /* Tile.swift in Sources */,
+				995DD84A1BB68C69009B409D /* README.md in Sources */,
 				99FD432C1BA58AF200F50DCF /* Position.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
