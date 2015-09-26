@@ -11,7 +11,7 @@ import XCTest
 
 class DawgTests: XCTestCase {
     
-    let dawg = Dawg.load(NSBundle(forClass: DawgTests.self).pathForResource("sowpods", ofType: "json")!)!
+    let dawg = Dawg()//.load(NSBundle(forClass: DawgTests.self).pathForResource("sowpods", ofType: "json")!)!
 
     override func setUp() {
         super.setUp()
@@ -34,8 +34,8 @@ class DawgTests: XCTestCase {
     }
     
     
-    func createBuilder() {
-        let sowpods = NSBundle(forClass: DawgTests.self).pathForResource("sowpods", ofType: "txt")!
+    func testBuilder() {
+        let sowpods = NSBundle(forClass: DawgTests.self).pathForResource("twl06", ofType: "txt")!
         //let dawg3 = Dawg.load("/Users/chrisnevin/Documents/twl06.json")!
         let data = try! NSString(contentsOfFile: sowpods, encoding: NSUTF8StringEncoding)
         let lines = data.componentsSeparatedByString("\n").sort()
@@ -45,15 +45,17 @@ class DawgTests: XCTestCase {
             
             //if index % 10 == 0 {
             dawg.insert(line)
-            //XCTAssert(dawg.lookup(line), line)
+             //XCTAssert(dawg.lookup(line), line)
             if index % 100 == 0 {
                 print(line, lines.count - index)
+                //dawg.save("/Users/chrisnevin/Documents/twl06.bin")
             }
             //}
             index++
         }
         //index = 0
-        dawg.save("/Users/chrisnevin/Documents/sowpods.json")
+        dawg.minimize(0)
+        dawg.save("/Users/chrisnevin/Documents/twl06.bin")
         lines.forEach { (line) -> () in
             //if index % 10 == 0 {
             XCTAssert(dawg.lookup(line), line)
