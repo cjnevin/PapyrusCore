@@ -1,0 +1,3 @@
+[submodule "Dawg"]
+	path = Dawg
+	url = https://github.com/ChrisAU/Dawg.git

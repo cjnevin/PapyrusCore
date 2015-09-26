@@ -14,7 +14,7 @@ class PapyrusTests: XCTestCase {
     let instance = Papyrus()
     var dawg: Dawg {
         if Papyrus.dawg == nil {
-            Papyrus.dawg = Dawg.load(NSBundle(forClass: PapyrusTests.self).pathForResource("output", ofType: "json")!)!
+            Papyrus.dawg = Dawg.load(NSBundle(forClass: PapyrusTests.self).pathForResource("sowpods", ofType: "bin")!)!
         }
         return Papyrus.dawg!
     }
@@ -211,9 +211,7 @@ class PapyrusTests: XCTestCase {
             }
             XCTAssert(player.rackTiles.count == PapyrusRackAmount)
             
-            var results = [String]()
-            dawg.anagramsOf(instance.lettersIn(player.rackTiles),
-                length: player.rackTiles.count, results: &results)
+            let results = dawg.anagrams(withLetters: instance.lettersIn(player.rackTiles), wordLength: player.rackTiles.count)
             
             if dawg.lookup("disarms") == false { assert(false) }
             XCTAssert(results.contains("disarms"))
@@ -248,7 +246,7 @@ class PapyrusTests: XCTestCase {
                 for possible in dogPossibles {
                     if possible.word.word == "dog" {
                         if possible.intersections.count == 1 {
-                            if possible.intersections[0].word == "cards" {
+                            if possible.intersections[0].word == "disarms" {
                                 player.submit(possible)
                                 print("Dog: \(possible)")
                                 allTiles += possible.word.tiles.mapFilter({$0.letter})
