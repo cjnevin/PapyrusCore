@@ -8,6 +8,10 @@ Initialising a game of scrabble can be done using this class, simply call the ne
 ### Boundary 
 A boundary is a representation of two positions which is used internally for a myriad of different tasks. AI uses this class to calculate possible words (beta).
 
+    Completed
+    - Human score: 317
+    - Champion score: 531 (Winner)
+
 ### Dawg 
 This module is essentially a wrapper for the word list, it provides a lookup method and a way of returning anagrams given a set of parameters. Dawg stands for directed acyclic word graph.
 
