@@ -68,6 +68,10 @@ class PapyrusTests: XCTestCase {
     }
     
     func testPlayerTiles() {
+        instance.playerIndex = 9
+        XCTAssert(instance.player == nil)
+        instance.playerIndex = 0
+        
         XCTAssert(instance.squareAt(nil) == nil)
         XCTAssert(instance.squareAt(Position(horizontal: false, iterable: 0, fixed: 0)) != nil)
         

@@ -92,13 +92,13 @@ extension Papyrus {
     
     /// - parameter squares: Squares to check.
     /// - returns: All tiles for given squares.
-    func tilesIn(squares: [Square]) -> [Tile] {
+    public func tilesIn(squares: [Square]) -> [Tile] {
         return squares.mapFilter({$0.tile})
     }
     
     /// - parameter boundary: Boundary to check.
     /// - returns: All tiles in a given boundary.
-    func tilesIn(boundary: Boundary) -> [Tile] {
+    public func tilesIn(boundary: Boundary) -> [Tile] {
         return squaresIn(boundary).mapFilter({$0.tile})
     }
     

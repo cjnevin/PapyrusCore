@@ -24,6 +24,10 @@ class TileTests: XCTestCase {
     func testTiles() {
         let totalTiles = TileConfiguration.map({$0.0}).reduce(0, combine: +)
         XCTAssert(Tile.createTiles().count == totalTiles)
+        
+        let tile = Tile("?", 0)
+        tile.changeLetter("T")
+        XCTAssert(tile.letter == "T")
     }
 
 }

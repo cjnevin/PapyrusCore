@@ -37,7 +37,7 @@ public final class Papyrus {
     
     lazy var tiles = [Tile]()
     
-    lazy var players = [Player]()
+    public internal(set) lazy var players = [Player]()
     public internal(set) var playerIndex: Int = 0
     public var player: Player? {
         if players.count <= playerIndex { return nil }

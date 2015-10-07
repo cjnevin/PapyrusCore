@@ -206,22 +206,26 @@ extension Papyrus {
     // These methods favour the greater values of the two (min/max).
     
     /// - returns: All boundaries for filled tiles in both axes.
-    func filledBoundaries() -> [Boundary] {
-        func boundary(withHorizontal horizontal: Bool, fixed: Int) -> Boundary? {
-            return Boundary(
-                start: nextWhileEmpty(Position(horizontal: horizontal,
-                    iterable: 0, fixed: fixed))?.next(),
-                end: previousWhileEmpty(Position(horizontal: horizontal,
-                    iterable: PapyrusDimensions - 1, fixed: fixed))?.previous())
+    public func filledBoundaries() -> [Boundary] {
+        func getBoundaries(withHorizontal horizontal: Bool, fixed: Int) -> [Boundary] {
+            func iterate(iterable: Int) -> Boundary? {
+                let start = nextWhileEmpty(
+                    Position(horizontal: horizontal, iterable: iterable, fixed: fixed))?.next()
+                let end = nextWhileFilled(start)
+                return Boundary(start: start, end: end)
+            }
+            var i = 0
+            var lineBoundaries = [Boundary]()
+            while let boundary = iterate(i) {
+                lineBoundaries.append(boundary)
+                i = boundary.end.iterable + 1
+            }
+            return lineBoundaries
         }
         var boundaries = Set<Boundary>()
         (0..<PapyrusDimensions).forEach({ (fixed) in
-            if let verticalBoundary = boundary(withHorizontal: false, fixed: fixed) {
-                boundaries.insert(verticalBoundary)
-            }
-            if let horizontalBoundary = boundary(withHorizontal: true, fixed: fixed) {
-                boundaries.insert(horizontalBoundary)
-            }
+            boundaries.unionInPlace(getBoundaries(withHorizontal: false, fixed: fixed))
+            boundaries.unionInPlace(getBoundaries(withHorizontal: true, fixed: fixed))
         })
         return Array(boundaries)
     }
