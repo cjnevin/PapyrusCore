@@ -49,6 +49,11 @@ class DawgTests: XCTestCase {
             XCTAssert(self.dawg.lookup("cart") == true)
             XCTAssert(self.dawg.lookup("xyza") == false)
             XCTAssert(self.dawg.lookup("CAT") == true)
+            
+            XCTAssert(self.dawg.rootNode == self.dawg.rootNode)
+            
+            XCTAssert(Dawg.load("") == nil)
+            
         }
     }
 }
