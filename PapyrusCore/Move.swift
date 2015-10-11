@@ -242,11 +242,11 @@ extension Papyrus {
         // Throw error if no player...
         guard let player = player, dawg = dawg else { throw ValidationError.NoPlayer }
         
-        let playedBoundaries = filledBoundaries().filter({$0.length > 1})
+        let isFirstMove = fixedTiles().count == 0
         
         // If no words have been played, this boundary must intersect middle.
         let m = PapyrusMiddle - 1
-        if playedBoundaries.count == 0 && (boundary.start.fixed != m ||
+        if isFirstMove && (boundary.start.fixed != m ||
             boundary.start.iterable > m || boundary.end.iterable < m) {
                 throw ValidationError.NoCenterIntersection
         }
@@ -258,7 +258,7 @@ extension Papyrus {
         }
         
         // If no words have been played ensure that tile count is valid.
-        if playedBoundaries.count == 0 && tiles.count < 2 {
+        if isFirstMove && tiles.count < 2 {
             throw ValidationError.InsufficientTiles
         }
         
@@ -270,6 +270,7 @@ extension Papyrus {
         // If words have been played, it must intersect one of these played words.
         // Assumption: Previous boundaries have passed validation.
         let intersections = findIntersections(forBoundary: boundary)
+        let playedBoundaries = filledBoundaries().filter({$0.length > 1})
         if intersections.count == 0 && playedBoundaries != [boundary] {
             throw ValidationError.NoIntersection
         }
