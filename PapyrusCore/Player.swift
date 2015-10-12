@@ -42,7 +42,7 @@ public final class Player: Equatable {
         return held.first
     }
     
-    init(score: Int? = 0, difficulty: Difficulty = .Human) {
+    private init(score: Int? = 0, difficulty: Difficulty = .Human) {
         self.score = score!
         self.difficulty = difficulty
     }
@@ -79,7 +79,10 @@ public final class Player: Equatable {
 
 extension Papyrus {
     /// - returns: A new player with their rack pre-filled. Or an error if refill fails.
-    public func createPlayer(difficulty: Difficulty = .Human) -> Player {
+    public func createPlayer(difficulty: Difficulty = .Human) -> Player? {
+        if players.count == 4 {
+            return nil
+        }
         let newPlayer = Player(difficulty: difficulty)
         draw(newPlayer, endTurn: false)
         players.append(newPlayer)
