@@ -104,11 +104,13 @@ extension Papyrus {
         // If we have no tiles left in the bag complete game
         if player.replenishTiles(fromBag: bagTiles()) == 0 && player.rackTiles.count == 0 {
             // Subtract remaining tiles in racks
-            for player in players {
-                player.score = player.rackTiles.mapFilter({$0.value}).reduce(player.score, combine: -)
+            if lifecycle != .Completed {
+                for player in players {
+                    player.score = player.rackTiles.mapFilter({$0.value}).reduce(player.score, combine: -)
+                }
+                // Complete the game
+                lifecycleCallback?(.Completed, self)
             }
-            // Complete the game
-            lifecycleCallback?(.Completed, self)
             return
         }
         if endTurn {
