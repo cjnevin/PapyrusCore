@@ -12,26 +12,44 @@ public let PapyrusRackAmount: Int = 7
 public let PapyrusDimensions: Int = 15
 let PapyrusMiddle: Int = 8
 
-public typealias LifecycleCallback = (Lifecycle, Papyrus) -> ()
+public typealias LifecycleCallback = (Lifecycle) -> ()
 
 public enum Lifecycle {
-    case Cleanup
+    case NoGame
     case Preparing
     case Ready
     case ChangedPlayer
-    case EndedTurn
-    case Completed
-    case NoMoves
+    case SkippedTurn
+    case EndedTurn(Move)
+    case GameOver
+    
+    func gameComplete() -> Bool {
+        if case .GameOver = self {
+            return true
+        }
+        return false
+    }
 }
 
 public final class Papyrus {
+    public var operationQueue: NSOperationQueue {
+        struct Static {
+            static let instance = NSOperationQueue()
+        }
+        Static.instance.maxConcurrentOperationCount = 1
+        return Static.instance
+    }
     public static var dawg: Dawg?
     public var dawg: Dawg? {
         return Papyrus.dawg
     }
     
-    var lifecycleCallback: LifecycleCallback?
-    public internal(set) var lifecycle: Lifecycle?
+    let lifecycleCallback: LifecycleCallback
+    public internal(set) var lifecycle: Lifecycle {
+        didSet {
+            lifecycleCallback(lifecycle)
+        }
+    }
     public internal(set) var inProgress: Bool = false
     public let squares: [[Square]]
     
@@ -44,27 +62,22 @@ public final class Papyrus {
         return players[playerIndex]
     }
     
-    public init() {
+    public init(callback: LifecycleCallback) {
+        lifecycle = .NoGame
+        lifecycleCallback = callback
         squares = Square.createSquares()
     }
     
     /// Create a new game.
     /// - parameter callback: Callback which will be called throughout all stages of game lifecycle.
-    public func newGame(callback: LifecycleCallback) {
+    public func newGame() {
         squares.flatten().forEach({$0.tile = nil})
         inProgress = true
-        lifecycleCallback?(.Cleanup, self)
-        lifecycleCallback = callback
-        lifecycleCallback?(.Preparing, self)
+        lifecycle = .Preparing
         tiles.removeAll()
         players.removeAll()
         playerIndex = 0
         tiles.appendContentsOf(Tile.createTiles())
-        lifecycleCallback?(.Ready, self)
-    }
-    
-    public func changeState(state: Lifecycle) {
-        lifecycle = state
-        lifecycleCallback?(state, self)
+        lifecycle = .Ready
     }
 }

@@ -42,12 +42,12 @@ public final class Player: Equatable {
         return held.first
     }
     
-    private init(score: Int? = 0, difficulty: Difficulty = .Human) {
+    internal init(score: Int? = 0, difficulty: Difficulty = .Human) {
         self.score = score!
         self.difficulty = difficulty
     }
     /// Submit a move, drop all tiles on the board and increment score.
-    public func submit(move: Move) {
+    func submit(move: Move) {
         zip(move.word.tiles, move.word.characters).forEach { (tile, character) -> () in
             tile.changeLetter(character)
             assert(tile.letter == character)
@@ -84,37 +84,38 @@ extension Papyrus {
             return nil
         }
         let newPlayer = Player(difficulty: difficulty)
-        draw(newPlayer, endTurn: false)
+        draw(newPlayer)
         players.append(newPlayer)
         return newPlayer
     }
     
     /// Advances to next player's turn.
-    public func nextPlayer() {
+    func nextPlayer() {
         playerIndex++
         if playerIndex >= players.count {
             playerIndex = 0
         }
-        lifecycleCallback?(.ChangedPlayer, self)
+        lifecycle = .ChangedPlayer
+        if player?.difficulty != .Human {
+            submitAIMove()
+        }
     }
     
     /// Draw tiles from the bag.
     /// - parameter player: Player's rack to fill.
-    public func draw(player: Player, endTurn: Bool = true) {
-        // If we have no tiles left in the bag complete game
-        if player.replenishTiles(fromBag: bagTiles()) == 0 && player.rackTiles.count == 0 {
-            // Subtract remaining tiles in racks
-            if lifecycle != .Completed {
+    public func draw(player: Player) {
+        // If we have no tiles left in the bag complete game.
+        // This call will also fill the players rack.
+        if player.replenishTiles(fromBag: bagTiles()) == 0 &&
+            player.rackTiles.count == 0 {
+            if lifecycle.gameComplete() {
+                // Subtract remaining tiles in racks
                 for player in players {
                     player.score = player.rackTiles.mapFilter({$0.value}).reduce(player.score, combine: -)
                 }
                 // Complete the game
-                lifecycleCallback?(.Completed, self)
+                lifecycle = .GameOver
             }
-            return
-        }
-        if endTurn {
-            lifecycleCallback?(.EndedTurn, self)
         }
     }
 }

@@ -107,7 +107,7 @@ public final class Square: CustomDebugStringConvertible, Equatable {
 extension Papyrus {
     /// - parameter position: Position to check.
     /// - returns: Square at given position.
-    public func squareAt(position: Position?) -> Square? {
+    func squareAt(position: Position?) -> Square? {
         guard let pos = position else { return nil }
         if pos.horizontal {
             return squares[pos.fixed][pos.iterable]
@@ -118,8 +118,18 @@ extension Papyrus {
     
     /// - parameter boundary: Boundary to check.
     /// - returns: All squares in a given boundary.
-    public func squaresIn(boundary: Boundary) -> [Square] {
+    func squaresIn(boundary: Boundary) -> [Square] {
         return boundary.positions().mapFilter({ squareAt($0) })
+    }
+    
+    /// - returns: All squares for a given set of tiles.
+    func squaresFor(tiles: [Tile]) -> [Square] {
+        return squares.flatten().mapFilter({ (square) -> (Square?) in
+            if let tile = square.tile where tiles.contains(tile) {
+                return square
+            }
+            return nil
+        })
     }
 }
 

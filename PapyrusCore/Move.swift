@@ -15,6 +15,7 @@ public enum ValidationError: ErrorType {
     case InvalidArrangement
     case InsufficientTiles
     case NoCenterIntersection
+    case NoMoves
     case NoIntersection
     case UndefinedWord(String)
     case Message(String)
@@ -215,7 +216,7 @@ extension Papyrus {
     }
     
     /// - returns: All valid possible moves in the current state of the board.
-    public func getAIMoves() throws -> [Move] {
+    internal func getAIMoves() throws -> [Move] {
         guard let player = player, dawg = dawg else { throw ValidationError.NoPlayer }
         assert(player.difficulty != .Human)
         let letters = player.rackTiles.map({$0.letter})
@@ -229,10 +230,27 @@ extension Papyrus {
                 try? possibleAIMove(forBoundary: boundary, filledIndexes: indexes, word: $0)
             })
         }.flatten().sort({$0.total > $1.total})
-        if items.count == 0 {
-            lifecycleCallback?(.NoMoves, self)
-        }
         return items
+    }
+    
+    /// - returns: Move for player with difficulty.
+    internal func getAIMove() throws -> Move {
+        if player?.difficulty == .Human {
+            throw ValidationError.NoPlayer
+        }
+        let moves = try getAIMoves()
+        var move: Move?
+        if player?.difficulty == .Champion {
+            move = moves.first
+        } else if player?.difficulty == .Newbie {
+            move = moves[abs(moves.count / 4)]
+        } else {
+            move = moves[abs(moves.count / 2)]
+        }
+        if move == nil {
+            throw ValidationError.NoMoves
+        }
+        return move!
     }
     
     /// - parameter boundary: Boundary to check.
@@ -286,5 +304,54 @@ extension Papyrus {
         
         // Get move for a particular word
         return try possibleMove(forBoundary: boundary)
+    }
+    
+    public func submitAIMove() {
+        operationQueue.addOperationWithBlock { [weak self] () -> Void in
+            guard let game = self, player = game.player else { return }
+            print("Rack: \(player.rackTiles)")
+            let move = try? game.getAIMove()
+            NSOperationQueue.mainQueue().addOperationWithBlock({ [weak self] () -> Void in
+                guard let move = move else {
+                    self?.lifecycle = .SkippedTurn
+                    self?.nextPlayer()
+                    return
+                }
+                self?.submitMove(move)
+            })
+        }
+    }
+    
+    public func submitMove(move: Move) {
+        player?.submit(move)
+        draw(player!)
+        lifecycle = .EndedTurn(move)
+        nextPlayer()
+    }
+    
+    func moveForPositions(positions: [Position]) throws -> Move {
+        if let boundary = stretchWhileFilled(Boundary(positions: positions)) {
+            let move = try getMove(forBoundary: boundary)
+            return move
+        }
+        throw ValidationError.InvalidArrangement
+    }
+    
+    
+    /// Check to see if play is valid.
+    public func validate() throws -> Move? {
+        let positions = droppedPositions()
+        if positions.count < 1 { return nil }
+        do {
+            let move = try moveForPositions(positions)
+            return move
+        }
+        catch {
+            if positions.count > 1 {
+                return nil
+            }
+            let invertedPositions = positions.mapFilter({$0.positionWithHorizontal(!$0.horizontal)})
+            return try moveForPositions(invertedPositions)
+        }
     }
 }

@@ -11,7 +11,13 @@ import XCTest
 
 class PapyrusTests: XCTestCase {
 
-    let instance = Papyrus()
+    var _instance: Papyrus!
+    var instance: Papyrus {
+        if _instance == nil {
+            _instance = Papyrus(callback: handleLifecycle)
+        }
+        return _instance
+    }
     var dawg: Dawg {
         if Papyrus.dawg == nil {
             Papyrus.dawg = Dawg.load(NSBundle(forClass: PapyrusTests.self).pathForResource("sowpods", ofType: "bin")!)!
@@ -19,27 +25,29 @@ class PapyrusTests: XCTestCase {
         return Papyrus.dawg!
     }
     
+    func handleLifecycle(lifecycle: Lifecycle) {
+        switch lifecycle {
+        case .NoGame:
+            print("Cleanup")
+        case .Preparing:
+            print("Preparing")
+        case .Ready:
+            print("Ready")
+        case .ChangedPlayer:
+            print("Player changed")
+        case .GameOver:
+            print("Completed")
+        case .EndedTurn(_):
+            print("Ended Turn")
+        case .SkippedTurn:
+            print("Skipped Turn")
+        }
+    }
+    
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        instance.newGame { (state, game) -> () in
-            switch state {
-            case .Cleanup:
-                print("Cleanup")
-            case .Preparing:
-                print("Preparing")
-            case .Ready:
-                print("Ready")
-            case .ChangedPlayer:
-                print("Player changed")
-            case .Completed:
-                print("Completed")
-            case .EndedTurn:
-                print("Ended Turn")
-            case .NoMoves:
-                print("No Moves")
-            }
-        }
+        instance.newGame()
     }
     
     override func tearDown() {
