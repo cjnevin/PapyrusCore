@@ -32,7 +32,7 @@ public func == (lhs: Square, rhs: Square) -> Bool {
     return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
 }
 
-public final class Square: CustomDebugStringConvertible, Equatable {
+public final class Square: CustomDebugStringConvertible, Equatable, Hashable {
     /// - returns: Square array.
     class func createSquares() -> [[Square]] {
         var squares = [[Square]]()
@@ -102,6 +102,10 @@ public final class Square: CustomDebugStringConvertible, Equatable {
         guard let tile = tile else { return 0 }
         return (tile.placement == .Fixed ? 1 : type.wordMultiplier)
     }
+    
+    public var hashValue: Int {
+        return "\(row),\(column)".hashValue
+    }
 }
 
 extension Papyrus {
@@ -123,7 +127,7 @@ extension Papyrus {
     }
     
     /// - returns: All squares for a given set of tiles.
-    func squaresFor(tiles: [Tile]) -> [Square] {
+    public func squaresFor(tiles: [Tile]) -> [Square] {
         return squares.flatten().mapFilter({ (square) -> (Square?) in
             if let tile = square.tile where tiles.contains(tile) {
                 return square
