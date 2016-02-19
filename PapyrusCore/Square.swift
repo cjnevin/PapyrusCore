@@ -35,33 +35,24 @@ public func == (lhs: Square, rhs: Square) -> Bool {
 public final class Square: CustomDebugStringConvertible, Equatable, Hashable {
     /// - returns: Square array.
     class func createSquares() -> [[Square]] {
-        var squares = [[Square]]()
         let m = PapyrusMiddle
-        for row in 1...PapyrusDimensions {
-            var line = [Square]()
-            for col in 1...PapyrusDimensions {
+        let range = 1...PapyrusDimensions
+        return range.map { (row) -> [Square] in
+            range.map({ (col) -> Square in
                 var mod: Modifier = .None
                 func plusMinus(offset: Int, _ n: Int) -> Bool {
                     return offset == m - n || offset == m + n
                 }
                 func tuples(arr: [(Int, Int)]) -> Bool {
-                    for (x, y) in arr {
-                        if (plusMinus(row, x) && plusMinus(col, y)) ||
-                            (plusMinus(col, x) && plusMinus(row, y)) {
-                            return true
-                        }
+                    return arr.contains { (x, y) in
+                        (plusMinus(row, x) && plusMinus(col, y)) || (plusMinus(col, x) && plusMinus(row, y))
                     }
-                    return false
                 }
                 func numbers(arr: [Int]) -> Bool {
-                    for n in arr {
-                        if plusMinus(row, n) && plusMinus(col, n) {
-                            return true
-                        }
+                    return arr.contains { (n) in
+                        plusMinus(row, n) && plusMinus(col, n)
                     }
-                    return false
                 }
-                
                 if row == PapyrusMiddle && col == PapyrusMiddle {
                     mod = .Center
                 } else if numbers([3,4,5,6]) {
@@ -73,18 +64,15 @@ public final class Square: CustomDebugStringConvertible, Equatable, Hashable {
                 } else if numbers([m-1]) || tuples([(0, m-1)]) {
                     mod = .Wordx3
                 }
-                
-                line.append(Square(mod, row: row - 1, column: col - 1))
-            }
-            squares.append(line)
+                return Square(mod, row: row - 1, column: col - 1)
+            })
         }
-        return squares
     }
     public let row: Int
     public let column: Int
     public let type: Modifier
     public var tile: Tile?
-    private init(_ type: Modifier, row: Int, column: Int) {
+    internal init(_ type: Modifier, row: Int, column: Int) {
         self.type = type
         self.row = row
         self.column = column
@@ -107,33 +95,3 @@ public final class Square: CustomDebugStringConvertible, Equatable, Hashable {
         return "\(row),\(column)".hashValue
     }
 }
-
-extension Papyrus {
-    /// - parameter position: Position to check.
-    /// - returns: Square at given position.
-    func squareAt(position: Position?) -> Square? {
-        guard let pos = position else { return nil }
-        if pos.horizontal {
-            return squares[pos.fixed][pos.iterable]
-        } else {
-            return squares[pos.iterable][pos.fixed]
-        }
-    }
-    
-    /// - parameter boundary: Boundary to check.
-    /// - returns: All squares in a given boundary.
-    func squaresIn(boundary: Boundary) -> [Square] {
-        return boundary.positions().mapFilter({ squareAt($0) })
-    }
-    
-    /// - returns: All squares for a given set of tiles.
-    public func squaresFor(tiles: [Tile]) -> [Square] {
-        return squares.flatten().mapFilter({ (square) -> (Square?) in
-            if let tile = square.tile where tiles.contains(tile) {
-                return square
-            }
-            return nil
-        })
-    }
-}
-

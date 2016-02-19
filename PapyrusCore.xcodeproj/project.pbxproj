@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9933ED9C1C77A8650013A9B4 /* Papyrus+Boundary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9933ED9B1C77A8650013A9B4 /* Papyrus+Boundary.swift */; };
+		9933ED9E1C77A8BD0013A9B4 /* Papyrus+Tile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9933ED9D1C77A8BD0013A9B4 /* Papyrus+Tile.swift */; };
+		9933EDA01C77A8F60013A9B4 /* Papyrus+Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9933ED9F1C77A8F60013A9B4 /* Papyrus+Player.swift */; };
+		9933EDA31C77A9460013A9B4 /* Papyrus+Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9933EDA21C77A9460013A9B4 /* Papyrus+Position.swift */; };
+		9933EDA51C77A9590013A9B4 /* Papyrus+Square.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9933EDA41C77A9590013A9B4 /* Papyrus+Square.swift */; };
+		9933EDA71C77A9750013A9B4 /* Papyrus+Move.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9933EDA61C77A9750013A9B4 /* Papyrus+Move.swift */; };
+		9933EDA91C77AA1F0013A9B4 /* Word.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9933EDA81C77AA1F0013A9B4 /* Word.swift */; };
 		993CB5EB1BB4776D00692603 /* twl06.txt in Resources */ = {isa = PBXBuildFile; fileRef = 993CB5EA1BB4776D00692603 /* twl06.txt */; };
 		995DD8371BB62121009B409D /* sowpods.bin in Resources */ = {isa = PBXBuildFile; fileRef = 995DD8351BB62121009B409D /* sowpods.bin */; };
 		995DD8381BB62121009B409D /* twl06.bin in Resources */ = {isa = PBXBuildFile; fileRef = 995DD8361BB62121009B409D /* twl06.bin */; };
@@ -44,6 +51,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9933ED9B1C77A8650013A9B4 /* Papyrus+Boundary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Papyrus+Boundary.swift"; sourceTree = "<group>"; };
+		9933ED9D1C77A8BD0013A9B4 /* Papyrus+Tile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Papyrus+Tile.swift"; sourceTree = "<group>"; };
+		9933ED9F1C77A8F60013A9B4 /* Papyrus+Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Papyrus+Player.swift"; path = "PapyrusCore/Papyrus+Player.swift"; sourceTree = SOURCE_ROOT; };
+		9933EDA21C77A9460013A9B4 /* Papyrus+Position.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Papyrus+Position.swift"; sourceTree = "<group>"; };
+		9933EDA41C77A9590013A9B4 /* Papyrus+Square.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Papyrus+Square.swift"; sourceTree = "<group>"; };
+		9933EDA61C77A9750013A9B4 /* Papyrus+Move.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Papyrus+Move.swift"; sourceTree = "<group>"; };
+		9933EDA81C77AA1F0013A9B4 /* Word.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Word.swift; sourceTree = "<group>"; };
 		993CB5EA1BB4776D00692603 /* twl06.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = twl06.txt; sourceTree = "<group>"; };
 		995DD8351BB62121009B409D /* sowpods.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = sowpods.bin; sourceTree = "<group>"; };
 		995DD8361BB62121009B409D /* twl06.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = twl06.bin; sourceTree = "<group>"; };
@@ -92,6 +106,34 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9933EDA11C77A9150013A9B4 /* Papyrus Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				9933ED9B1C77A8650013A9B4 /* Papyrus+Boundary.swift */,
+				9933EDA61C77A9750013A9B4 /* Papyrus+Move.swift */,
+				9933ED9F1C77A8F60013A9B4 /* Papyrus+Player.swift */,
+				9933EDA21C77A9460013A9B4 /* Papyrus+Position.swift */,
+				9933EDA41C77A9590013A9B4 /* Papyrus+Square.swift */,
+				9933ED9D1C77A8BD0013A9B4 /* Papyrus+Tile.swift */,
+			);
+			name = "Papyrus Extensions";
+			sourceTree = "<group>";
+		};
+		9933EDAC1C77BAF90013A9B4 /* Objects */ = {
+			isa = PBXGroup;
+			children = (
+				995DD8421BB68C69009B409D /* Dawg */,
+				99FD431B1BA58AF200F50DCF /* Boundary.swift */,
+				99FD431D1BA58AF200F50DCF /* Move.swift */,
+				99FD43211BA58AF200F50DCF /* Player.swift */,
+				99FD43221BA58AF200F50DCF /* Position.swift */,
+				99FD43231BA58AF200F50DCF /* Square.swift */,
+				99FD43241BA58AF200F50DCF /* Tile.swift */,
+				9933EDA81C77AA1F0013A9B4 /* Word.swift */,
+			);
+			name = Objects;
+			sourceTree = "<group>";
+		};
 		995DD8421BB68C69009B409D /* Dawg */ = {
 			isa = PBXGroup;
 			children = (
@@ -124,14 +166,9 @@
 			isa = PBXGroup;
 			children = (
 				9960AD6D1BA589D800765614 /* PapyrusCore.h */,
-				99FD431B1BA58AF200F50DCF /* Boundary.swift */,
-				995DD8421BB68C69009B409D /* Dawg */,
-				99FD431D1BA58AF200F50DCF /* Move.swift */,
 				99FD431F1BA58AF200F50DCF /* Papyrus.swift */,
-				99FD43211BA58AF200F50DCF /* Player.swift */,
-				99FD43221BA58AF200F50DCF /* Position.swift */,
-				99FD43231BA58AF200F50DCF /* Square.swift */,
-				99FD43241BA58AF200F50DCF /* Tile.swift */,
+				9933EDA11C77A9150013A9B4 /* Papyrus Extensions */,
+				9933EDAC1C77BAF90013A9B4 /* Objects */,
 				99FD432F1BA58AFC00F50DCF /* Extensions */,
 				9960AD6F1BA589D800765614 /* Info.plist */,
 			);
@@ -289,13 +326,20 @@
 				99FD43271BA58AF200F50DCF /* Move.swift in Sources */,
 				99FD43291BA58AF200F50DCF /* Papyrus.swift in Sources */,
 				99FD432B1BA58AF200F50DCF /* Player.swift in Sources */,
+				9933EDA71C77A9750013A9B4 /* Papyrus+Move.swift in Sources */,
+				9933EDA91C77AA1F0013A9B4 /* Word.swift in Sources */,
 				99FD43311BA58AFC00F50DCF /* CollectionType+Papyrus.swift in Sources */,
 				99FD43251BA58AF200F50DCF /* Boundary.swift in Sources */,
+				9933EDA01C77A8F60013A9B4 /* Papyrus+Player.swift in Sources */,
 				99FD432D1BA58AF200F50DCF /* Square.swift in Sources */,
+				9933EDA31C77A9460013A9B4 /* Papyrus+Position.swift in Sources */,
 				995DD8481BB68C69009B409D /* Dawg.swift in Sources */,
 				99FD432E1BA58AF200F50DCF /* Tile.swift in Sources */,
 				995DD84A1BB68C69009B409D /* README.md in Sources */,
 				99FD432C1BA58AF200F50DCF /* Position.swift in Sources */,
+				9933ED9E1C77A8BD0013A9B4 /* Papyrus+Tile.swift in Sources */,
+				9933ED9C1C77A8650013A9B4 /* Papyrus+Boundary.swift in Sources */,
+				9933EDA51C77A9590013A9B4 /* Papyrus+Square.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

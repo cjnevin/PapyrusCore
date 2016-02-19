@@ -8,7 +8,6 @@
 
 import Foundation
 
-public let PapyrusRackAmount: Int = 7
 public let PapyrusDimensions: Int = 15
 let PapyrusMiddle: Int = 8
 
@@ -71,7 +70,7 @@ public final class Papyrus {
     /// Create a new game.
     /// - parameter callback: Callback which will be called throughout all stages of game lifecycle.
     public func newGame() {
-        squares.flatten().forEach({$0.tile = nil})
+        squares.flatten().forEach{ $0.tile = nil }
         inProgress = true
         lifecycle = .Preparing
         tiles.removeAll()

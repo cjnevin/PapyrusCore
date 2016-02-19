@@ -226,7 +226,7 @@ class PapyrusTests: XCTestCase {
             let results = dawg.anagrams(withLetters: instance.lettersIn(player.rackTiles), wordLength: player.rackTiles.count)
             
             if dawg.lookup("disarms") == false { assert(false) }
-            XCTAssert(results.contains("disarms"))
+            XCTAssert(results!.contains("disarms"))
             XCTAssert(true)
             
             let possibles = try instance.getAIMoves()
