@@ -25,6 +25,14 @@ class PapyrusTests: XCTestCase {
         return Papyrus.dawg!
     }
     
+    func bagTiles() -> [Tile] {
+        return instance.tiles.placed(.Bag)
+    }
+    
+    func fixedTiles() -> [Tile] {
+        return instance.tiles.placed(.Fixed)
+    }
+    
     func handleLifecycle(lifecycle: Lifecycle) {
         switch lifecycle {
         case .NoGame:
@@ -86,7 +94,7 @@ class PapyrusTests: XCTestCase {
         let totalTiles = TileConfiguration.map({$0.0}).reduce(0, combine: +)
         XCTAssert(instance.tiles.count == totalTiles)
         instance.createPlayer()
-        XCTAssert(instance.bagTiles().count == totalTiles - PapyrusRackAmount)
+        XCTAssert(bagTiles().count == totalTiles - PapyrusRackAmount)
         
         let player = instance.player!
         XCTAssert(player.rackTiles.count == PapyrusRackAmount)
@@ -102,16 +110,16 @@ class PapyrusTests: XCTestCase {
         XCTAssert(player != player2)
         XCTAssert(player2.rackTiles.count == PapyrusRackAmount)
         XCTAssert(player2.tiles.count == player2.rackTiles.count)
-        XCTAssert(instance.bagTiles().count == totalTiles - (PapyrusRackAmount * 2))
+        XCTAssert(bagTiles().count == totalTiles - (PapyrusRackAmount * 2))
         
         player2.returnTiles(player2.rackTiles)
         XCTAssert(player2.tiles.count == 0, "Expected tiles to be empty")
         XCTAssert(player2.rackTiles.count == 0, "Expected rack to be empty")
-        XCTAssert(instance.bagTiles().count == totalTiles - PapyrusRackAmount, "Expected bag to be missing first players rack tiles")
+        XCTAssert(bagTiles().count == totalTiles - PapyrusRackAmount, "Expected bag to be missing first players rack tiles")
         
-        player2.replenishTiles(fromBag: instance.bagTiles())
+        player2.replenishTiles(fromBag: bagTiles())
         XCTAssert(player2.rackTiles.count == PapyrusRackAmount, "Expected rack to contain default amount")
-        XCTAssert(instance.bagTiles().count == totalTiles - (PapyrusRackAmount * 2), "Expected bag to be missing both players rack tiles")
+        XCTAssert(bagTiles().count == totalTiles - (PapyrusRackAmount * 2), "Expected bag to be missing both players rack tiles")
         
         instance.nextPlayer()
         XCTAssert(instance.player == player, "Expected to return to first player")
@@ -132,7 +140,7 @@ class PapyrusTests: XCTestCase {
         XCTAssert(instance.previousWhileFilled(Position(horizontal: true, iterable: 5, fixed: 5)) == nil)
         XCTAssert(instance.nextWhileFilled(Position(horizontal: true, iterable: 5, fixed: 5)) == nil)
         
-        let tile = instance.bagTiles().first!
+        let tile = bagTiles().first!
         let pos = Position(horizontal: true, iterable: 5, fixed: 5)!
         tile.placement = Placement.Board
         instance.squareAt(pos)?.tile = tile
@@ -140,7 +148,7 @@ class PapyrusTests: XCTestCase {
         XCTAssert(instance.nextWhileEmpty(pos) == nil)
         XCTAssert(instance.nextWhileEmpty(pos.positionWithIterable(1))?.iterable == 4)
         
-        let tile2 = instance.bagTiles().first!
+        let tile2 = bagTiles().first!
         let pos2 = Position(horizontal: true, iterable: 4, fixed: 5)!
         tile.placement = Placement.Board
         let emptyPos = pos2.positionWithIterable(3)
@@ -189,7 +197,7 @@ class PapyrusTests: XCTestCase {
         
         let toDraw: [Character] = ["c", "a", "r", "d", "d", "i", "s"]
         toDraw.forEach { (letter) -> () in
-            let tile = instance.bagTiles().filter({$0.letter == letter}).first!
+            let tile = bagTiles().filter({$0.letter == letter}).first!
             player.tiles.insert(tile)
             tile.placement = .Rack
         }
@@ -212,18 +220,18 @@ class PapyrusTests: XCTestCase {
             let move = try instance.getMove(forBoundary: boundary)
             player.submit(move)
             XCTAssert(player.rackTiles.count == 3)
-            XCTAssert(instance.fixedTiles().count == move.word.characters.count)
+            XCTAssert(fixedTiles().count == move.word.characters.count)
             testPrintBoard()
             
             let armsToDraw: [Character] = ["a", "r", "m", "s"]
             armsToDraw.forEach { (letter) -> () in
-                let tile = instance.bagTiles().filter({$0.letter == letter}).first!
+                let tile = bagTiles().filter({$0.letter == letter}).first!
                 player.tiles.insert(tile)
                 tile.placement = .Rack
             }
             XCTAssert(player.rackTiles.count == PapyrusRackAmount)
             
-            let results = dawg.anagrams(withLetters: instance.lettersIn(player.rackTiles), wordLength: player.rackTiles.count)
+            let results = dawg.anagrams(withLetters: player.rackTiles.toLetters(), wordLength: player.rackTiles.count)
             
             if dawg.lookup("disarms") == false { assert(false) }
             XCTAssert(results!.contains("disarms"))
@@ -238,7 +246,7 @@ class PapyrusTests: XCTestCase {
                 testPrintBoard()
                 
                 var allTiles = (toDraw + armsToDraw).sort()
-                XCTAssert(instance.fixedTiles().mapFilter({$0.letter}).sort() == allTiles)
+                XCTAssert(fixedTiles().mapFilter({$0.letter}).sort() == allTiles)
                 
                 instance.draw(player)
                 XCTAssert(player.rackTiles.count == PapyrusRackAmount)
@@ -249,7 +257,7 @@ class PapyrusTests: XCTestCase {
                 
                 let dogToDraw: [Character] = ["d","o","g"]
                 dogToDraw.forEach { (letter) -> () in
-                    let tile = instance.bagTiles().filter({$0.letter == letter}).first!
+                    let tile = bagTiles().filter({$0.letter == letter}).first!
                     player.tiles.insert(tile)
                     tile.placement = .Rack
                 }
@@ -263,7 +271,7 @@ class PapyrusTests: XCTestCase {
                                 print("Dog: \(possible)")
                                 allTiles += possible.word.tiles.mapFilter({$0.letter})
                                 allTiles.sortInPlace()
-                                XCTAssert(instance.fixedTiles().mapFilter({$0.letter}).sort() == allTiles)
+                                XCTAssert(fixedTiles().mapFilter({$0.letter}).sort() == allTiles)
                                 testPrintBoard()
                                 return
                             }

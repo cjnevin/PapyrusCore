@@ -14,13 +14,6 @@ extension CollectionType {
     }
     
     func all(@noescape body: (Self.Generator.Element) -> (Bool)) -> Bool {
-        var success = count > 0
-        for item in self {
-            if !body(item) {
-                success = false
-                break
-            }
-        }
-        return success
+        return count == 0 ? false : map{ body($0) }.contains(false) == false
     }
 }

@@ -12,7 +12,7 @@ public enum Modifier {
     case None, Letterx2, Letterx3, Center, Wordx2, Wordx3
     /// - returns: Word multiplier for this square.
     var wordMultiplier: Int {
-        switch (self) {
+        switch self {
         case .Center, .Wordx2: return 2
         case .Wordx3: return 3
         default: return 1
@@ -20,7 +20,7 @@ public enum Modifier {
     }
     /// - returns: Letter multiplier for this square.
     var letterMultiplier: Int {
-        switch (self) {
+        switch self {
         case .Letterx2: return 2
         case .Letterx3: return 3
         default: return 1
@@ -39,7 +39,6 @@ public final class Square: CustomDebugStringConvertible, Equatable, Hashable {
         let range = 1...PapyrusDimensions
         return range.map { (row) -> [Square] in
             range.map({ (col) -> Square in
-                var mod: Modifier = .None
                 func plusMinus(offset: Int, _ n: Int) -> Bool {
                     return offset == m - n || offset == m + n
                 }
@@ -53,6 +52,7 @@ public final class Square: CustomDebugStringConvertible, Equatable, Hashable {
                         plusMinus(row, n) && plusMinus(col, n)
                     }
                 }
+                var mod: Modifier = .None
                 if row == PapyrusMiddle && col == PapyrusMiddle {
                     mod = .Center
                 } else if numbers([3,4,5,6]) {

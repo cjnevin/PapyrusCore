@@ -21,8 +21,8 @@ extension Papyrus {
         
         for intersection in intersections {
             let intersectingSquares = squaresIn(intersection)
-            let intersectingTiles = tilesIn(intersectingSquares)
-            let intersectingLetters = lettersIn(intersectingTiles)
+            let intersectingTiles = intersectingSquares.toTiles()
+            let intersectingLetters = intersectingTiles.toLetters()
             let intersectingWord = String(intersectingLetters)
             
             assert(intersectingLetters.count > 1 &&
@@ -35,8 +35,8 @@ extension Papyrus {
                 }
                 
                 let filteredSquares = intersectingSquares.filter({$0.tile?.placement == Placement.Board})
-                let filteredTiles = tilesIn(filteredSquares)
-                let filteredLetters = lettersIn(filteredTiles)
+                let filteredTiles = filteredSquares.toTiles()
+                let filteredLetters = filteredTiles.toLetters()
                 
                 let intersectingWord = Word(boundary: intersection,
                     characters: filteredLetters,
@@ -61,7 +61,7 @@ extension Papyrus {
             tile.placement = .Rack
             tile.changeLetter(PapyrusBlankLetter)
         })
-        assert(droppedTiles().count == 0)
+        assert(tiles.placed(.Board).count == 0)
     }
     
     /// Temporarily place tiles on board so we can find intersecting words.
@@ -78,7 +78,7 @@ extension Papyrus {
         // Create a mutable copy of rack tiles.
         var rackTiles = player.rackTiles
         assert(rackTiles.count > 0)
-        assert(droppedTiles().count == 0)
+        assert(tiles.placed(.Board).count == 0)
         
         func rackTile(forCharacter char: Character) -> Tile? {
             guard let index = rackTiles.indexOf({$0.letter == char}) else {
@@ -193,8 +193,8 @@ extension Papyrus {
         guard let _ = player else { throw ValidationError.NoPlayer }
         
         let boundarySquares = squaresIn(boundary)
-        let boundaryTiles = tilesIn(boundarySquares)
-        let boundaryLetters = lettersIn(boundaryTiles)
+        let boundaryTiles = boundarySquares.toTiles()
+        let boundaryLetters = boundaryTiles.toLetters()
         let boundaryScore = try score(boundary)
         
         let word: Word = Word(boundary: boundary,
@@ -218,7 +218,7 @@ extension Papyrus {
     internal func getAIMoves() throws -> [Move] {
         guard let player = player, dawg = dawg else { throw ValidationError.NoPlayer }
         assert(player.difficulty != .Human)
-        let letters = player.rackTiles.map({$0.letter})
+        let letters = player.rackTiles.toLetters()
         return allPlayableBoundaries().mapFilter { (boundary) -> ([Move]?) in
             let fixedLetters = allLetters(inBoundary: boundary)
             guard let
@@ -263,7 +263,7 @@ extension Papyrus {
         // Throw error if no player...
         guard let player = player, dawg = dawg else { throw ValidationError.NoPlayer }
         
-        let isFirstMove = fixedTiles().count == 0
+        let isFirstMove = tiles.placed(.Fixed).count == 0
         
         // If no words have been played, this boundary must intersect middle.
         let m = PapyrusMiddle - 1
@@ -273,8 +273,8 @@ extension Papyrus {
         }
         
         // If boundary contains squares that are empty, fail.
-        let tiles = tilesIn(boundary)
-        if tiles.count != boundary.length {
+        let boundaryTiles = tilesIn(boundary)
+        if boundaryTiles.count != boundary.length {
             throw ValidationError.UnfilledSquare(squaresIn(boundary))
         }
         
@@ -284,7 +284,7 @@ extension Papyrus {
         }
         
         // If all of these tiles are not owned by the current player, fail.
-        if player.tiles.filter({tiles.contains($0)}).count == 0 {
+        if player.tiles.containedIn(boundaryTiles).count == 0 {
             throw ValidationError.InsufficientTiles
         }
         
@@ -300,7 +300,7 @@ extension Papyrus {
         }
         
         // Validate words, will throw if any are invalid...
-        let mainWord = String(tiles.mapFilter({$0.letter}))
+        let mainWord = String(boundaryTiles.toLetters())
         if boundary.length > 1 && !dawg.lookup(mainWord) {
             throw ValidationError.UndefinedWord(mainWord)
         }

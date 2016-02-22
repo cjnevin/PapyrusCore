@@ -61,9 +61,9 @@ public final class Player: Equatable {
         score += move.total
     }
     /// Move tiles from a players rack to the bag.
-    public func returnTiles(tiles: [Tile]) {
-        self.tiles.subtractInPlace(tiles)
-        tiles.forEach({$0.placement = .Bag})
+    public func returnTiles(tilesToReturn: [Tile]) {
+        tiles.subtractInPlace(tilesToReturn)
+        tilesToReturn.forEach({$0.placement = .Bag})
     }
     /// Add tiles to a players rack from the bag.
     /// - returns: Number of tiles able to be drawn for a player.

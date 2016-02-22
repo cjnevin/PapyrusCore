@@ -8,6 +8,25 @@
 
 import Foundation
 
+extension SequenceType where Generator.Element == Square {
+    /// - returns: All tiles for given squares.
+    func toTiles() -> [Tile] {
+        return flatMap{ $0.tile }
+    }
+    /// - returns: Letter values for squares.
+    func toLetterValues() -> [Int] {
+        return flatMap{ $0.letterValue }
+    }
+    /// - returns: Word multipliers for square types.
+    func toWordMultipliers() -> [Int] {
+        return flatMap{ $0.wordMultiplier }
+    }
+    
+    func returnIf(inTiles tiles: [Tile]) -> [Square] {
+        return filter{ $0.tile != nil }.filter{ tiles.contains($0.tile!) }
+    }
+}
+
 extension Papyrus {
     /// - parameter position: Position to check.
     /// - returns: Square at given position.
@@ -28,11 +47,6 @@ extension Papyrus {
     
     /// - returns: All squares for a given set of tiles.
     public func squaresFor(tiles: [Tile]) -> [Square] {
-        return squares.flatten().mapFilter({ (square) -> (Square?) in
-            if let tile = square.tile where tiles.contains(tile) {
-                return square
-            }
-            return nil
-        })
+        return squares.flatten().returnIf(inTiles: tiles)
     }
 }

@@ -37,16 +37,16 @@ extension Papyrus {
     public func draw(player: Player) {
         // If we have no tiles left in the bag complete game.
         // This call will also fill the players rack.
-        if player.replenishTiles(fromBag: bagTiles()) == 0 &&
-            player.rackTiles.count == 0 {
-                if lifecycle.gameComplete() {
-                    // Subtract remaining tiles in racks
-                    players.forEach { (player) in
-                        player.score = player.rackTiles.mapFilter({$0.value}).reduce(player.score, combine: -)
-                    }
-                    // Complete the game
-                    lifecycle = .GameOver
-                }
+        if player.replenishTiles(fromBag: tiles.placed(.Bag)) == 0 &&
+            player.rackTiles.count == 0 &&
+            lifecycle.gameComplete()
+        {
+            // Subtract remaining tiles in racks
+            players.forEach { (player) in
+                player.score = player.rackTiles.toValues().reduce(player.score, combine: -)
+            }
+            // Complete the game
+            lifecycle = .GameOver
         }
     }
 }

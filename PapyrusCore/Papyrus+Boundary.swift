@@ -51,9 +51,13 @@ extension Papyrus {
     func score(boundary: Boundary) throws -> Int {
         guard let player = player else { throw ValidationError.NoPlayer }
         let affectedSquares = squaresIn(boundary)
-        var value = affectedSquares.mapFilter({$0.letterValue}).reduce(0, combine: +)
-        value = affectedSquares.mapFilter({$0.wordMultiplier}).reduce(value, combine: *)
-        let dropped = tilesIn(affectedSquares).filter({$0.placement == Placement.Board && player.tiles.contains($0)})
+        var value = affectedSquares.toLetterValues().reduce(0, combine: +)
+        value = affectedSquares.toWordMultipliers().reduce(value, combine: *)
+        
+        let dropped = affectedSquares
+            .toTiles()
+            .placed(.Board)
+            .containedIn(Array(player.tiles))
         if dropped.count == PapyrusRackAmount {
             // Add bonus
             value += 50
