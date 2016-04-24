@@ -3,29 +3,21 @@
 
 Reusable library for playing Scrabble games.
 
-## Papyrus
-Initialising a game of scrabble can be done using this class, simply call the newGame method on an instance.
+### Bag
+The tile bag, provides methods for drawing and replacing tiles.
 
-### Boundary 
-A boundary is a representation of two positions which is used internally for a myriad of different tasks.
+### Board
+The current board representation.
 
 ### Dawg
 This module is essentially a wrapper for the word list, it provides a lookup method and a way of returning anagrams given a set of parameters. Dawg stands for directed acyclic word graph.
 
-### Move
-This module determines possible moves on the current board for a player and dawg. This is what the AI will use in determining the best possible play.
+## Game
+Initialising a game of scrabble can be done using this class, simply call the newGame or restoreGame.
 
-### Play
-This module provides methods for submitting plays for Papyrus to validate and execute internally.
+Solver state will be restored using player information, however developer is responsible for restoring bag state.
 
 ### Player
-A player is an individual user playing in the current instance of Papyrus, they may be either human or AI and have a score and tiles associated with them.
+A player can be either a Human or a Computer, Computer's have a difficulty associated with them and are automated. Both have the solutions they have played, the tiles they have in their rack and their score.
 
-### Position
-A position represents a particular row, column and axis.
-
-### Square
-A square represents an individual square on the board providing context to its type, tile, and position.
-
-### Tile
-A tile represents an individual character/value pair in the game, its used extensively internally. Tiles have a placement property which provides context where it is in the flow of the game. Tiles may be owned by players and squares.
+Based loosely on [scrabble-solver](https://github.com/ipha/scrabble-solver) by [ipha](https://github.com/ipha)
