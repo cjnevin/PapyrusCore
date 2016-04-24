@@ -21,10 +21,10 @@ public func == (lhs: Board, rhs: Board) -> Bool {
 
 public struct Board: CustomDebugStringConvertible, Equatable {
     public internal(set) var board = Array(count: 15, repeatedValue: Array(count: 15, repeatedValue: Character(" ")))
-    let boardSize = 15
+    public let boardSize = 15
     let boardRange = 0..<15
-    let center = 7
-    let empty: Character = " "
+    public let center = 7
+    public let empty: Character = " "
     let allTilesUsedBonus = 50
     
     var isFirstPlay: Bool {
@@ -40,7 +40,7 @@ public struct Board: CustomDebugStringConvertible, Equatable {
         return str(board)
     }
     
-    let letterPoints: [Character: Int] = [
+    public let letterPoints: [Character: Int] = [
         "?": 0, "a": 1, "b": 3, "c": 3, "d": 2,
         "e": 1, "f": 4, "g": 2, "h": 4, "i": 1,
         "j": 8, "k": 5, "l": 1, "m": 3, "n": 1,
@@ -48,7 +48,7 @@ public struct Board: CustomDebugStringConvertible, Equatable {
         "t": 1, "u": 1, "v": 4, "w": 4, "x": 8,
         "y": 4, "z": 10]
     
-    let letterMultipliers = [
+    public let letterMultipliers = [
         [1,1,1,2,1,1,1,1,1,1,1,2,1,1,1],
         [1,1,1,1,1,3,1,1,1,3,1,1,1,1,1],
         [1,1,1,1,1,1,2,1,2,1,1,1,1,1,1],
@@ -65,7 +65,7 @@ public struct Board: CustomDebugStringConvertible, Equatable {
         [1,1,1,1,1,3,1,1,1,3,1,1,1,1,1],
         [1,1,1,2,1,1,1,1,1,1,1,2,1,1,1]]
     
-    let wordMultipliers = [
+    public let wordMultipliers = [
         [3,1,1,1,1,1,1,3,1,1,1,1,1,1,3],
         [1,2,1,1,1,1,1,1,1,1,1,1,1,2,1],
         [1,1,2,1,1,1,1,1,1,1,1,1,2,1,1],

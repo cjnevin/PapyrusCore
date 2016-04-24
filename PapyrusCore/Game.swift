@@ -25,7 +25,9 @@ public struct Game {
     var playerIndex: Int
     public var player: Player { return players[playerIndex] }
     private var eventHandler: EventHandler
-    
+    public var board: Board {
+        return solver.board
+    }
     private let maximumConsecutiveSkips = 3
     
     public static func newGame(dictionary: Dawg, bag: Bag, players: [Player], eventHandler: EventHandler) -> Game {
@@ -124,7 +126,7 @@ public struct Game {
         eventHandler(.DrewTiles(newTiles))
     }
     
-    private let rackAmount = 7
+    public let rackAmount = 7
     public var canSwap: Bool { return bag.remaining.count > rackAmount }
     
     public mutating func swapTiles(oldTiles: [Character]) -> Bool {

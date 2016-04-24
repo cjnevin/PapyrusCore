@@ -18,7 +18,7 @@ public struct Bag {
         "y": 2, "z": 1]
     public private(set) var remaining = [Character]()
     
-    init(withBlanks blanks: Bool = true) {
+    public init(withBlanks blanks: Bool = true) {
         for (character, i) in letterCounts {
             if blanks == false && character == "?" {
                 continue

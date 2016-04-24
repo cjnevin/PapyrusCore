@@ -57,17 +57,30 @@ public extension Player {
     }
 }
 
-struct Human: Player {
-    var rack: [Character]
-    var score: Int
-    var solves: [Solution]
-    var consecutiveSkips: Int
+public struct Human: Player {
+    public var rack: [Character]
+    public var score: Int
+    public var solves: [Solution]
+    public var consecutiveSkips: Int
+    public init(rack: [Character], score: Int = 0, solves: [Solution] = [], consecutiveSkips: Int = 0) {
+        self.rack = rack
+        self.score = score
+        self.solves = solves
+        self.consecutiveSkips = consecutiveSkips
+    }
 }
 
-struct Computer: Player {
-    let difficulty: Difficulty
-    var rack: [Character]
-    var score: Int
-    var solves: [Solution]
-    var consecutiveSkips: Int
+public struct Computer: Player {
+    public let difficulty: Difficulty
+    public var rack: [Character]
+    public var score: Int
+    public var solves: [Solution]
+    public var consecutiveSkips: Int
+    public init(difficulty: Difficulty, rack: [Character], score: Int = 0, solves: [Solution] = [], consecutiveSkips: Int = 0) {
+        self.difficulty = difficulty
+        self.rack = rack
+        self.score = score
+        self.solves = solves
+        self.consecutiveSkips = consecutiveSkips
+    }
 }
