@@ -143,4 +143,8 @@ public struct Game {
         nextTurn()
         return true
     }
+    
+    public func validate(points: [(x: Int, y: Int, letter: Character)]) -> ValidationResponse {
+        return solver.validate(points)
+    }
 }

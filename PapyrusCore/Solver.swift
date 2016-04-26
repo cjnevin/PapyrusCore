@@ -10,6 +10,12 @@ import Foundation
 
 public typealias Solution = (word: String, x: Int, y: Int, horizontal: Bool, score: Int, intersections: [String])
 
+public enum ValidationResponse {
+    case InvalidArrangement
+    case InvalidWord(x: Int, y: Int, word: String)
+    case Valid(solution: Solution)
+}
+
 struct Solver {
     private(set) var board: Board
     private(set) var boardState: BoardState
@@ -117,6 +123,101 @@ struct Solver {
         let dropped = board.play(solution)
         boardState = BoardState(board: board)
         return dropped
+    }
+    
+    func validate(points: [(x: Int, y: Int, letter: Character)]) -> ValidationResponse {
+        if points.count == 0 {
+            return .InvalidArrangement
+        }
+        else if points.count == 1 {
+            let x = points.first!.x
+            let y = points.first!.y
+            let letter = points.first!.letter
+            let horizontalWord = wordAt(x, y: y, string: String(letter), horizontal: true)
+            let horizontalLength = horizontalWord.end - horizontalWord.start
+            if horizontalLength > 1 {
+                if !dictionary.lookup(horizontalWord.word) {
+                    return .InvalidWord(x: horizontalWord.start, y: y, word: horizontalWord.word)
+                }
+            }
+            let verticalWord = wordAt(x, y: y, string: String(letter), horizontal: false)
+            let verticalLength = verticalWord.end - verticalWord.start
+            if verticalLength > 1 {
+                if !dictionary.lookup(verticalWord.word) {
+                    return .InvalidWord(x: x, y: verticalWord.start, word: verticalWord.word)
+                }
+            }
+            // May have to account for both eventualities here? Horizontal and vertical
+            if verticalLength > 1 {
+                let score = calculateScore(x, y: verticalWord.start, word: verticalWord.word, horizontal: false)
+                return .Valid(solution: Solution(word: verticalWord.word, x: x, y: verticalWord.start, horizontal: false, score: score, intersections: (horizontalLength > 1 ? [horizontalWord.word] : [])))
+            } else if horizontalLength > 1 {
+                let score = calculateScore(horizontalWord.start, y: y, word: horizontalWord.word, horizontal: true)
+                return .Valid(solution: Solution(word: horizontalWord.word, x: horizontalWord.start, y: y, horizontal: true, score: score, intersections: (verticalLength > 1 ? [verticalWord.word] : [])))
+            }
+            return .InvalidArrangement
+        }
+        else {
+            // Determine direction of word
+            let horizontalSort = points.sort({ $0.x < $1.x })
+            let verticalSort = points.sort({ $0.y < $1.y })
+            let isHorizontal = horizontalSort.first?.y == horizontalSort.last?.y
+            let isVertical = verticalSort.first?.x == verticalSort.last?.x
+            if !isHorizontal && !isVertical {
+                return .InvalidArrangement
+            }
+            if isHorizontal {
+                let x = horizontalSort.first!.x
+                let y = verticalSort.first!.y
+                let horizontalWord = wordAt(x, y: y, string: String(horizontalSort.flatMap {$0.letter}), horizontal: true)
+                let horizontalLength = horizontalWord.end - horizontalWord.start
+                if horizontalLength > 1 {
+                    if !dictionary.lookup(horizontalWord.word) {
+                        return .InvalidWord(x: horizontalWord.start, y: y, word: horizontalWord.word)
+                    }
+                }
+                var intersections = [String]()
+                for point in points {
+                    let intersectedWord = wordAt(point.x, y: point.y, string: String(point.letter), horizontal: false)
+                    let intersectedLength = intersectedWord.end - intersectedWord.start
+                    if intersectedLength > 1 {
+                        if !dictionary.lookup(intersectedWord.word) {
+                            return .InvalidWord(x: x, y: intersectedWord.start, word: intersectedWord.word)
+                        } else {
+                            intersections.append(intersectedWord.word)
+                        }
+                    }
+                }
+                let score = calculateScore(horizontalWord.start, y: y, word: horizontalWord.word, horizontal: true)
+                return .Valid(solution: Solution(word: horizontalWord.word, x: horizontalWord.start, y: y, horizontal: true, score: score, intersections: intersections))
+            }
+            else if isVertical {
+                let x = horizontalSort.first!.x
+                let y = verticalSort.first!.y
+                let verticalWord = wordAt(x, y: y, string: String(verticalSort.flatMap {$0.letter}), horizontal: false)
+                let verticalLength = verticalWord.end - verticalWord.start
+                if verticalLength > 1 {
+                    if !dictionary.lookup(verticalWord.word) {
+                        return .InvalidWord(x: x, y: verticalWord.start, word: verticalWord.word)
+                    }
+                }
+                var intersections = [String]()
+                for point in points {
+                    let intersectedWord = wordAt(point.x, y: point.y, string: String(point.letter), horizontal: true)
+                    let intersectedLength = intersectedWord.end - intersectedWord.start
+                    if intersectedLength > 1 {
+                        if !dictionary.lookup(intersectedWord.word) {
+                            return .InvalidWord(x: intersectedWord.start, y: y, word: intersectedWord.word)
+                        } else {
+                            intersections.append(intersectedWord.word)
+                        }
+                    }
+                }
+                let score = calculateScore(x, y: verticalWord.start, word: verticalWord.word, horizontal: false)
+                return .Valid(solution: Solution(word: verticalWord.word, x: x, y: verticalWord.start, horizontal: false, score: score, intersections: intersections))
+            }
+            return .InvalidArrangement
+        }
     }
     
     func solutions(letters: [Character]) -> [Solution]? {
