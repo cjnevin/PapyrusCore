@@ -11,7 +11,7 @@ import XCTest
 
 class DawgTests: XCTestCase {
     
-    let dawg = Dawg.load(NSBundle(forClass: DawgTests.self).pathForResource("sowpods", ofType: "bin")!)!
+    let dawg = Dawg.singleton
 
     override func setUp() {
         super.setUp()
@@ -31,20 +31,20 @@ class DawgTests: XCTestCase {
         measureBlock { () -> Void in
             var fixedLetters = [Int: Character]()
             
-            XCTAssert(self.dawg.anagrams(withLetters: self.chars("sc?resheets"), wordLength: 11).contains("scoresheets"))
-            XCTAssert(self.dawg.anagrams(withLetters: self.chars("cat"), wordLength: 3).sort() == ["act", "cat"])
-            XCTAssert(self.dawg.anagrams(withLetters: self.chars("CAT"), wordLength: 3).sort() == ["act", "cat"])
+            XCTAssert(self.dawg.anagrams(withLetters: self.chars("sc?resheets"), wordLength: 11)!.contains("scoresheets"))
+            XCTAssert(self.dawg.anagrams(withLetters: self.chars("cat"), wordLength: 3)!.sort() == ["act", "cat"])
+            XCTAssert(self.dawg.anagrams(withLetters: self.chars("CAT"), wordLength: 3)!.sort() == ["act", "cat"])
             
             fixedLetters[2] = "r"
-            XCTAssert(self.dawg.anagrams(withLetters: self.chars("tac"), wordLength: 4, filledLetters: fixedLetters) == ["cart"])
+            XCTAssert(self.dawg.anagrams(withLetters: self.chars("tac"), wordLength: 4, filledLetters: fixedLetters)! == ["cart"])
             
-            XCTAssert(self.dawg.anagrams(withLetters: self.chars("tacposw"), wordLength: 3, filledLetters: fixedLetters).sort() ==
+            XCTAssert(self.dawg.anagrams(withLetters: self.chars("tacposw"), wordLength: 3, filledLetters: fixedLetters)!.sort() ==
                 ["car", "cor", "oar", "par", "sar", "tar", "tor", "war"])
             
-            XCTAssert(self.dawg.anagrams(withLetters: self.chars("patiers"), wordLength: 8, filledLetters: fixedLetters) == ["partiers"])
+            XCTAssert(self.dawg.anagrams(withLetters: self.chars("patiers"), wordLength: 8, filledLetters: fixedLetters)! == ["partiers"])
             
             fixedLetters[0] = "c"
-            XCTAssert(self.dawg.anagrams(withLetters: self.chars("aeiou"), wordLength: 3, filledLetters: fixedLetters).sort() == ["car", "cor", "cur"])
+            XCTAssert(self.dawg.anagrams(withLetters: self.chars("aeiou"), wordLength: 3, filledLetters: fixedLetters)!.sort() == ["car", "cor", "cur"])
             
             XCTAssert(self.dawg.lookup("cart") == true)
             XCTAssert(self.dawg.lookup("xyza") == false)
