@@ -11,7 +11,7 @@ import XCTest
 
 class DawgTests: XCTestCase {
     
-    let dawg = Dawg.load(NSBundle(forClass: DawgTests.self).pathForResource("sowpods", ofType: "bin")!)!
+    let dawg = Dawg.singleton
 
     override func setUp() {
         super.setUp()

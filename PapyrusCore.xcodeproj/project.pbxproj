@@ -7,14 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9933ED9C1C77A8650013A9B4 /* Papyrus+Boundary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9933ED9B1C77A8650013A9B4 /* Papyrus+Boundary.swift */; };
-		9933ED9E1C77A8BD0013A9B4 /* Papyrus+Tile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9933ED9D1C77A8BD0013A9B4 /* Papyrus+Tile.swift */; };
-		9933EDA01C77A8F60013A9B4 /* Papyrus+Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9933ED9F1C77A8F60013A9B4 /* Papyrus+Player.swift */; };
-		9933EDA31C77A9460013A9B4 /* Papyrus+Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9933EDA21C77A9460013A9B4 /* Papyrus+Position.swift */; };
-		9933EDA51C77A9590013A9B4 /* Papyrus+Square.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9933EDA41C77A9590013A9B4 /* Papyrus+Square.swift */; };
-		9933EDA71C77A9750013A9B4 /* Papyrus+Move.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9933EDA61C77A9750013A9B4 /* Papyrus+Move.swift */; };
-		9933EDA91C77AA1F0013A9B4 /* Word.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9933EDA81C77AA1F0013A9B4 /* Word.swift */; };
 		993CB5EB1BB4776D00692603 /* twl06.txt in Resources */ = {isa = PBXBuildFile; fileRef = 993CB5EA1BB4776D00692603 /* twl06.txt */; };
+		995CBC061CCCB19000DF06B8 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC051CCCB19000DF06B8 /* Game.swift */; };
+		995CBC081CCCB1A000DF06B8 /* Solver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC071CCCB1A000DF06B8 /* Solver.swift */; };
+		995CBC0A1CCCB1C400DF06B8 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC091CCCB1C400DF06B8 /* Player.swift */; };
+		995CBC0C1CCCB1E000DF06B8 /* Bag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC0B1CCCB1E000DF06B8 /* Bag.swift */; };
+		995CBC0E1CCCB20A00DF06B8 /* BagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC0D1CCCB20A00DF06B8 /* BagTests.swift */; };
+		995CBC101CCCB24800DF06B8 /* GameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC0F1CCCB24800DF06B8 /* GameTests.swift */; };
+		995CBC121CCCB27300DF06B8 /* SolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC111CCCB27300DF06B8 /* SolverTests.swift */; };
+		995CBC141CCCB39A00DF06B8 /* DawgSingleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC131CCCB39A00DF06B8 /* DawgSingleton.swift */; };
+		995CBC161CCCB58A00DF06B8 /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC151CCCB58A00DF06B8 /* Board.swift */; };
+		995CBC181CCCB5FC00DF06B8 /* BoardState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC171CCCB5FC00DF06B8 /* BoardState.swift */; };
 		995DD8371BB62121009B409D /* sowpods.bin in Resources */ = {isa = PBXBuildFile; fileRef = 995DD8351BB62121009B409D /* sowpods.bin */; };
 		995DD8381BB62121009B409D /* twl06.bin in Resources */ = {isa = PBXBuildFile; fileRef = 995DD8361BB62121009B409D /* twl06.bin */; };
 		995DD8481BB68C69009B409D /* Dawg.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995DD8441BB68C69009B409D /* Dawg.swift */; };
@@ -23,21 +26,7 @@
 		9960AD6E1BA589D800765614 /* PapyrusCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 9960AD6D1BA589D800765614 /* PapyrusCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9960AD751BA589D800765614 /* PapyrusCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9960AD6A1BA589D800765614 /* PapyrusCore.framework */; };
 		996E23AA1BAA334A0052F1E2 /* sowpods.txt in Resources */ = {isa = PBXBuildFile; fileRef = 996E23A91BAA334A0052F1E2 /* sowpods.txt */; };
-		99FD43141BA58A6400F50DCF /* BoundaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD430D1BA58A6400F50DCF /* BoundaryTests.swift */; };
 		99FD43151BA58A6400F50DCF /* DawgTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD430E1BA58A6400F50DCF /* DawgTests.swift */; };
-		99FD43161BA58A6400F50DCF /* PapyrusTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD430F1BA58A6400F50DCF /* PapyrusTests.swift */; };
-		99FD43171BA58A6400F50DCF /* PlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD43101BA58A6400F50DCF /* PlayerTests.swift */; };
-		99FD43181BA58A6400F50DCF /* SquareTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD43111BA58A6400F50DCF /* SquareTests.swift */; };
-		99FD43191BA58A6400F50DCF /* TileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD43121BA58A6400F50DCF /* TileTests.swift */; };
-		99FD431A1BA58A6400F50DCF /* UtilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD43131BA58A6400F50DCF /* UtilTests.swift */; };
-		99FD43251BA58AF200F50DCF /* Boundary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD431B1BA58AF200F50DCF /* Boundary.swift */; };
-		99FD43271BA58AF200F50DCF /* Move.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD431D1BA58AF200F50DCF /* Move.swift */; };
-		99FD43291BA58AF200F50DCF /* Papyrus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD431F1BA58AF200F50DCF /* Papyrus.swift */; };
-		99FD432B1BA58AF200F50DCF /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD43211BA58AF200F50DCF /* Player.swift */; };
-		99FD432C1BA58AF200F50DCF /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD43221BA58AF200F50DCF /* Position.swift */; };
-		99FD432D1BA58AF200F50DCF /* Square.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD43231BA58AF200F50DCF /* Square.swift */; };
-		99FD432E1BA58AF200F50DCF /* Tile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD43241BA58AF200F50DCF /* Tile.swift */; };
-		99FD43311BA58AFC00F50DCF /* CollectionType+Papyrus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD43301BA58AFC00F50DCF /* CollectionType+Papyrus.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,14 +40,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		9933ED9B1C77A8650013A9B4 /* Papyrus+Boundary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Papyrus+Boundary.swift"; sourceTree = "<group>"; };
-		9933ED9D1C77A8BD0013A9B4 /* Papyrus+Tile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Papyrus+Tile.swift"; sourceTree = "<group>"; };
-		9933ED9F1C77A8F60013A9B4 /* Papyrus+Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Papyrus+Player.swift"; path = "PapyrusCore/Papyrus+Player.swift"; sourceTree = SOURCE_ROOT; };
-		9933EDA21C77A9460013A9B4 /* Papyrus+Position.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Papyrus+Position.swift"; sourceTree = "<group>"; };
-		9933EDA41C77A9590013A9B4 /* Papyrus+Square.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Papyrus+Square.swift"; sourceTree = "<group>"; };
-		9933EDA61C77A9750013A9B4 /* Papyrus+Move.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Papyrus+Move.swift"; sourceTree = "<group>"; };
-		9933EDA81C77AA1F0013A9B4 /* Word.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Word.swift; sourceTree = "<group>"; };
 		993CB5EA1BB4776D00692603 /* twl06.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = twl06.txt; sourceTree = "<group>"; };
+		995CBC051CCCB19000DF06B8 /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
+		995CBC071CCCB1A000DF06B8 /* Solver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Solver.swift; sourceTree = "<group>"; };
+		995CBC091CCCB1C400DF06B8 /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
+		995CBC0B1CCCB1E000DF06B8 /* Bag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bag.swift; sourceTree = "<group>"; };
+		995CBC0D1CCCB20A00DF06B8 /* BagTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BagTests.swift; sourceTree = "<group>"; };
+		995CBC0F1CCCB24800DF06B8 /* GameTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameTests.swift; sourceTree = "<group>"; };
+		995CBC111CCCB27300DF06B8 /* SolverTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SolverTests.swift; sourceTree = "<group>"; };
+		995CBC131CCCB39A00DF06B8 /* DawgSingleton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DawgSingleton.swift; sourceTree = "<group>"; };
+		995CBC151CCCB58A00DF06B8 /* Board.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Board.swift; sourceTree = "<group>"; };
+		995CBC171CCCB5FC00DF06B8 /* BoardState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardState.swift; sourceTree = "<group>"; };
 		995DD8351BB62121009B409D /* sowpods.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = sowpods.bin; sourceTree = "<group>"; };
 		995DD8361BB62121009B409D /* twl06.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = twl06.bin; sourceTree = "<group>"; };
 		995DD8441BB68C69009B409D /* Dawg.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dawg.swift; sourceTree = "<group>"; };
@@ -70,21 +62,7 @@
 		9960AD741BA589D800765614 /* PapyrusCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapyrusCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9960AD7B1BA589D800765614 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		996E23A91BAA334A0052F1E2 /* sowpods.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = sowpods.txt; sourceTree = "<group>"; };
-		99FD430D1BA58A6400F50DCF /* BoundaryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoundaryTests.swift; sourceTree = "<group>"; };
 		99FD430E1BA58A6400F50DCF /* DawgTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DawgTests.swift; sourceTree = "<group>"; };
-		99FD430F1BA58A6400F50DCF /* PapyrusTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PapyrusTests.swift; sourceTree = "<group>"; };
-		99FD43101BA58A6400F50DCF /* PlayerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlayerTests.swift; sourceTree = "<group>"; };
-		99FD43111BA58A6400F50DCF /* SquareTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SquareTests.swift; sourceTree = "<group>"; };
-		99FD43121BA58A6400F50DCF /* TileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileTests.swift; sourceTree = "<group>"; };
-		99FD43131BA58A6400F50DCF /* UtilTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UtilTests.swift; sourceTree = "<group>"; };
-		99FD431B1BA58AF200F50DCF /* Boundary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Boundary.swift; sourceTree = "<group>"; };
-		99FD431D1BA58AF200F50DCF /* Move.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Move.swift; sourceTree = "<group>"; };
-		99FD431F1BA58AF200F50DCF /* Papyrus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Papyrus.swift; sourceTree = "<group>"; };
-		99FD43211BA58AF200F50DCF /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
-		99FD43221BA58AF200F50DCF /* Position.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Position.swift; sourceTree = "<group>"; };
-		99FD43231BA58AF200F50DCF /* Square.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Square.swift; sourceTree = "<group>"; };
-		99FD43241BA58AF200F50DCF /* Tile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tile.swift; sourceTree = "<group>"; };
-		99FD43301BA58AFC00F50DCF /* CollectionType+Papyrus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CollectionType+Papyrus.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,34 +84,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		9933EDA11C77A9150013A9B4 /* Papyrus Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				9933ED9B1C77A8650013A9B4 /* Papyrus+Boundary.swift */,
-				9933EDA61C77A9750013A9B4 /* Papyrus+Move.swift */,
-				9933ED9F1C77A8F60013A9B4 /* Papyrus+Player.swift */,
-				9933EDA21C77A9460013A9B4 /* Papyrus+Position.swift */,
-				9933EDA41C77A9590013A9B4 /* Papyrus+Square.swift */,
-				9933ED9D1C77A8BD0013A9B4 /* Papyrus+Tile.swift */,
-			);
-			name = "Papyrus Extensions";
-			sourceTree = "<group>";
-		};
-		9933EDAC1C77BAF90013A9B4 /* Objects */ = {
-			isa = PBXGroup;
-			children = (
-				995DD8421BB68C69009B409D /* Dawg */,
-				99FD431B1BA58AF200F50DCF /* Boundary.swift */,
-				99FD431D1BA58AF200F50DCF /* Move.swift */,
-				99FD43211BA58AF200F50DCF /* Player.swift */,
-				99FD43221BA58AF200F50DCF /* Position.swift */,
-				99FD43231BA58AF200F50DCF /* Square.swift */,
-				99FD43241BA58AF200F50DCF /* Tile.swift */,
-				9933EDA81C77AA1F0013A9B4 /* Word.swift */,
-			);
-			name = Objects;
-			sourceTree = "<group>";
-		};
 		995DD8421BB68C69009B409D /* Dawg */ = {
 			isa = PBXGroup;
 			children = (
@@ -166,10 +116,13 @@
 			isa = PBXGroup;
 			children = (
 				9960AD6D1BA589D800765614 /* PapyrusCore.h */,
-				99FD431F1BA58AF200F50DCF /* Papyrus.swift */,
-				9933EDA11C77A9150013A9B4 /* Papyrus Extensions */,
-				9933EDAC1C77BAF90013A9B4 /* Objects */,
-				99FD432F1BA58AFC00F50DCF /* Extensions */,
+				995CBC0B1CCCB1E000DF06B8 /* Bag.swift */,
+				995CBC151CCCB58A00DF06B8 /* Board.swift */,
+				995CBC171CCCB5FC00DF06B8 /* BoardState.swift */,
+				995CBC051CCCB19000DF06B8 /* Game.swift */,
+				995CBC091CCCB1C400DF06B8 /* Player.swift */,
+				995CBC071CCCB1A000DF06B8 /* Solver.swift */,
+				995DD8421BB68C69009B409D /* Dawg */,
 				9960AD6F1BA589D800765614 /* Info.plist */,
 			);
 			path = PapyrusCore;
@@ -178,13 +131,11 @@
 		9960AD781BA589D800765614 /* PapyrusCoreTests */ = {
 			isa = PBXGroup;
 			children = (
-				99FD430D1BA58A6400F50DCF /* BoundaryTests.swift */,
+				995CBC131CCCB39A00DF06B8 /* DawgSingleton.swift */,
 				99FD430E1BA58A6400F50DCF /* DawgTests.swift */,
-				99FD430F1BA58A6400F50DCF /* PapyrusTests.swift */,
-				99FD43101BA58A6400F50DCF /* PlayerTests.swift */,
-				99FD43111BA58A6400F50DCF /* SquareTests.swift */,
-				99FD43121BA58A6400F50DCF /* TileTests.swift */,
-				99FD43131BA58A6400F50DCF /* UtilTests.swift */,
+				995CBC0D1CCCB20A00DF06B8 /* BagTests.swift */,
+				995CBC0F1CCCB24800DF06B8 /* GameTests.swift */,
+				995CBC111CCCB27300DF06B8 /* SolverTests.swift */,
 				9960AD7B1BA589D800765614 /* Info.plist */,
 				99F53A0A1BABEED300A88AA2 /* TestDictionaries */,
 			);
@@ -200,14 +151,6 @@
 				993CB5EA1BB4776D00692603 /* twl06.txt */,
 			);
 			name = TestDictionaries;
-			sourceTree = "<group>";
-		};
-		99FD432F1BA58AFC00F50DCF /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-				99FD43301BA58AFC00F50DCF /* CollectionType+Papyrus.swift */,
-			);
-			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -323,23 +266,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				99FD43271BA58AF200F50DCF /* Move.swift in Sources */,
-				99FD43291BA58AF200F50DCF /* Papyrus.swift in Sources */,
-				99FD432B1BA58AF200F50DCF /* Player.swift in Sources */,
-				9933EDA71C77A9750013A9B4 /* Papyrus+Move.swift in Sources */,
-				9933EDA91C77AA1F0013A9B4 /* Word.swift in Sources */,
-				99FD43311BA58AFC00F50DCF /* CollectionType+Papyrus.swift in Sources */,
-				99FD43251BA58AF200F50DCF /* Boundary.swift in Sources */,
-				9933EDA01C77A8F60013A9B4 /* Papyrus+Player.swift in Sources */,
-				99FD432D1BA58AF200F50DCF /* Square.swift in Sources */,
-				9933EDA31C77A9460013A9B4 /* Papyrus+Position.swift in Sources */,
 				995DD8481BB68C69009B409D /* Dawg.swift in Sources */,
-				99FD432E1BA58AF200F50DCF /* Tile.swift in Sources */,
+				995CBC061CCCB19000DF06B8 /* Game.swift in Sources */,
+				995CBC081CCCB1A000DF06B8 /* Solver.swift in Sources */,
+				995CBC0A1CCCB1C400DF06B8 /* Player.swift in Sources */,
+				995CBC181CCCB5FC00DF06B8 /* BoardState.swift in Sources */,
+				995CBC161CCCB58A00DF06B8 /* Board.swift in Sources */,
+				995CBC0C1CCCB1E000DF06B8 /* Bag.swift in Sources */,
 				995DD84A1BB68C69009B409D /* README.md in Sources */,
-				99FD432C1BA58AF200F50DCF /* Position.swift in Sources */,
-				9933ED9E1C77A8BD0013A9B4 /* Papyrus+Tile.swift in Sources */,
-				9933ED9C1C77A8650013A9B4 /* Papyrus+Boundary.swift in Sources */,
-				9933EDA51C77A9590013A9B4 /* Papyrus+Square.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -347,13 +281,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				99FD43171BA58A6400F50DCF /* PlayerTests.swift in Sources */,
-				99FD431A1BA58A6400F50DCF /* UtilTests.swift in Sources */,
-				99FD43191BA58A6400F50DCF /* TileTests.swift in Sources */,
+				995CBC0E1CCCB20A00DF06B8 /* BagTests.swift in Sources */,
+				995CBC101CCCB24800DF06B8 /* GameTests.swift in Sources */,
+				995CBC141CCCB39A00DF06B8 /* DawgSingleton.swift in Sources */,
+				995CBC121CCCB27300DF06B8 /* SolverTests.swift in Sources */,
 				99FD43151BA58A6400F50DCF /* DawgTests.swift in Sources */,
-				99FD43161BA58A6400F50DCF /* PapyrusTests.swift in Sources */,
-				99FD43141BA58A6400F50DCF /* BoundaryTests.swift in Sources */,
-				99FD43181BA58A6400F50DCF /* SquareTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -405,7 +337,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -447,7 +379,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -468,6 +400,7 @@
 				GCC_OPTIMIZATION_LEVEL = fast;
 				INFOPLIST_FILE = PapyrusCore/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjnevin.PapyrusCore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -486,6 +419,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = PapyrusCore/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjnevin.PapyrusCore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
