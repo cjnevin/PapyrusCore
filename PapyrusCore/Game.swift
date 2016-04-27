@@ -51,6 +51,12 @@ public struct Game {
         return Game(solver: solver, bag: bag, players: players, playerIndex: playerIndex, eventHandler: eventHandler)
     }
     
+    public mutating func shuffleRack() {
+        if player is Human {
+            players[playerIndex].shuffle()
+        }
+    }
+    
     public mutating func start() {
         turn()
     }

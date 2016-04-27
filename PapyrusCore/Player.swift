@@ -23,6 +23,7 @@ public protocol Player {
     mutating func drew(tiles: [Character])
     mutating func played(solution: Solution, tiles: [Character])
     mutating func swapped(tiles: [Character], newTiles: [Character])
+    mutating func shuffle()
 }
 
 public extension Player {
@@ -37,6 +38,10 @@ public extension Player {
             return removeLetter("?")
         }
         return false
+    }
+    
+    mutating func shuffle() {
+        rack.sortInPlace {_, _ in arc4random() % 2 == 0}
     }
     
     mutating func played(solution: Solution, tiles: [Character]) {

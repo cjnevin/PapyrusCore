@@ -147,7 +147,6 @@ struct Solver {
                     return .InvalidWord(x: x, y: verticalWord.start, word: verticalWord.word)
                 }
             }
-            // May have to account for both eventualities here? Horizontal and vertical
             if verticalLength > 1 {
                 let score = calculateScore(x, y: verticalWord.start, word: verticalWord.word, horizontal: false)
                 return .Valid(solution: Solution(word: verticalWord.word, x: x, y: verticalWord.start, horizontal: false, score: score, intersections: (horizontalLength > 1 ? [horizontalWord.word] : [])))
