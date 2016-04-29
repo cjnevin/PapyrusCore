@@ -8,6 +8,16 @@
 
 import Foundation
 
+public struct Word {
+    let word: String
+    let start: Int
+    let end: Int
+    
+    var length: Int {
+        return end - start
+    }
+}
+
 public typealias Solution = (word: String, x: Int, y: Int, horizontal: Bool, score: Int, intersections: [String])
 
 public enum ValidationResponse {
@@ -53,7 +63,7 @@ struct Solver {
         return filled.count == 0 ? nil : filled
     }
     
-    private func wordAt(x: Int, y: Int, string: String, horizontal: Bool) -> (word: String, start: Int, end: Int) {
+    private func wordAt(x: Int, y: Int, string: String, horizontal: Bool) -> Word {
         assert(!string.isEmpty)
         
         if horizontal && x > 0 && board.isFilledAt(x - 1, y) {
@@ -81,7 +91,7 @@ struct Solver {
             end += 1
             collect()
         }
-        return (String(chars), start, end)
+        return Word(word: String(chars), start: start, end: end)
     }
     
     // TODO: Fix calculation of blank tiles.
@@ -132,29 +142,30 @@ struct Solver {
             return .InvalidArrangement
         }
         else if points.count == 1 {
+            if board.isFirstPlay {
+                return .InvalidArrangement
+            }
             let x = points.first!.x
             let y = points.first!.y
             let letter = points.first!.letter
             let horizontalWord = wordAt(x, y: y, string: String(letter), horizontal: true)
-            let horizontalLength = horizontalWord.end - horizontalWord.start
-            if horizontalLength > 1 {
+            if horizontalWord.length > 1 {
                 if !dictionary.lookup(horizontalWord.word) {
                     return .InvalidWord(x: horizontalWord.start, y: y, word: horizontalWord.word)
                 }
             }
             let verticalWord = wordAt(x, y: y, string: String(letter), horizontal: false)
-            let verticalLength = verticalWord.end - verticalWord.start
-            if verticalLength > 1 {
+            if verticalWord.length > 1 {
                 if !dictionary.lookup(verticalWord.word) {
                     return .InvalidWord(x: x, y: verticalWord.start, word: verticalWord.word)
                 }
             }
-            if verticalLength > 1 {
+            if verticalWord.length > 1 {
                 let score = calculateScore(x, y: verticalWord.start, word: verticalWord.word, horizontal: false)
-                return .Valid(solution: Solution(word: verticalWord.word, x: x, y: verticalWord.start, horizontal: false, score: score, intersections: (horizontalLength > 1 ? [horizontalWord.word] : [])))
-            } else if horizontalLength > 1 {
+                return .Valid(solution: Solution(word: verticalWord.word, x: x, y: verticalWord.start, horizontal: false, score: score, intersections: (horizontalWord.length > 1 ? [horizontalWord.word] : [])))
+            } else if horizontalWord.length > 1 {
                 let score = calculateScore(horizontalWord.start, y: y, word: horizontalWord.word, horizontal: true)
-                return .Valid(solution: Solution(word: horizontalWord.word, x: horizontalWord.start, y: y, horizontal: true, score: score, intersections: (verticalLength > 1 ? [verticalWord.word] : [])))
+                return .Valid(solution: Solution(word: horizontalWord.word, x: horizontalWord.start, y: y, horizontal: true, score: score, intersections: (verticalWord.length > 1 ? [verticalWord.word] : [])))
             }
             return .InvalidArrangement
         }
@@ -189,6 +200,9 @@ struct Solver {
                         }
                     }
                 }
+                if horizontalWord.length == points.count && intersections.count == 0 && board.isFirstPlay == false {
+                    return .InvalidArrangement
+                }
                 let score = calculateScore(horizontalWord.start, y: y, word: horizontalWord.word, horizontal: true)
                 return .Valid(solution: Solution(word: horizontalWord.word, x: horizontalWord.start, y: y, horizontal: true, score: score, intersections: intersections))
             }
@@ -196,8 +210,7 @@ struct Solver {
                 let x = horizontalSort.first!.x
                 let y = verticalSort.first!.y
                 let verticalWord = wordAt(x, y: y, string: String(verticalSort.flatMap {$0.letter}), horizontal: false)
-                let verticalLength = verticalWord.end - verticalWord.start
-                if verticalLength > 1 {
+                if verticalWord.length > 1 {
                     if !dictionary.lookup(verticalWord.word) {
                         return .InvalidWord(x: x, y: verticalWord.start, word: verticalWord.word)
                     }
@@ -205,14 +218,16 @@ struct Solver {
                 var intersections = [String]()
                 for point in points {
                     let intersectedWord = wordAt(point.x, y: point.y, string: String(point.letter), horizontal: true)
-                    let intersectedLength = intersectedWord.end - intersectedWord.start
-                    if intersectedLength > 1 {
+                    if intersectedWord.length > 1 {
                         if !dictionary.lookup(intersectedWord.word) {
                             return .InvalidWord(x: intersectedWord.start, y: y, word: intersectedWord.word)
                         } else {
                             intersections.append(intersectedWord.word)
                         }
                     }
+                }
+                if verticalWord.length == points.count && intersections.count == 0 && board.isFirstPlay == false {
+                    return .InvalidArrangement
                 }
                 let score = calculateScore(x, y: verticalWord.start, word: verticalWord.word, horizontal: false)
                 return .Valid(solution: Solution(word: verticalWord.word, x: x, y: verticalWord.start, horizontal: false, score: score, intersections: intersections))
