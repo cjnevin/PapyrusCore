@@ -34,8 +34,8 @@ public extension Player {
         }
         // Not the best way of handling this, but it'll have to do for now.
         // Should refactor in solver
-        if rack.contains("?") {
-            return removeLetter("?")
+        if rack.contains(Bag.blankLetter) {
+            return removeLetter(Bag.blankLetter)
         }
         return false
     }

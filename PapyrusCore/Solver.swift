@@ -84,6 +84,8 @@ struct Solver {
         return (String(chars), start, end)
     }
     
+    // TODO: Fix calculation of blank tiles.
+    // TODO: Investigate if calculation is broken.
     private func calculateScore(x: Int, y: Int, word: String, horizontal: Bool) -> Int {
         var tilesUsed = 0
         var score = 0
@@ -91,17 +93,17 @@ struct Solver {
         var intersectionsScore = 0
         
         func wordSum(word: String) -> Int {
-            return word.characters.map{ board.letterPoints[$0]! }.reduce(0, combine: +)
+            return word.characters.map{ Bag.letterPoints[$0]! }.reduce(0, combine: +)
         }
         
         func scoreLetter(letter: Character, x: Int, y: Int, horizontal: Bool) {
-            let value = board.letterPoints[letter]!
+            let value = Bag.letterPoints[letter]!
             if board.isFilledAt(x, y) {
                 score += value
                 return
             }
-            let letterMultiplier = board.letterMultipliers[y][x]
-            let wordMultiplier = board.wordMultipliers[y][x]
+            let letterMultiplier = Board.letterMultipliers[y][x]
+            let wordMultiplier = Board.wordMultipliers[y][x]
             tilesUsed += 1
             score += value * letterMultiplier
             scoreMultiplier *= wordMultiplier

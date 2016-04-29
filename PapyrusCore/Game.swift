@@ -17,6 +17,8 @@ public enum GameEvent {
     case TurnEnded
 }
 
+let aiCanPlayBlanks = false
+
 public typealias EventHandler = (GameEvent) -> ()
 public struct Game {
     var solver: Solver
@@ -74,7 +76,7 @@ public struct Game {
         var newPlayers = players
         for i in 0..<newPlayers.count {
             for tile in newPlayers[i].rack {
-                newPlayers[i].score -= solver.board.letterPoints[tile] ?? 0
+                newPlayers[i].score -= Bag.letterPoints[tile] ?? 0
             }
             newPlayers[i].rack = []
         }
@@ -93,7 +95,21 @@ public struct Game {
         eventHandler(.TurnStarted)
         if player is Computer {
             var ai = player as! Computer
+            while aiCanPlayBlanks == false && ai.rack.contains(Bag.blankLetter) {
+                if Set(ai.rack).intersect(Bag.vowels).count == 0 {
+                    // If we have no vowels lets pick a random vowel
+                    ai.removeLetter(Bag.blankLetter)
+                    ai.drew([Bag.vowels[Int(rand()) % Bag.vowels.count]])
+                    print("AI set value of blank letter")
+                } else {
+                    // We have vowels, lets choose 's'
+                    ai.removeLetter(Bag.blankLetter)
+                    ai.drew(["s"])
+                    print("AI set value of blank letter")
+                }
+            }
             if let solution = solver.solve(ai.rack, difficulty: ai.difficulty) {
+                print(ai.rack)
                 play(solution)
                 print(solver.board)
                 nextTurn()
