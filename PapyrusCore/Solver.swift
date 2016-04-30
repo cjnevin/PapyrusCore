@@ -117,7 +117,7 @@ struct Solver {
             tilesUsed += 1
             score += value * letterMultiplier
             scoreMultiplier *= wordMultiplier
-            let intersectingWord = wordAt(x, y: y, string: String(letter), horizontal: horizontal).word
+            let intersectingWord = wordAt(x, y: y, string: String(letter), horizontal: !horizontal).word
             if intersectingWord.characters.count > 1 {
                 let wordScore = wordSum(intersectingWord) + (value * (letterMultiplier - 1))
                 intersectionsScore += wordScore * wordMultiplier
@@ -125,7 +125,7 @@ struct Solver {
         }
         
         for (i, letter) in word.characters.enumerate() {
-            scoreLetter(letter, x: horizontal ? x + i : x, y: horizontal ? y : y + i, horizontal: true)
+            scoreLetter(letter, x: horizontal ? x + i : x, y: horizontal ? y : y + i, horizontal: horizontal)
         }
         
         return (score * scoreMultiplier) + intersectionsScore + (tilesUsed == 7 ? board.allTilesUsedBonus : 0)
