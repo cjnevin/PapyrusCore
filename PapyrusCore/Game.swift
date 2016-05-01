@@ -76,7 +76,9 @@ public struct Game {
         var newPlayers = players
         for i in 0..<newPlayers.count {
             for tile in newPlayers[i].rack {
-                newPlayers[i].score -= Bag.letterPoints[tile] ?? 0
+                if tile.1 == false {
+                    newPlayers[i].score -= Bag.letterPoints[tile.0] ?? 0
+                }
             }
             newPlayers[i].rack = []
         }
@@ -95,16 +97,14 @@ public struct Game {
         eventHandler(.TurnStarted)
         if player is Computer {
             var ai = player as! Computer
-            while aiCanPlayBlanks == false && ai.rack.contains(Bag.blankLetter) {
-                if Set(ai.rack).intersect(Bag.vowels).count == 0 {
+            while aiCanPlayBlanks == false && ai.rack.filter({$0.0 == Bag.blankLetter}).count > 0 {
+                if Set(ai.rack.map({$0.0})).intersect(Bag.vowels).count == 0 {
                     // If we have no vowels lets pick a random vowel
-                    ai.removeLetter(Bag.blankLetter)
-                    ai.drew([Bag.vowels[Int(rand()) % Bag.vowels.count]])
+                    ai.updateBlank(Bag.vowels[Int(rand()) % Bag.vowels.count])
                     print("AI set value of blank letter")
                 } else {
                     // We have vowels, lets choose 's'
-                    ai.removeLetter(Bag.blankLetter)
-                    ai.drew(["s"])
+                    ai.updateBlank("s")
                     print("AI set value of blank letter")
                 }
             }
@@ -115,7 +115,7 @@ public struct Game {
                 nextTurn()
             } else {
                 let tiles = Array(ai.rack[0..<min(bag.remaining.count, ai.rack.count)])
-                if !swapTiles(tiles) {
+                if !swapTiles(tiles.map({ $0.letter })) {
                     // We're stuck with these tiles, nothing AI can do, lets skip
                     skip()
                 }
@@ -166,7 +166,7 @@ public struct Game {
         return true
     }
     
-    public func validate(points: [(x: Int, y: Int, letter: Character)]) -> ValidationResponse {
-        return solver.validate(points)
+    public func validate(points: [(x: Int, y: Int, letter: Character)], blanks: [(x: Int, y: Int)]) -> ValidationResponse {
+        return solver.validate(points, blanks: blanks)
     }
 }

@@ -46,7 +46,7 @@ public struct Board: CustomDebugStringConvertible, Equatable {
         [1,1,1,1,2,1,1,1,1,1,2,1,1,1,1],
         [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
         [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-        [3,1,1,1,1,1,1,1,1,1,1,1,1,1,3],
+        [3,1,1,1,1,1,1,2,1,1,1,1,1,1,3],
         [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
         [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
         [1,1,1,1,2,1,1,1,1,1,2,1,1,1,1],
@@ -57,6 +57,7 @@ public struct Board: CustomDebugStringConvertible, Equatable {
 
     public internal(set) var board = Array(count: 15, repeatedValue: Array(count: 15, repeatedValue: Character(" ")))
     public let boardSize = 15
+    public internal(set) var playedBlanks = [(x: Int, y: Int)]()
     let boardRange = 0..<15
     public let center = 7
     public let empty: Character = " "
@@ -179,6 +180,7 @@ public struct Board: CustomDebugStringConvertible, Equatable {
                 }
             }
         }
+        playedBlanks.appendContentsOf(solution.blanks)
         return dropped
     }
 }
