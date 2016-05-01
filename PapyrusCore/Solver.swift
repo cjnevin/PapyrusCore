@@ -29,12 +29,14 @@ public enum ValidationResponse {
 struct Solver {
     private(set) var board: Board
     private(set) var boardState: BoardState
+    private(set) var distribution: LetterDistribution
     let dictionary: Dawg
     private let debug: Bool
     private let maximumWordLength = 10
     
-    init(dictionary: Dawg, debug: Bool = false) {
+    init(dictionary: Dawg, distribution: LetterDistribution, debug: Bool = false) {
         self.board = Board()
+        self.distribution = distribution
         boardState = BoardState(board: self.board)
         self.debug = debug
         self.dictionary = dictionary
@@ -113,14 +115,14 @@ struct Solver {
                 let wy = horizontal ? y : i
                 let n = i - word.start
                 if !isBlankAt(wx, y: wy) {
-                    points += Bag.letterPoints[Array(word.word.characters)[n]]!
+                    points += distribution.letterPoints[Array(word.word.characters)[n]]!
                 }
             }
             return points
         }
         
         func scoreLetter(letter: Character, x: Int, y: Int, horizontal: Bool) {
-            let value = isBlankAt(x, y: y) ? 0 : Bag.letterPoints[letter]!
+            let value = isBlankAt(x, y: y) ? 0 : distribution.letterPoints[letter]!
             if board.isFilledAt(x, y) {
                 score += value
                 return

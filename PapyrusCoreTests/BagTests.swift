@@ -12,8 +12,8 @@ import XCTest
 class BagTests : XCTestCase {
     func testBag() {
         var bag = Bag()
-        XCTAssertEqual(bag.remaining.count, 101)
-        bag.draw()
         XCTAssertEqual(bag.remaining.count, 100)
+        bag.draw()
+        XCTAssertEqual(bag.remaining.count, 99)
     }
 }
