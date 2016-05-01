@@ -35,8 +35,7 @@ public extension Player {
             rack.removeAtIndex(n)
             return (true, isBlank)
         }
-        // Not the best way of handling this, but it'll have to do for now.
-        // Should refactor in solver
+        // Tile must be a blank? Lets check...
         if rack.map({$0.0}).contains(Bag.blankLetter) {
             return removeLetter(Bag.blankLetter)
         }
@@ -79,7 +78,7 @@ public struct Human: Player {
     public var score: Int
     public var solves: [Solution]
     public var consecutiveSkips: Int
-    public init(rack: [Character], score: Int = 0, solves: [Solution] = [], consecutiveSkips: Int = 0) {
+    public init(rack: [Character] = [], score: Int = 0, solves: [Solution] = [], consecutiveSkips: Int = 0) {
         self.score = score
         self.solves = solves
         self.consecutiveSkips = consecutiveSkips
@@ -99,7 +98,7 @@ public struct Computer: Player {
     public var score: Int
     public var solves: [Solution]
     public var consecutiveSkips: Int
-    public init(difficulty: Difficulty, rack: [Character], score: Int = 0, solves: [Solution] = [], consecutiveSkips: Int = 0) {
+    public init(difficulty: Difficulty = .Hard, rack: [Character] = [], score: Int = 0, solves: [Solution] = [], consecutiveSkips: Int = 0) {
         self.difficulty = difficulty
         self.score = score
         self.solves = solves
