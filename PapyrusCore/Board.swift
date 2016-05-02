@@ -18,9 +18,9 @@ public func == (lhs: Board, rhs: Board) -> Bool {
 }
 
 public struct Board: Equatable, CustomDebugStringConvertible {
-    public var board: [[Character]]
-    public var config: BoardConfig
-    public var playedBlanks = [(x: Int, y: Int)]()
+    public let config: BoardConfig
+    public internal(set) var board: [[Character]]
+    public internal(set) var playedBlanks = [(x: Int, y: Int)]()
     
     public init(config: BoardConfig) {
         self.config = config
