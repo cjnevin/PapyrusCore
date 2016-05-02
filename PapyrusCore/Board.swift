@@ -10,90 +10,54 @@ import Foundation
 
 public func == (lhs: Board, rhs: Board) -> Bool {
     for (y, line) in lhs.board.enumerate() {
-        for (x, spot) in line.enumerate() {
-            if rhs.board[y][x] != spot {
-                return false
-            }
+        for (x, spot) in line.enumerate() where rhs.board[y][x] != spot {
+            return false
         }
     }
     return true
 }
 
-public struct Board: CustomDebugStringConvertible, Equatable {
+public struct Board: Equatable, CustomDebugStringConvertible {
+    public var board: [[Character]]
+    public var config: BoardConfig
+    public var playedBlanks = [(x: Int, y: Int)]()
     
-    public static let letterMultipliers = [
-        [1,1,1,2,1,1,1,1,1,1,1,2,1,1,1],
-        [1,1,1,1,1,3,1,1,1,3,1,1,1,1,1],
-        [1,1,1,1,1,1,2,1,2,1,1,1,1,1,1],
-        [2,1,1,1,1,1,1,2,1,1,1,1,1,1,2],
-        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-        [1,3,1,1,1,3,1,1,1,3,1,1,1,3,1],
-        [1,1,2,1,1,1,2,1,2,1,1,1,2,1,1],
-        [1,1,1,2,1,1,1,1,1,1,1,2,1,1,1],
-        [1,1,2,1,1,1,2,1,2,1,1,1,2,1,1],
-        [1,3,1,1,1,3,1,1,1,3,1,1,1,3,1],
-        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-        [2,1,1,1,1,1,1,2,1,1,1,1,1,1,2],
-        [1,1,1,1,1,1,2,1,2,1,1,1,1,1,1],
-        [1,1,1,1,1,3,1,1,1,3,1,1,1,1,1],
-        [1,1,1,2,1,1,1,1,1,1,1,2,1,1,1]]
+    public init(config: BoardConfig) {
+        self.config = config
+        board = config.board
+    }
     
-    public static let wordMultipliers = [
-        [3,1,1,1,1,1,1,3,1,1,1,1,1,1,3],
-        [1,2,1,1,1,1,1,1,1,1,1,1,1,2,1],
-        [1,1,2,1,1,1,1,1,1,1,1,1,2,1,1],
-        [1,1,1,2,1,1,1,1,1,1,1,2,1,1,1],
-        [1,1,1,1,2,1,1,1,1,1,2,1,1,1,1],
-        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-        [3,1,1,1,1,1,1,2,1,1,1,1,1,1,3],
-        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-        [1,1,1,1,2,1,1,1,1,1,2,1,1,1,1],
-        [1,1,1,2,1,1,1,1,1,1,1,2,1,1,1],
-        [1,1,2,1,1,1,1,1,1,1,1,1,2,1,1],
-        [1,2,1,1,1,1,1,1,1,1,1,1,1,2,1],
-        [3,1,1,1,1,1,1,3,1,1,1,1,1,1,3]]
-
-    public internal(set) var board = Array(count: 15, repeatedValue: Array(count: 15, repeatedValue: Character(" ")))
-    public let boardSize = 15
-    public internal(set) var playedBlanks = [(x: Int, y: Int)]()
-    let boardRange = 0..<15
-    public let center = 7
-    public let empty: Character = " "
-    let allTilesUsedBonus = 50
-    
-    var isFirstPlay: Bool {
-        return isEmptyAt(center, center)
+    public var isFirstPlay: Bool {
+        return isEmptyAt(config.center, config.center)
     }
     
     public var debugDescription: String {
         func str(arr: [[Character]]) -> String {
             return arr.map { (line) in
-                line.map({ String($0 == empty ? "_" : $0) }).joinWithSeparator(",")
+                line.map({ String($0 == config.empty ? "_" : $0) }).joinWithSeparator(",")
                 }.joinWithSeparator("\n")
         }
         return str(board)
     }
     
-    func letterAt(x: Int, _ y: Int) -> Character? {
+    public func letterAt(x: Int, _ y: Int) -> Character? {
         let value = board[y][x]
-        return value == empty ? nil : value
+        return value == config.empty ? nil : value
     }
     
-    func isEmptyAt(x: Int, _ y: Int) -> Bool {
-        return board[y][x] == empty
+    public func isEmptyAt(x: Int, _ y: Int) -> Bool {
+        return board[y][x] == config.empty
     }
     
-    func isFilledAt(x: Int, _ y: Int) -> Bool {
-        return board[y][x] != empty
+    public func isFilledAt(x: Int, _ y: Int) -> Bool {
+        return board[y][x] != config.empty
     }
     
-    func isValidSpot(x: Int, y: Int, length: Int, horizontal: Bool) -> Bool {
+    public func isValidSpot(x: Int, y: Int, length: Int, horizontal: Bool) -> Bool {
         if isFilledAt(x, y) {
             return false
         }
-        if x == center && y == center && isFirstPlay {
+        if x == config.center && y == config.center && isFirstPlay {
             return true
         }
         
@@ -101,7 +65,7 @@ public struct Board: CustomDebugStringConvertible, Equatable {
         var currentX = x
         var currentY = y
         
-        while currentLength > 0 && (horizontal && currentX < boardSize || !horizontal && currentY < boardSize)  {
+        while currentLength > 0 && (horizontal && currentX < config.size || !horizontal && currentY < config.size)  {
             if isEmptyAt(currentX, currentY) {
                 currentLength -= 1
             }
@@ -123,7 +87,7 @@ public struct Board: CustomDebugStringConvertible, Equatable {
                 return false
             }
                 // Touches on right (cannot accept suffixed spots)
-            else if x + length < boardSize && isFilledAt(x + length, y) {
+            else if x + length < config.size && isFilledAt(x + length, y) {
                 return false
             }
                 // Intersects other letters
@@ -135,13 +99,13 @@ public struct Board: CustomDebugStringConvertible, Equatable {
                 if y > 0 && isFilledAt(i, y - 1) {
                     return true
                 }
-                else if y < 14 && isFilledAt(i, y + 1) {
+                else if y < (config.size - 1) && isFilledAt(i, y + 1) {
                     return true
                 }
             }
         } else {
             // Touches on bottom (cannot accept suffixed spots)
-            if y + length < boardSize && isFilledAt(x, y + length) {
+            if y + length < config.size && isFilledAt(x, y + length) {
                 return false
             }
                 // Touches on top (cannot accept prefixed spots)
@@ -157,7 +121,7 @@ public struct Board: CustomDebugStringConvertible, Equatable {
                 if x > 0 && isFilledAt(x - 1, i) {
                     return true
                 }
-                if x < 14 && isFilledAt(x + 1, i) {
+                if x < (config.size - 1) && isFilledAt(x + 1, i) {
                     return true
                 }
             }
@@ -165,7 +129,7 @@ public struct Board: CustomDebugStringConvertible, Equatable {
         return false
     }
     
-    mutating func play(solution: Solution) -> [Character] {
+    mutating public func play(solution: Solution) -> [Character] {
         var dropped = [Character]()
         for (i, letter) in solution.word.characters.enumerate() {
             if solution.horizontal {
@@ -183,4 +147,109 @@ public struct Board: CustomDebugStringConvertible, Equatable {
         playedBlanks.appendContentsOf(solution.blanks)
         return dropped
     }
+}
+
+public protocol BoardConfig {
+    init()
+    var empty: Character { get }
+    var board: [[Character]] { get }
+    var boardRange: Range<Int> { get }
+    var size: Int { get }
+    var center: Int { get }
+    var letterMultipliers: [[Int]] { get }
+    var wordMultipliers: [[Int]] { get }
+}
+
+public struct ScrabbleBoardConfig: BoardConfig {
+    public init() { }
+    public var empty: Character = " "
+    public let board = Array(count: 15, repeatedValue: Array(count: 15, repeatedValue: Character(" ")))
+    public let boardRange = 0..<15
+    public let size = 15
+    public let center = 7
+    public let letterMultipliers = [
+        [1,1,1,2,1,1,1,1,1,1,1,2,1,1,1],
+        [1,1,1,1,1,3,1,1,1,3,1,1,1,1,1],
+        [1,1,1,1,1,1,2,1,2,1,1,1,1,1,1],
+        [2,1,1,1,1,1,1,2,1,1,1,1,1,1,2],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,3,1,1,1,3,1,1,1,3,1,1,1,3,1],
+        [1,1,2,1,1,1,2,1,2,1,1,1,2,1,1],
+        [1,1,1,2,1,1,1,1,1,1,1,2,1,1,1],
+        [1,1,2,1,1,1,2,1,2,1,1,1,2,1,1],
+        [1,3,1,1,1,3,1,1,1,3,1,1,1,3,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [2,1,1,1,1,1,1,2,1,1,1,1,1,1,2],
+        [1,1,1,1,1,1,2,1,2,1,1,1,1,1,1],
+        [1,1,1,1,1,3,1,1,1,3,1,1,1,1,1],
+        [1,1,1,2,1,1,1,1,1,1,1,2,1,1,1]]
+    public let wordMultipliers = [
+        [3,1,1,1,1,1,1,3,1,1,1,1,1,1,3],
+        [1,2,1,1,1,1,1,1,1,1,1,1,1,2,1],
+        [1,1,2,1,1,1,1,1,1,1,1,1,2,1,1],
+        [1,1,1,2,1,1,1,1,1,1,1,2,1,1,1],
+        [1,1,1,1,2,1,1,1,1,1,2,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [3,1,1,1,1,1,1,2,1,1,1,1,1,1,3],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,2,1,1,1,1,1,2,1,1,1,1],
+        [1,1,1,2,1,1,1,1,1,1,1,2,1,1,1],
+        [1,1,2,1,1,1,1,1,1,1,1,1,2,1,1],
+        [1,2,1,1,1,1,1,1,1,1,1,1,1,2,1],
+        [3,1,1,1,1,1,1,3,1,1,1,1,1,1,3]]
+}
+
+public struct SuperScrabbleBoardConfig: BoardConfig {
+    public init() { }
+    public let empty: Character = " "
+    public let board = Array(count: 21, repeatedValue: Array(count: 21, repeatedValue: Character(" ")))
+    public let boardRange = 0..<21
+    public let size = 21
+    public let center = 10
+    public let letterMultipliers = [
+        [1,1,1,2,1,1,1,1,1,1,2,1,1,1,1,1,1,2,1,1,1],
+        [1,1,1,1,3,1,1,1,1,1,1,1,1,1,1,1,3,1,1,1,1],
+        [1,1,1,1,1,4,1,1,1,1,1,1,1,1,1,4,1,1,1,1,1],
+        [2,1,1,1,1,1,2,1,1,1,1,1,1,1,2,1,1,1,1,1,2],
+        [1,3,1,1,1,1,1,1,3,1,1,1,3,1,1,1,1,1,1,3,1],
+        [1,1,4,1,1,1,1,1,1,2,1,2,1,1,1,1,1,1,4,1,1],
+        [1,1,1,2,1,1,1,1,1,1,2,1,1,1,1,1,1,2,1,1,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,1,4,1,1,1,4,1,1,1,4,1,1,1,4,1,1,1,1],
+        [1,1,1,1,1,2,1,1,1,2,1,2,1,1,1,2,1,1,1,1,1],
+        [2,1,1,1,1,1,2,1,1,1,1,1,1,1,2,1,1,1,1,1,2],
+        [1,1,1,1,1,2,1,1,1,2,1,2,1,1,1,2,1,1,1,1,1],
+        [1,1,1,1,4,1,1,1,4,1,1,1,4,1,1,1,4,1,1,1,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,1,1,2,1,1,1,1,1,1,2,1,1,1,1,1,1,2,1,1,1],
+        [1,1,4,1,1,1,1,1,1,2,1,2,1,1,1,1,1,1,4,1,1],
+        [1,3,1,1,1,1,1,1,3,1,1,1,3,1,1,1,1,1,1,3,1],
+        [2,1,1,1,1,1,2,1,1,1,1,1,1,1,2,1,1,1,1,1,2],
+        [1,1,1,1,1,4,1,1,1,1,1,1,1,1,1,4,1,1,1,1,1],
+        [1,1,1,1,3,1,1,1,1,1,1,1,1,1,1,1,3,1,1,1,1],
+        [1,1,1,2,1,1,1,1,1,1,2,1,1,1,1,1,1,2,1,1,1]]
+    public let wordMultipliers = [
+        [4,1,1,1,1,1,1,3,1,1,1,1,1,3,1,1,1,1,1,1,4],
+        [1,2,1,1,1,1,1,1,2,1,1,1,2,1,1,1,1,1,1,2,1],
+        [1,1,2,1,1,1,1,1,1,2,1,2,1,1,1,1,1,1,2,1,1],
+        [1,1,1,3,1,1,1,1,1,1,3,1,1,1,1,1,1,3,1,1,1],
+        [1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1],
+        [1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1],
+        [1,1,1,1,1,1,2,1,1,1,1,1,1,1,2,1,1,1,1,1,1],
+        [3,1,1,1,1,1,1,2,1,1,1,1,1,2,1,1,1,1,1,1,3],
+        [1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1],
+        [1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1],
+        [1,1,1,3,1,1,1,1,1,1,2,1,1,1,1,1,1,3,1,1,1],
+        [1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1],
+        [1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1],
+        [3,1,1,1,1,1,1,2,1,1,1,1,1,2,1,1,1,1,1,1,3],
+        [1,1,1,1,1,1,2,1,1,1,1,1,1,1,2,1,1,1,1,1,1],
+        [1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1],
+        [1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1],
+        [1,1,1,3,1,1,1,1,1,1,3,1,1,1,1,1,1,3,1,1,1],
+        [1,1,2,1,1,1,1,1,1,2,1,2,1,1,1,1,1,1,2,1,1],
+        [1,2,1,1,1,1,1,1,2,1,1,1,2,1,1,1,1,1,1,2,1],
+        [4,1,1,1,1,1,1,3,1,1,1,1,1,3,1,1,1,1,1,1,4]]
 }

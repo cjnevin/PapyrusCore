@@ -33,11 +33,12 @@ struct Solver {
     let dictionary: Dawg
     private let debug: Bool
     private let maximumWordLength = 10
+    private let allTilesUsedBonus = 50
     
-    init(dictionary: Dawg, distribution: LetterDistribution, debug: Bool = false) {
-        self.board = Board()
+    init(board: Board, dictionary: Dawg, distribution: LetterDistribution, debug: Bool = false) {
+        self.board = board
         self.distribution = distribution
-        boardState = BoardState(board: self.board)
+        boardState = BoardState(board: board)
         self.debug = debug
         self.dictionary = dictionary
     }
@@ -50,14 +51,14 @@ struct Solver {
         var offset = boardState[horizontal][y][x]
         let getValue = { self.board.letterAt(horizontal ? offset : x, horizontal ? y : offset) }
         let addValue = {
-            if offset < self.board.boardSize {
+            if offset < self.board.config.size {
                 filled[offset] = (index, getValue())
                 index += 1
                 offset += 1
             }
         }
         let collect = {
-            while offset < self.board.boardSize && getValue() != nil {
+            while offset < self.board.config.size && getValue() != nil {
                 addValue()
             }
         }
@@ -81,12 +82,12 @@ struct Solver {
         var end: Int = start
         var valueFunc: (Int) -> (Character?) = { self.board.letterAt(horizontal ? $0 : x, horizontal ? y : $0) }
         func collect() {
-            if end >= board.boardSize { return }
+            if end >= board.config.size { return }
             var char: Character? = valueFunc(end)
             while let value = char {
                 chars.append(value)
                 end += 1
-                char = end < board.boardSize ? valueFunc(end) : nil
+                char = end < board.config.size ? valueFunc(end) : nil
             }
         }
         collect()
@@ -127,8 +128,8 @@ struct Solver {
                 score += value
                 return
             }
-            let letterMultiplier = Board.letterMultipliers[y][x]
-            let wordMultiplier = Board.wordMultipliers[y][x]
+            let letterMultiplier = board.config.letterMultipliers[y][x]
+            let wordMultiplier = board.config.wordMultipliers[y][x]
             tilesUsed += 1
             score += value * letterMultiplier
             scoreMultiplier *= wordMultiplier
@@ -143,7 +144,7 @@ struct Solver {
             scoreLetter(letter, x: horizontal ? x + i : x, y: horizontal ? y : y + i, horizontal: horizontal)
         }
         
-        return (score * scoreMultiplier) + intersectionsScore + (tilesUsed == 7 ? board.allTilesUsedBonus : 0)
+        return (score * scoreMultiplier) + intersectionsScore + (tilesUsed == 7 ? allTilesUsedBonus : 0)
     }
     
     mutating func play(solution: Solution) -> [Character] {
@@ -348,15 +349,15 @@ struct Solver {
         
         for length in 1...maximumWordLength {
             // Horizontal
-            for y in board.boardRange {
-                for x in board.boardRange {
+            for y in board.config.boardRange {
+                for x in board.config.boardRange {
                     solutionsAt(x: x, y: y, length: length, horizontal: true)
                 }
             }
             
             // Vertical
-            for y in 0..<(board.boardSize - length - 1) {
-                for x in board.boardRange {
+            for y in 0..<(board.config.size - length - 1) {
+                for x in board.config.boardRange {
                     solutionsAt(x: x, y: y, length: length, horizontal: false)
                 }
             }

@@ -32,8 +32,8 @@ public struct Game {
     }
     private let maximumConsecutiveSkips = 3
     
-    public static func newGame(dictionary: Dawg, bag: Bag, players: [Player], eventHandler: EventHandler) -> Game {
-        let solver = Solver(dictionary: dictionary, distribution: bag.distribution)
+    public static func newGame(dictionary: Dawg, board: Board, bag: Bag, players: [Player], eventHandler: EventHandler) -> Game {
+        let solver = Solver(board: board, dictionary: dictionary, distribution: bag.distribution)
         var game = Game(solver: solver, bag: bag, players: players, playerIndex: 0, eventHandler: eventHandler)
         for _ in players {
             game.replenishRack()
@@ -43,8 +43,8 @@ public struct Game {
         return game
     }
     
-    public static func restoreGame(dictionary: Dawg, bag: Bag, players: [Player], playerIndex: Int, eventHandler: EventHandler) -> Game {
-        var solver = Solver(dictionary: dictionary, distribution: bag.distribution)
+    public static func restoreGame(dictionary: Dawg, board: Board, bag: Bag, players: [Player], playerIndex: Int, eventHandler: EventHandler) -> Game {
+        var solver = Solver(board: board, dictionary: dictionary, distribution: bag.distribution)
         for player in players {
             for solution in player.solves {
                 solver.play(solution)

@@ -9,12 +9,14 @@
 import Foundation
 
 public protocol LetterDistribution {
+    init()
     var letterPoints: [Character: Int] { get }
     var letterCounts: [Character: Int] { get }
     var total: Int { get }
 }
 
 public struct ScrabbleDistribution: LetterDistribution {
+    public init() { }
     public let letterPoints: [Character: Int] = [
         Bag.blankLetter: 0, "a": 1, "b": 3, "c": 3, "d": 2,
         "e": 1, "f": 4, "g": 2, "h": 4, "i": 1,
@@ -35,6 +37,7 @@ public struct ScrabbleDistribution: LetterDistribution {
 }
 
 public struct SuperScrabbleDistribution: LetterDistribution {
+    public init() { }
     public let letterPoints: [Character: Int] = [
         Bag.blankLetter: 0, "a": 1, "b": 3, "c": 3, "d": 2,
         "e": 1, "f": 4, "g": 2, "h": 4, "i": 1,

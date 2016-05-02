@@ -17,7 +17,7 @@ class SolverTests: XCTestCase {
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        solver = Solver(dictionary: Dawg.singleton, distribution: distribution)
+        solver = Solver(board: Board(config: ScrabbleBoardConfig()), dictionary: Dawg.singleton, distribution: distribution)
         // Setup default state
         solver.play(Solution(word: "cart", 5, 7, true, 0, [], []))
         solver.play(Solution(word: "asked", 6, 7, false, 0, ["cart"], []))
