@@ -60,7 +60,7 @@ class SolverTests: XCTestCase {
         let medium = solver.solve(solutions, difficulty: .Medium)!
         let easy = solver.solve(solutions, difficulty: .Easy)!
         let veryEasy = solver.solve(solutions, difficulty: .VeryEasy)!
-        compareSolution(hard, expected: ("crated", 9, 5, false, 24, ["carta"], []))
+        compareSolution(hard, expected: ("tead", 6, 6, true, 24, ["tasked", "er", "at"], []))
         compareSolution(medium, expected: ("acred", 9, 7, false, 17, ["carta"], []))
         compareSolution(easy, expected: ("aced", 8, 8, true, 11, ["ta"], []))
         compareSolution(veryEasy, expected: ("at", 5, 11, false, 5, ["ad"], []))
