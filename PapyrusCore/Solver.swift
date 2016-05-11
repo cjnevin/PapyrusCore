@@ -347,18 +347,15 @@ struct Solver {
             }
         }
         
-        for length in 1...maximumWordLength {
-            // Horizontal
-            for y in board.config.boardRange {
-                for x in board.config.boardRange {
+        for length in 2...maximumWordLength {
+            for x in board.config.boardRange {
+                for y in board.config.boardRange {
+                    // Horizontal
                     solutionsAt(x: x, y: y, length: length, horizontal: true)
-                }
-            }
-            
-            // Vertical
-            for y in 0..<(board.config.size - length - 1) {
-                for x in board.config.boardRange {
-                    solutionsAt(x: x, y: y, length: length, horizontal: false)
+                    // Vertical
+                    if y < board.config.size - length - 1 {
+                        solutionsAt(x: x, y: y, length: length, horizontal: false)
+                    }
                 }
             }
         }
