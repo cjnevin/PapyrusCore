@@ -364,6 +364,9 @@ struct Solver {
     }
     
     func solve(solutions: [Solution], difficulty: Difficulty = .Hard) -> Solution? {
+        if solutions.count == 0 {
+            return nil
+        }
         let best = solutions.sort({ $0.score < $1.score }).last!
         if difficulty == .Hard {
             return best
