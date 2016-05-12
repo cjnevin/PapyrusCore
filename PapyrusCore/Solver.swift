@@ -34,6 +34,7 @@ struct Solver {
     private let debug: Bool
     private let maximumWordLength = 10
     private let allTilesUsedBonus = 50
+    let operationQueue = NSOperationQueue()
     
     init(board: Board, dictionary: Dawg, distribution: LetterDistribution, debug: Bool = false) {
         self.board = board
@@ -269,30 +270,30 @@ struct Solver {
         }
     }
     
-    func solutions(letters: [RackTile]) -> [Solution]? {
+    func solutions(letters: [RackTile], serial: Bool = false, completion: ([Solution]?) -> ()) {
         if letters.count == 0 {
-            return nil
+            completion(nil)
+            return
         }
         
-        var solutions = [Solution]()
-        
-        func solutionsAt(x x: Int, y: Int, length: Int, horizontal: Bool) {
+        func solutionsAt(x x: Int, y: Int, length: Int, horizontal: Bool) -> [Solution]? {
             if !board.isValidSpot(x, y: y, length: length, horizontal: horizontal) {
-                return
+                return nil
             }
             
             // Collect characters that are filled
             guard let characters = charactersAt(x, y: y, length: length, horizontal: horizontal) where characters.count == length else {
-                return
+                return nil
             }
             // Convert to be accepted by anagram method
             var filledLettersDict = [Int: Character]()
             characters.filter({ $1.value != nil }).forEach { filledLettersDict[$0.1.0] = $0.1.1! }
             guard let firstOffset = characters.keys.sort().first,
                 words = dictionary.anagrams(withLetters: letters.map({$0.0}), wordLength: length, filledLetters: filledLettersDict) else {
-                    return
+                    return nil
             }
             
+            var solves = [Solution]()
             for word in words {
                 var valid = true
                 var intersections = [String]()
@@ -339,28 +340,66 @@ struct Solver {
                         word: word,
                         horizontal: horizontal,
                         blanks: blanks)
-                    solutions.append((word, horizontal ? firstOffset : x, horizontal ? y : firstOffset, horizontal, score, intersections, blanks))
+                    solves.append((word, horizontal ? firstOffset : x, horizontal ? y : firstOffset, horizontal, score, intersections, blanks))
                     if !board.isFirstPlay {
                         assert(intersections.count > 0)
                     }
                 }
             }
+            return solves
         }
         
+        var solutions = [Solution]()
+        let currentQueue = NSOperationQueue.currentQueue()
+        var count = 0
         for length in 2...maximumWordLength {
-            for x in board.config.boardRange {
-                for y in board.config.boardRange {
-                    // Horizontal
-                    solutionsAt(x: x, y: y, length: length, horizontal: true)
-                    // Vertical
-                    if y < board.config.size - length - 1 {
-                        solutionsAt(x: x, y: y, length: length, horizontal: false)
+            count += 1
+            if serial {
+                for x in self.board.config.boardRange {
+                    for y in self.board.config.boardRange {
+                        // Horizontal
+                        if let solves = solutionsAt(x: x, y: y, length: length, horizontal: true) {
+                            solutions.appendContentsOf(solves)
+                        }
+                        // Vertical
+                        if y < self.board.config.size - length - 1 {
+                            if let solves = solutionsAt(x: x, y: y, length: length, horizontal: false) {
+                                solutions.appendContentsOf(solves)
+                            }
+                        }
                     }
                 }
+            } else {
+                operationQueue.addOperationWithBlock({
+                    var innerSolutions = [Solution]()
+                    for x in self.board.config.boardRange {
+                        for y in self.board.config.boardRange {
+                            // Horizontal
+                            if let solves = solutionsAt(x: x, y: y, length: length, horizontal: true) {
+                                innerSolutions.appendContentsOf(solves)
+                            }
+                            // Vertical
+                            if y < self.board.config.size - length - 1 {
+                                if let solves = solutionsAt(x: x, y: y, length: length, horizontal: false) {
+                                    innerSolutions.appendContentsOf(solves)
+                                }
+                            }
+                        }
+                    }
+                    currentQueue?.addOperationWithBlock({
+                        solutions.appendContentsOf(innerSolutions)
+                        count -= 1
+                        if count == 0 {
+                            completion(solutions)
+                        }
+                    })
+                })
             }
         }
         
-        return solutions.count == 0 ? nil : solutions
+        if serial {
+            completion(solutions.count > 0 ? solutions : nil)
+        }
     }
     
     func solve(solutions: [Solution], difficulty: Difficulty = .Hard) -> Solution? {
@@ -385,11 +424,6 @@ struct Solver {
             }
         }
         return suitable?.solution ?? best
-    }
-    
-    func solve(letters: [RackTile], difficulty: Difficulty = .Hard) -> Solution? {
-        guard let possibilities = solutions(letters), best = solve(possibilities, difficulty: difficulty) else { return nil }
-        return best
     }
 }
 

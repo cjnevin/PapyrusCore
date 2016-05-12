@@ -20,8 +20,9 @@ public enum GameEvent {
 let aiCanPlayBlanks = false
 
 public typealias EventHandler = (GameEvent) -> ()
-public struct Game {
+public class Game {
     var solver: Solver
+    var serial: Bool = false
     public var bag: Bag
     var players: [Player]
     var playerIndex: Int
@@ -32,9 +33,18 @@ public struct Game {
     }
     private let maximumConsecutiveSkips = 3
     
-    public static func newGame(dictionary: Dawg, board: Board, bag: Bag, players: [Player], eventHandler: EventHandler) -> Game {
+    init(solver: Solver, bag: Bag, players: [Player], playerIndex: Int, serial: Bool = false, eventHandler: EventHandler) {
+        self.solver = solver
+        self.bag = bag
+        self.serial = serial
+        self.players = players
+        self.playerIndex = playerIndex
+        self.eventHandler = eventHandler
+    }
+    
+    public static func newGame(dictionary: Dawg, board: Board, bag: Bag, players: [Player], serial: Bool = false, eventHandler: EventHandler) -> Game {
         let solver = Solver(board: board, dictionary: dictionary, distribution: bag.distribution)
-        var game = Game(solver: solver, bag: bag, players: players, playerIndex: 0, eventHandler: eventHandler)
+        let game = Game(solver: solver, bag: bag, players: players, playerIndex: 0, serial: serial, eventHandler: eventHandler)
         for _ in players {
             game.replenishRack()
             game.playerIndex += 1
@@ -53,17 +63,17 @@ public struct Game {
         return Game(solver: solver, bag: bag, players: players, playerIndex: playerIndex, eventHandler: eventHandler)
     }
     
-    public mutating func shuffleRack() {
+    public func shuffleRack() {
         if player is Human {
             players[playerIndex].shuffle()
         }
     }
     
-    public mutating func start() {
+    public func start() {
         turn()
     }
     
-    public mutating func skip() {
+    public func skip() {
         players[playerIndex].consecutiveSkips += 1
         if player.consecutiveSkips >= maximumConsecutiveSkips {
             gameOver()
@@ -72,7 +82,7 @@ public struct Game {
         nextTurn()
     }
     
-    private mutating func gameOver() {
+    private func gameOver() {
         var newPlayers = players
         for i in 0..<newPlayers.count {
             for tile in newPlayers[i].rack {
@@ -89,7 +99,7 @@ public struct Game {
         eventHandler(.Over(winner))
     }
     
-    private mutating func turn() {
+    private func turn() {
         if player.rack.count == 0 {
             gameOver()
             return
@@ -108,22 +118,24 @@ public struct Game {
                     print("AI set value of blank letter")
                 }
             }
-            if let solution = solver.solve(ai.rack, difficulty: ai.difficulty) {
-                print(ai.rack)
-                play(solution)
-                print(solver.board)
-                nextTurn()
-            } else {
-                let tiles = Array(ai.rack[0..<min(bag.remaining.count, ai.rack.count)])
-                if !swapTiles(tiles.map({ $0.letter })) {
-                    // We're stuck with these tiles, nothing AI can do, lets skip
-                    skip()
+            solver.solutions(ai.rack, completion: { solutions in
+                if let solutions = solutions, solution = self.solver.solve(solutions, difficulty: ai.difficulty) {
+                    print(ai.rack)
+                    self.play(solution)
+                    print(self.solver.board)
+                    self.nextTurn()
+                } else {
+                    let tiles = Array(ai.rack[0..<min(self.bag.remaining.count, ai.rack.count)])
+                    if !self.swapTiles(tiles.map({ $0.letter })) {
+                        // We're stuck with these tiles, nothing AI can do, lets skip
+                        self.skip()
+                    }
                 }
-            }
+            })
         }
     }
     
-    public mutating func nextTurn() {
+    public func nextTurn() {
         eventHandler(.TurnEnded)
         if player.rack.count == 0 {
             gameOver()
@@ -133,7 +145,7 @@ public struct Game {
         turn()
     }
     
-    public mutating func play(solution: Solution) {
+    public func play(solution: Solution) {
         let dropped = solver.play(solution)
         assert(dropped.count > 0)
         players[playerIndex].played(solution, tiles: dropped)
@@ -141,7 +153,7 @@ public struct Game {
         eventHandler(.Move(solution))
     }
     
-    public mutating func replenishRack() {
+    public func replenishRack() {
         let amount = min(rackAmount - player.rack.count, bag.remaining.count)
         let newTiles = (0..<amount).flatMap { _ in bag.draw() }
         players[playerIndex].drew(newTiles)
@@ -151,7 +163,7 @@ public struct Game {
     public let rackAmount = 7
     public var canSwap: Bool { return bag.remaining.count > rackAmount }
     
-    public mutating func swapTiles(oldTiles: [Character]) -> Bool {
+    public func swapTiles(oldTiles: [Character]) -> Bool {
         if !canSwap { return false }
         
         oldTiles.forEach { bag.replace($0) }

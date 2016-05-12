@@ -29,12 +29,6 @@ class SolverTests: XCTestCase {
         solver = nil
     }
     
-    func testSolutionsPerformance() {
-        measureBlock {
-            self.solver.solve("aecdefs".characters.map({ ($0, false) }))
-        }
-    }
-    
     func compareSolution(solution: Solution, expected: Solution) {
         XCTAssertEqual(expected.word, solution.word)
         XCTAssertEqual(expected.score, solution.score)
@@ -46,28 +40,35 @@ class SolverTests: XCTestCase {
     
     func multipleRacksTest(racks: [[RackTile]], solutions: [Solution]) {
         for (index, rack) in racks.enumerate() {
-            let best = solver.solve(rack)!
             let expectation = solutions[index]
-            compareSolution(best, expected: expectation)
-            solver.play(best)
+            solver.solutions(rack, serial: true, completion: { (solutions) in
+                let best = self.solver.solve(solutions!)!
+                self.compareSolution(best, expected: expectation)
+                self.solver.play(best)
+            })
         }
     }
     
     func testScaling() {
         let rack: [RackTile] = ["c", "a", "r", "t", "e", "d"].map({ ($0, false) })
-        let solutions = solver.solutions(rack)!
-        let hard = solver.solve(solutions)!
-        let medium = solver.solve(solutions, difficulty: .Medium)!
-        let easy = solver.solve(solutions, difficulty: .Easy)!
-        let veryEasy = solver.solve(solutions, difficulty: .VeryEasy)!
-        compareSolution(hard, expected: ("tead", 6, 6, true, 24, ["tasked", "er", "at"], []))
-        compareSolution(medium, expected: ("acred", 9, 7, false, 17, ["carta"], []))
-        compareSolution(easy, expected: ("aced", 8, 8, true, 11, ["ta"], []))
-        compareSolution(veryEasy, expected: ("at", 5, 11, false, 5, ["ad"], []))
+        solver.solutions(rack, serial: true) { (solutions) in
+            guard let solutions = solutions else { XCTAssert(false); return }
+            let hard = self.solver.solve(solutions)!
+            let medium = self.solver.solve(solutions, difficulty: .Medium)!
+            let easy = self.solver.solve(solutions, difficulty: .Easy)!
+            let veryEasy = self.solver.solve(solutions, difficulty: .VeryEasy)!
+            self.compareSolution(hard, expected: ("tead", 6, 6, true, 24, ["tasked", "er", "at"], []))
+            self.compareSolution(medium, expected: ("acred", 9, 7, false, 17, ["carta"], []))
+            self.compareSolution(easy, expected: ("aced", 8, 8, true, 11, ["ta"], []))
+            self.compareSolution(veryEasy, expected: ("at", 5, 11, false, 5, ["ad"], []))
+        }
+        //let solutions = solver.solutions(rack)!
     }
     
     func testZeroTilesSolution() {
-        XCTAssertNil(solver.solutions([]))
+        solver.solutions([], serial: true, completion: { (solutions) in
+            XCTAssertNil(solutions)
+        })
     }
     
     func testBestSolution() {
