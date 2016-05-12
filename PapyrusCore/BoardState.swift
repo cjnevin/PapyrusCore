@@ -26,8 +26,8 @@ struct BoardState: CustomDebugStringConvertible, Equatable {
     }
     
     init(board: Board) {
-        let size = board.boardSize
-        let range = board.boardRange
+        let size = board.config.size
+        let range = board.config.boardRange
         var h = Array(count: size, repeatedValue: Array(count: size, repeatedValue: 0))
         var v = Array(count: size, repeatedValue: Array(count: size, repeatedValue: 0))
         func update(first: Int, `while`: (Int) -> Bool) -> Int {
@@ -44,8 +44,8 @@ struct BoardState: CustomDebugStringConvertible, Equatable {
         }
         for x in range {
             for y in range {
-                h[y][x] = update(x){ board.board[y][$0] != board.empty }
-                v[y][x] = update(y){ board.board[$0][x] != board.empty }
+                h[y][x] = update(x){ board.board[y][$0] != board.config.empty }
+                v[y][x] = update(y){ board.board[$0][x] != board.config.empty }
             }
         }
         horizontal = h

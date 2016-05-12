@@ -12,8 +12,15 @@ import XCTest
 class BagTests : XCTestCase {
     func testBag() {
         var bag = Bag()
-        XCTAssertEqual(bag.remaining.count, 101)
+        XCTAssertEqual(bag.remaining.count, bag.distribution.total)
         bag.draw()
-        XCTAssertEqual(bag.remaining.count, 100)
+        XCTAssertEqual(bag.remaining.count, bag.distribution.total - 1)
+    }
+    
+    func testSuperBag() {
+        var bag = Bag(distribution: SuperScrabbleDistribution())
+        XCTAssertEqual(bag.remaining.count, bag.distribution.total)
+        bag.draw()
+        XCTAssertEqual(bag.remaining.count, bag.distribution.total - 1)
     }
 }
