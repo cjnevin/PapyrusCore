@@ -74,6 +74,7 @@ public class Game {
     }
     
     public func skip() {
+        print("Skipped")
         players[playerIndex].consecutiveSkips += 1
         if player.consecutiveSkips >= maximumConsecutiveSkips {
             gameOver()
@@ -142,6 +143,7 @@ public class Game {
             return
         }
         playerIndex = (playerIndex + 1) % players.count
+        print("Next Turn")
         turn()
     }
     
