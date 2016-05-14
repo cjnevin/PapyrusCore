@@ -24,7 +24,7 @@ public class Game {
     var solver: Solver
     var serial: Bool = false
     public var bag: Bag
-    var players: [Player]
+    public private(set) var players: [Player]
     var playerIndex: Int
     public var player: Player { return players[playerIndex] }
     private var eventHandler: EventHandler
