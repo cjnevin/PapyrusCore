@@ -45,6 +45,7 @@ public class Game {
     public static func newGame(dictionary: Dawg, board: Board, bag: Bag, players: [Player], serial: Bool = false, eventHandler: EventHandler) -> Game {
         let solver = Solver(board: board, dictionary: dictionary, distribution: bag.distribution)
         let game = Game(solver: solver, bag: bag, players: players, playerIndex: 0, serial: serial, eventHandler: eventHandler)
+        assert(players.filter({ $0 is Human }).count < 2)
         for _ in players {
             game.replenishRack()
             game.playerIndex += 1
