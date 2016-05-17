@@ -99,19 +99,20 @@ struct Solver {
     
     typealias OffsetIndexValueMap = [Int: (index: Int, value: Character?)]
     private func charactersAt(x: Int, y: Int, length: Int, horizontal: Bool) -> OffsetIndexValueMap? {
+        let size = board.config.size
         var filled = OffsetIndexValueMap()
         var index = 0
         var offset = boardState[horizontal][y][x]
         let getValue = { self.board.letterAt(horizontal ? offset : x, horizontal ? y : offset) }
         let addValue = {
-            if offset < self.board.config.size {
+            if offset < size {
                 filled[offset] = (index, getValue())
                 index += 1
                 offset += 1
             }
         }
         let collect = {
-            while offset < self.board.config.size && getValue() != nil {
+            while offset < size && getValue() != nil {
                 addValue()
             }
         }
@@ -130,17 +131,18 @@ struct Solver {
             return wordAt(x, y: y - 1, string: string, horizontal: horizontal)
         }
         
+        let size = board.config.size
         var chars = [Character]()
         let start: Int = boardState[horizontal][y][x]
         var end: Int = start
         var valueFunc: (Int) -> (Character?) = { self.board.letterAt(horizontal ? $0 : x, horizontal ? y : $0) }
         func collect() {
-            if end >= board.config.size { return }
+            if end >= size { return }
             var char: Character? = valueFunc(end)
             while let value = char {
                 chars.append(value)
                 end += 1
-                char = end < board.config.size ? valueFunc(end) : nil
+                char = end < size ? valueFunc(end) : nil
             }
         }
         collect()
@@ -407,17 +409,19 @@ struct Solver {
         var solutions = [Solution]()
         let currentQueue = NSOperationQueue.currentQueue()
         var count = 0
+        let range = board.config.boardRange
+        let size = board.config.size
         for length in 2...maximumWordLength {
             count += 1
             if serial {
-                for x in board.config.boardRange {
-                    for y in board.config.boardRange {
+                for x in range {
+                    for y in range {
                         // Horizontal
                         if let solves = solutionsAt(x: x, y: y, length: length, horizontal: true) {
                             solutions.appendContentsOf(solves)
                         }
                         // Vertical
-                        if y < board.config.size - length - 1 {
+                        if y < size - length - 1 {
                             if let solves = solutionsAt(x: x, y: y, length: length, horizontal: false) {
                                 solutions.appendContentsOf(solves)
                             }
@@ -426,16 +430,15 @@ struct Solver {
                 }
             } else {
                 operationQueue.addOperationWithBlock({
-                    let config = self.board.config
                     var innerSolutions = [Solution]()
-                    for x in config.boardRange {
-                        for y in config.boardRange {
+                    for x in range {
+                        for y in range {
                             // Horizontal
                             if let solves = solutionsAt(x: x, y: y, length: length, horizontal: true) {
                                 innerSolutions.appendContentsOf(solves)
                             }
                             // Vertical
-                            if y < config.size - length - 1 {
+                            if y < size - length - 1 {
                                 if let solves = solutionsAt(x: x, y: y, length: length, horizontal: false) {
                                     innerSolutions.appendContentsOf(solves)
                                 }

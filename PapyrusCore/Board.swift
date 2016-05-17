@@ -61,11 +61,12 @@ public struct Board: Equatable, CustomDebugStringConvertible {
             return true
         }
         
+        let size = config.size
         var currentLength = length
         var currentX = x
         var currentY = y
         
-        while currentLength > 0 && (horizontal && currentX < config.size || !horizontal && currentY < config.size)  {
+        while currentLength > 0 && (horizontal && currentX < size || !horizontal && currentY < size)  {
             if isEmptyAt(currentX, currentY) {
                 currentLength -= 1
             }
@@ -87,7 +88,7 @@ public struct Board: Equatable, CustomDebugStringConvertible {
                 return false
             }
                 // Touches on right (cannot accept suffixed spots)
-            else if x + length < config.size && isFilledAt(x + length, y) {
+            else if x + length < size && isFilledAt(x + length, y) {
                 return false
             }
                 // Intersects other letters
@@ -99,13 +100,13 @@ public struct Board: Equatable, CustomDebugStringConvertible {
                 if y > 0 && isFilledAt(i, y - 1) {
                     return true
                 }
-                else if y < (config.size - 1) && isFilledAt(i, y + 1) {
+                else if y < (size - 1) && isFilledAt(i, y + 1) {
                     return true
                 }
             }
         } else {
             // Touches on bottom (cannot accept suffixed spots)
-            if y + length < config.size && isFilledAt(x, y + length) {
+            if y + length < size && isFilledAt(x, y + length) {
                 return false
             }
                 // Touches on top (cannot accept prefixed spots)
@@ -121,7 +122,7 @@ public struct Board: Equatable, CustomDebugStringConvertible {
                 if x > 0 && isFilledAt(x - 1, i) {
                     return true
                 }
-                if x < (config.size - 1) && isFilledAt(x + 1, i) {
+                if x < (size - 1) && isFilledAt(x + 1, i) {
                     return true
                 }
             }
@@ -160,12 +161,19 @@ public protocol BoardConfig {
     var wordMultipliers: [[Int]] { get }
 }
 
+extension BoardConfig {
+    public var boardRange: Range<Int> {
+        return board.indices
+    }
+    public var size: Int {
+        return board.count
+    }
+}
+
 public struct ScrabbleBoardConfig: BoardConfig {
     public init() { }
-    public var empty: Character = " "
+    public let empty = Character(" ")
     public let board = Array(count: 15, repeatedValue: Array(count: 15, repeatedValue: Character(" ")))
-    public let boardRange = 0..<15
-    public let size = 15
     public let center = 7
     public let letterMultipliers = [
         [1,1,1,2,1,1,1,1,1,1,1,2,1,1,1],
@@ -203,10 +211,8 @@ public struct ScrabbleBoardConfig: BoardConfig {
 
 public struct SuperScrabbleBoardConfig: BoardConfig {
     public init() { }
-    public let empty: Character = " "
+    public let empty = Character(" ")
     public let board = Array(count: 21, repeatedValue: Array(count: 21, repeatedValue: Character(" ")))
-    public let boardRange = 0..<21
-    public let size = 21
     public let center = 10
     public let letterMultipliers = [
         [1,1,1,2,1,1,1,1,1,1,2,1,1,1,1,1,1,2,1,1,1],
