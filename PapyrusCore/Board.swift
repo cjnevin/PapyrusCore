@@ -9,11 +9,7 @@
 import Foundation
 
 public func == (lhs: Board, rhs: Board) -> Bool {
-    for (y, line) in lhs.board.enumerate() {
-        for (x, spot) in line.enumerate() where rhs.board[y][x] != spot {
-            return false
-        }
-    }
+    for (left, right) in zip(lhs.board, rhs.board) where left != right { return false }
     return true
 }
 
