@@ -26,6 +26,7 @@
 		9960AD6E1BA589D800765614 /* PapyrusCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 9960AD6D1BA589D800765614 /* PapyrusCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9960AD751BA589D800765614 /* PapyrusCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9960AD6A1BA589D800765614 /* PapyrusCore.framework */; };
 		996E23AA1BAA334A0052F1E2 /* sowpods.txt in Resources */ = {isa = PBXBuildFile; fileRef = 996E23A91BAA334A0052F1E2 /* sowpods.txt */; };
+		99778D981CF7C1260056DEB0 /* DawgBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99778D971CF7C1260056DEB0 /* DawgBuilder.swift */; };
 		99FD43151BA58A6400F50DCF /* DawgTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD430E1BA58A6400F50DCF /* DawgTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -62,6 +63,7 @@
 		9960AD741BA589D800765614 /* PapyrusCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapyrusCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9960AD7B1BA589D800765614 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		996E23A91BAA334A0052F1E2 /* sowpods.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = sowpods.txt; sourceTree = "<group>"; };
+		99778D971CF7C1260056DEB0 /* DawgBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DawgBuilder.swift; sourceTree = "<group>"; };
 		99FD430E1BA58A6400F50DCF /* DawgTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DawgTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -88,6 +90,7 @@
 			isa = PBXGroup;
 			children = (
 				995DD8441BB68C69009B409D /* Dawg.swift */,
+				99778D971CF7C1260056DEB0 /* DawgBuilder.swift */,
 				995DD8451BB68C69009B409D /* LICENSE */,
 				995DD8461BB68C69009B409D /* README.md */,
 			);
@@ -267,6 +270,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				995DD8481BB68C69009B409D /* Dawg.swift in Sources */,
+				99778D981CF7C1260056DEB0 /* DawgBuilder.swift in Sources */,
 				995CBC061CCCB19000DF06B8 /* Game.swift in Sources */,
 				995CBC081CCCB1A000DF06B8 /* Solver.swift in Sources */,
 				995CBC0A1CCCB1C400DF06B8 /* Player.swift in Sources */,
