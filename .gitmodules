@@ -1,3 +1,6 @@
 [submodule "Dawg"]
 	path = Dawg
 	url = https://github.com/ChrisAU/Dawg.git
+[submodule "AnagramDictionary"]
+	path = AnagramDictionary
+	url = https://github.com/ChrisAU/AnagramDictionary.git
