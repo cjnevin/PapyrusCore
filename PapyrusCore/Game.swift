@@ -42,8 +42,8 @@ public class Game {
         self.eventHandler = eventHandler
     }
     
-    public static func newGame(dictionary: Dawg, board: Board, bag: Bag, players: [Player], serial: Bool = false, eventHandler: EventHandler) -> Game {
-        let solver = Solver(board: board, dictionary: dictionary, distribution: bag.distribution)
+    public static func newGame(anagramDictionary: AnagramDictionary, dictionary: Dawg, board: Board, bag: Bag, players: [Player], serial: Bool = false, eventHandler: EventHandler) -> Game {
+        let solver = Solver(board: board, anagramDictionary: anagramDictionary, dictionary: dictionary, distribution: bag.distribution)
         let game = Game(solver: solver, bag: bag, players: players, playerIndex: 0, serial: serial, eventHandler: eventHandler)
         for _ in players {
             game.replenishRack()
@@ -53,8 +53,8 @@ public class Game {
         return game
     }
     
-    public static func restoreGame(dictionary: Dawg, board: Board, bag: Bag, players: [Player], playerIndex: Int, eventHandler: EventHandler) -> Game {
-        var solver = Solver(board: board, dictionary: dictionary, distribution: bag.distribution)
+    public static func restoreGame(anagramDictionary: AnagramDictionary, dictionary: Dawg, board: Board, bag: Bag, players: [Player], playerIndex: Int, eventHandler: EventHandler) -> Game {
+        var solver = Solver(board: board, anagramDictionary: anagramDictionary, dictionary: dictionary, distribution: bag.distribution)
         for player in players {
             for solution in player.solves {
                 solver.play(solution)

@@ -36,14 +36,14 @@ class GameTests: XCTestCase {
         let computer1 = Computer(difficulty: .Hard, rack: [], score: 0, solves: [], consecutiveSkips: 0)
         let computer2 = Computer(difficulty: .Easy, rack: [], score: 0, solves: [], consecutiveSkips: 0)
         let human1 = Human(rack: [], score: 0, solves: [], consecutiveSkips: 0)
-        let game = Game.newGame(Dawg.singleton, board: board, bag: bag, players: [computer1, computer2, human1], serial: true, eventHandler: eventHandler)
+        let game = Game.newGame(AnagramDictionary.singleton, dictionary: Dawg.singleton, board: board, bag: bag, players: [computer1, computer2, human1], serial: true, eventHandler: eventHandler)
         XCTAssertEqual(game.bag.remaining.count, game.bag.distribution.total - 21)
     }
     
     func testGameCompletes() {
         let computer1 = Computer(difficulty: .Hard, rack: [], score: 0, solves: [], consecutiveSkips: 0)
         let computer2 = Computer(difficulty: .Easy, rack: [], score: 0, solves: [], consecutiveSkips: 0)
-        let game = Game.newGame(Dawg.singleton, board: board, bag: Bag(), players: [computer1, computer2], serial: true, eventHandler: eventHandler)
+        let game = Game.newGame(AnagramDictionary.singleton, dictionary:Dawg.singleton, board: board, bag: Bag(), players: [computer1, computer2], serial: true, eventHandler: eventHandler)
         game.start()
     }
     
@@ -51,10 +51,10 @@ class GameTests: XCTestCase {
         let computer1 = Computer(difficulty: .Hard, rack: [], score: 0, solves: [], consecutiveSkips: 0)
         let computer2 = Computer(difficulty: .Easy, rack: [], score: 0, solves: [], consecutiveSkips: 0)
         let human1 = Human(rack: [], score: 0, solves: [], consecutiveSkips: 0)
-        let game = Game.newGame(Dawg.singleton, board: board, bag: bag, players: [computer1, computer2, human1], serial: true, eventHandler: eventHandler)
+        let game = Game.newGame(AnagramDictionary.singleton, dictionary:Dawg.singleton, board: board, bag: bag, players: [computer1, computer2, human1], serial: true, eventHandler: eventHandler)
         game.start()
         
-        let copiedGame = Game.restoreGame(game.solver.dictionary, board: board, bag: bag, players: game.players, playerIndex: game.playerIndex, eventHandler: eventHandler)
+        let copiedGame = Game.restoreGame(AnagramDictionary.singleton, dictionary:game.solver.dictionary, board: board, bag: bag, players: game.players, playerIndex: game.playerIndex, eventHandler: eventHandler)
         XCTAssertEqual(copiedGame.solver.boardState, game.solver.boardState)
         XCTAssertEqual(copiedGame.solver.board, game.solver.board)
     }

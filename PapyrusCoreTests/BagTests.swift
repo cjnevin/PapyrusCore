@@ -10,6 +10,26 @@ import XCTest
 @testable import PapyrusCore
 
 class BagTests : XCTestCase {
+    func testMeasureCombos() {
+        measureBlock {
+            for _ in 0..<100 {
+                for n in 2..<8 {
+                    ["a", "b", "c", "d", "e", "f", "g"].combos(n)
+                }
+            }
+        }
+    }
+    
+    func testMeasureCombinations() {
+        measureBlock {
+            for _ in 0..<100 {
+                for n in 2..<8 {
+                    ["a", "b", "c", "d", "e", "f", "g"].combinations(n)
+                }
+            }
+        }
+    }
+    
     func testBag() {
         var bag = Bag()
         XCTAssertEqual(bag.remaining.count, bag.distribution.total)

@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		993CB5EB1BB4776D00692603 /* twl06.txt in Resources */ = {isa = PBXBuildFile; fileRef = 993CB5EA1BB4776D00692603 /* twl06.txt */; };
+		99417A621CF96F4800553AE0 /* AnagramSingleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99417A611CF96F4800553AE0 /* AnagramSingleton.swift */; };
+		99417A641CF96F6400553AE0 /* sowpods_anagrams.bin in Resources */ = {isa = PBXBuildFile; fileRef = 99417A631CF96F6400553AE0 /* sowpods_anagrams.bin */; };
 		995CBC061CCCB19000DF06B8 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC051CCCB19000DF06B8 /* Game.swift */; };
 		995CBC081CCCB1A000DF06B8 /* Solver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC071CCCB1A000DF06B8 /* Solver.swift */; };
 		995CBC0A1CCCB1C400DF06B8 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC091CCCB1C400DF06B8 /* Player.swift */; };
@@ -26,7 +28,12 @@
 		9960AD6E1BA589D800765614 /* PapyrusCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 9960AD6D1BA589D800765614 /* PapyrusCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9960AD751BA589D800765614 /* PapyrusCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9960AD6A1BA589D800765614 /* PapyrusCore.framework */; };
 		996E23AA1BAA334A0052F1E2 /* sowpods.txt in Resources */ = {isa = PBXBuildFile; fileRef = 996E23A91BAA334A0052F1E2 /* sowpods.txt */; };
+		9975A2AA1CF8C8B7003D315F /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 9975A2A61CF8C8B7003D315F /* .gitignore */; };
+		9975A2AB1CF8C8B7003D315F /* AnagramDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9975A2A71CF8C8B7003D315F /* AnagramDictionary.swift */; };
+		9975A2AC1CF8C8B7003D315F /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 9975A2A81CF8C8B7003D315F /* LICENSE */; };
+		9975A2AD1CF8C8B7003D315F /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 9975A2A91CF8C8B7003D315F /* README.md */; };
 		99778D981CF7C1260056DEB0 /* DawgBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99778D971CF7C1260056DEB0 /* DawgBuilder.swift */; };
+		99FB2D0E1CF900A2005E611F /* Array+Combinations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FB2D0D1CF900A2005E611F /* Array+Combinations.swift */; };
 		99FD43151BA58A6400F50DCF /* DawgTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD430E1BA58A6400F50DCF /* DawgTests.swift */; };
 /* End PBXBuildFile section */
 
@@ -42,6 +49,8 @@
 
 /* Begin PBXFileReference section */
 		993CB5EA1BB4776D00692603 /* twl06.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = twl06.txt; sourceTree = "<group>"; };
+		99417A611CF96F4800553AE0 /* AnagramSingleton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnagramSingleton.swift; sourceTree = "<group>"; };
+		99417A631CF96F6400553AE0 /* sowpods_anagrams.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = sowpods_anagrams.bin; sourceTree = "<group>"; };
 		995CBC051CCCB19000DF06B8 /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		995CBC071CCCB1A000DF06B8 /* Solver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Solver.swift; sourceTree = "<group>"; };
 		995CBC091CCCB1C400DF06B8 /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
@@ -63,7 +72,12 @@
 		9960AD741BA589D800765614 /* PapyrusCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapyrusCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9960AD7B1BA589D800765614 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		996E23A91BAA334A0052F1E2 /* sowpods.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = sowpods.txt; sourceTree = "<group>"; };
+		9975A2A61CF8C8B7003D315F /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		9975A2A71CF8C8B7003D315F /* AnagramDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnagramDictionary.swift; sourceTree = "<group>"; };
+		9975A2A81CF8C8B7003D315F /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		9975A2A91CF8C8B7003D315F /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		99778D971CF7C1260056DEB0 /* DawgBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DawgBuilder.swift; sourceTree = "<group>"; };
+		99FB2D0D1CF900A2005E611F /* Array+Combinations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Combinations.swift"; sourceTree = "<group>"; };
 		99FD430E1BA58A6400F50DCF /* DawgTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DawgTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -118,6 +132,7 @@
 		9960AD6C1BA589D800765614 /* PapyrusCore */ = {
 			isa = PBXGroup;
 			children = (
+				99FB2D0D1CF900A2005E611F /* Array+Combinations.swift */,
 				9960AD6D1BA589D800765614 /* PapyrusCore.h */,
 				995CBC0B1CCCB1E000DF06B8 /* Bag.swift */,
 				995CBC151CCCB58A00DF06B8 /* Board.swift */,
@@ -125,6 +140,7 @@
 				995CBC051CCCB19000DF06B8 /* Game.swift */,
 				995CBC091CCCB1C400DF06B8 /* Player.swift */,
 				995CBC071CCCB1A000DF06B8 /* Solver.swift */,
+				9975A2A51CF8C8B7003D315F /* AnagramDictionary */,
 				995DD8421BB68C69009B409D /* Dawg */,
 				9960AD6F1BA589D800765614 /* Info.plist */,
 			);
@@ -134,6 +150,7 @@
 		9960AD781BA589D800765614 /* PapyrusCoreTests */ = {
 			isa = PBXGroup;
 			children = (
+				99417A611CF96F4800553AE0 /* AnagramSingleton.swift */,
 				995CBC131CCCB39A00DF06B8 /* DawgSingleton.swift */,
 				99FD430E1BA58A6400F50DCF /* DawgTests.swift */,
 				995CBC0D1CCCB20A00DF06B8 /* BagTests.swift */,
@@ -145,9 +162,21 @@
 			path = PapyrusCoreTests;
 			sourceTree = "<group>";
 		};
+		9975A2A51CF8C8B7003D315F /* AnagramDictionary */ = {
+			isa = PBXGroup;
+			children = (
+				9975A2A61CF8C8B7003D315F /* .gitignore */,
+				9975A2A71CF8C8B7003D315F /* AnagramDictionary.swift */,
+				9975A2A81CF8C8B7003D315F /* LICENSE */,
+				9975A2A91CF8C8B7003D315F /* README.md */,
+			);
+			path = AnagramDictionary;
+			sourceTree = SOURCE_ROOT;
+		};
 		99F53A0A1BABEED300A88AA2 /* TestDictionaries */ = {
 			isa = PBXGroup;
 			children = (
+				99417A631CF96F6400553AE0 /* sowpods_anagrams.bin */,
 				995DD8351BB62121009B409D /* sowpods.bin */,
 				996E23A91BAA334A0052F1E2 /* sowpods.txt */,
 				995DD8361BB62121009B409D /* twl06.bin */,
@@ -247,6 +276,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9975A2AC1CF8C8B7003D315F /* LICENSE in Resources */,
+				9975A2AA1CF8C8B7003D315F /* .gitignore in Resources */,
 				995DD8491BB68C69009B409D /* LICENSE in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -256,6 +287,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				993CB5EB1BB4776D00692603 /* twl06.txt in Resources */,
+				99417A641CF96F6400553AE0 /* sowpods_anagrams.bin in Resources */,
 				995DD8381BB62121009B409D /* twl06.bin in Resources */,
 				996E23AA1BAA334A0052F1E2 /* sowpods.txt in Resources */,
 				995DD8371BB62121009B409D /* sowpods.bin in Resources */,
@@ -270,6 +302,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				995DD8481BB68C69009B409D /* Dawg.swift in Sources */,
+				9975A2AB1CF8C8B7003D315F /* AnagramDictionary.swift in Sources */,
 				99778D981CF7C1260056DEB0 /* DawgBuilder.swift in Sources */,
 				995CBC061CCCB19000DF06B8 /* Game.swift in Sources */,
 				995CBC081CCCB1A000DF06B8 /* Solver.swift in Sources */,
@@ -277,6 +310,8 @@
 				995CBC181CCCB5FC00DF06B8 /* BoardState.swift in Sources */,
 				995CBC161CCCB58A00DF06B8 /* Board.swift in Sources */,
 				995CBC0C1CCCB1E000DF06B8 /* Bag.swift in Sources */,
+				9975A2AD1CF8C8B7003D315F /* README.md in Sources */,
+				99FB2D0E1CF900A2005E611F /* Array+Combinations.swift in Sources */,
 				995DD84A1BB68C69009B409D /* README.md in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -286,6 +321,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				995CBC0E1CCCB20A00DF06B8 /* BagTests.swift in Sources */,
+				99417A621CF96F4800553AE0 /* AnagramSingleton.swift in Sources */,
 				995CBC101CCCB24800DF06B8 /* GameTests.swift in Sources */,
 				995CBC141CCCB39A00DF06B8 /* DawgSingleton.swift in Sources */,
 				995CBC121CCCB27300DF06B8 /* SolverTests.swift in Sources */,

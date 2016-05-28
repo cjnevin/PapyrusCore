@@ -82,18 +82,20 @@ struct Solver {
     private(set) var board: Board
     private(set) var boardState: BoardState
     private(set) var distribution: LetterDistribution
+    let anagramDictionary: AnagramDictionary
     let dictionary: Dawg
     private let debug: Bool
     private let maximumWordLength = 15
     private let allTilesUsedBonus = 50
     private let operationQueue = NSOperationQueue()
     
-    init(board: Board, dictionary: Dawg, distribution: LetterDistribution, debug: Bool = false) {
+    init(board: Board, anagramDictionary: AnagramDictionary, dictionary: Dawg, distribution: LetterDistribution, debug: Bool = false) {
         self.board = board
         self.distribution = distribution
         boardState = BoardState(board: board)
         self.debug = debug
         self.dictionary = dictionary
+        self.anagramDictionary = anagramDictionary
     }
     
     
@@ -338,13 +340,36 @@ struct Solver {
             guard let characters = charactersAt(x, y: y, length: length, horizontal: horizontal) where characters.count == length else {
                 return nil
             }
+            
             // Convert to be accepted by anagram method
-            var filledLettersDict = [Int: Character]()
-            characters.filter({ $1.value != nil }).forEach { filledLettersDict[$0.1.0] = $0.1.1! }
-            guard let firstOffset = characters.keys.sort().first,
-                words = dictionary.anagrams(withLetters: letters.map({$0.0}), wordLength: length, filledLetters: filledLettersDict) else {
-                    return nil
+            var fixedLetters = [Int: Character]()
+            characters.filter({ $1.value != nil }).forEach { fixedLetters[$0.1.0] = $0.1.1! }
+            guard let firstOffset = characters.keys.sort().first else {
+                return nil
             }
+            
+            // If AI is capable of choosing the best blank letter to play we need to try each letter in the dictionary here
+            // possibly multiple times if AI holds multiple blanks
+            let rackLetters = letters.map({ $0.letter })
+            /*if aiCanPlayBlanks {
+                if rackLetters.contains(Bag.blankLetter) {
+                    var copiedRack = rackLetters
+                    let filteredDistribution = distribution.letterCounts.keys.filter({ $0 != Bag.blankLetter })
+                    for _ in 0..<rackLetters.filter({ $0 == Bag.blankLetter }).count {
+                        let index = rackLetters.indexOf(Bag.blankLetter)!
+                        for letter in filteredDistribution {
+                            copiedRack[index] = letter
+                        }
+                    }
+                }
+            }*/
+            
+            // Get all letters that are possible to be used
+            let anagramLetters = (String(letters.map({ $0.letter })) + String(fixedLetters.values)).characters.map({ String($0) })
+            
+            // Calculate permutations, then filter any that are lexicographically equivalent to reduce work of anagram dictionary
+            let combinations = Set(anagramLetters.combinations(length).map({ $0.sort().joinWithSeparator("") }))
+            let words = combinations.flatMap({ anagramDictionary[$0, fixedLetters] }).flatten()
             
             var solves = [Solution]()
             for word in words {
