@@ -70,14 +70,14 @@ class SolverTests: XCTestCase {
                 Word(word: "er", x: 7, y: 6, horizontal: false),
                 Word(word: "at", x: 8, y: 6, horizontal: false)], blanks: [])
             
-            let mediumExpectation = Solution(word: "acred", x: 9, y: 7, horizontal: false, score: 17, intersections: [
-                Word(word: "carta", x: 5, y: 7, horizontal: true)], blanks: [])
+            let mediumExpectation = Solution(word: "acted", x: 9, y: 7, horizontal: false, score: 17, intersections: [
+                PapyrusCore.Word(word: "carta", x: 5, y: 7, horizontal: true)], blanks: [])
 
-            let easyExpectation = Solution(word: "aced", x: 8, y: 8, horizontal: true, score: 11, intersections: [
-                Word(word: "ta", x: 8, y: 7, horizontal: false)], blanks: [])
+            let easyExpectation = Solution(word: "ecad", x: 8, y: 8, horizontal: true, score: 11, intersections: [
+                PapyrusCore.Word(word: "te", x: 8, y: 7, horizontal: false)], blanks: [])
 
-            let veryEasyExpectation = Solution(word: "at", x: 5, y: 11, horizontal: false, score: 5, intersections: [
-                Word(word: "ad", x: 5, y: 11, horizontal: true)], blanks: [])
+            let veryEasyExpectation = Solution(word: "ea", x: 5, y: 11, horizontal: false, score: 5, intersections: [
+                PapyrusCore.Word(word: "ed", x: 5, y: 11, horizontal: true)], blanks: [])
 
             
             self.compareSolution(hard, expected: hardExpectation)
@@ -121,7 +121,7 @@ class SolverTests: XCTestCase {
             Solution(word: "zebra", x: 10, y: 4, horizontal: true, score: 60, intersections: [
                 Word(word: "zest", x: 10, y: 4, horizontal: false),
                 Word(word: "el", x: 11, y: 4, horizontal: false)], blanks: []),
-            Solution(word: "nye", x: 9, y: 8, horizontal: true, score: 28, intersections: [
+            Solution(word: "eye", x: 9, y: 8, horizontal: true, score: 28, intersections: [
                 Word(word: "zesty", x: 10, y: 4, horizontal: false),
                 Word(word: "he", x: 11, y: 7, horizontal: false)], blanks: []),
             Solution(word: "gaed", x: 11, y: 3, horizontal: true, score: 35, intersections: [

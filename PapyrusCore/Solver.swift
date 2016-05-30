@@ -343,32 +343,16 @@ struct Solver {
             
             // Convert to be accepted by anagram method
             var fixedLetters = [Int: Character]()
-            characters.filter({ $1.value != nil }).forEach { fixedLetters[$0.1.0] = $0.1.1! }
+            characters.filter({ $1.value != nil }).forEach({ fixedLetters[$1.index] = $1.value! })
             guard let firstOffset = characters.keys.sort().first else {
                 return nil
             }
             
-            // If AI is capable of choosing the best blank letter to play we need to try each letter in the dictionary here
-            // possibly multiple times if AI holds multiple blanks
-            let rackLetters = letters.map({ $0.letter })
-            /*if aiCanPlayBlanks {
-                if rackLetters.contains(Bag.blankLetter) {
-                    var copiedRack = rackLetters
-                    let filteredDistribution = distribution.letterCounts.keys.filter({ $0 != Bag.blankLetter })
-                    for _ in 0..<rackLetters.filter({ $0 == Bag.blankLetter }).count {
-                        let index = rackLetters.indexOf(Bag.blankLetter)!
-                        for letter in filteredDistribution {
-                            copiedRack[index] = letter
-                        }
-                    }
-                }
-            }*/
-            
             // Get all letters that are possible to be used
-            let anagramLetters = (String(letters.map({ $0.letter })) + String(fixedLetters.values)).characters.map({ String($0) })
-            
+            let anagramLetters = (letters.map({ $0.letter }) + fixedLetters.values)
+
             // Calculate permutations, then filter any that are lexicographically equivalent to reduce work of anagram dictionary
-            let combinations = Set(anagramLetters.combinations(length).map({ $0.sort().joinWithSeparator("") }))
+            let combinations = Set(anagramLetters.combinations(length).map({ String($0.sort()) }))
             let words = combinations.flatMap({ anagramDictionary[$0, fixedLetters] }).flatten()
             
             var solves = [Solution]()
@@ -443,12 +427,12 @@ struct Solver {
                     for y in range {
                         // Horizontal
                         if let solves = solutionsAt(x: x, y: y, length: length, horizontal: true) {
-                            solutions.appendContentsOf(solves)
+                            solutions += solves
                         }
                         // Vertical
                         if y < size - length - 1 {
                             if let solves = solutionsAt(x: x, y: y, length: length, horizontal: false) {
-                                solutions.appendContentsOf(solves)
+                                solutions += solves
                             }
                         }
                     }
@@ -460,18 +444,18 @@ struct Solver {
                         for y in range {
                             // Horizontal
                             if let solves = solutionsAt(x: x, y: y, length: length, horizontal: true) {
-                                innerSolutions.appendContentsOf(solves)
+                                innerSolutions += solves
                             }
                             // Vertical
                             if y < size - length - 1 {
                                 if let solves = solutionsAt(x: x, y: y, length: length, horizontal: false) {
-                                    innerSolutions.appendContentsOf(solves)
+                                    innerSolutions += solves
                                 }
                             }
                         }
                     }
                     currentQueue?.addOperationWithBlock({
-                        solutions.appendContentsOf(innerSolutions)
+                        solutions += innerSolutions
                         count -= 1
                         if count == 0 {
                             completion(solutions)
