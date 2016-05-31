@@ -261,14 +261,17 @@ struct Solver {
             // Determine direction of word
             let horizontalSort = points.sort({ $0.x < $1.x })
             let verticalSort = points.sort({ $0.y < $1.y })
-            let isHorizontal = horizontalSort.first?.y == horizontalSort.last?.y
-            let isVertical = verticalSort.first?.x == verticalSort.last?.x
+            guard let horizontalFirst = horizontalSort.first, verticalFirst = verticalSort.first else {
+                return .InvalidArrangement
+            }
+            let isHorizontal = horizontalFirst.y == horizontalSort.last?.y
+            let isVertical = verticalFirst.x == verticalSort.last?.x
             if !isHorizontal && !isVertical {
                 return .InvalidArrangement
             }
             if isHorizontal {
-                let x = horizontalSort.first!.x
-                let y = verticalSort.first!.y
+                let x = horizontalFirst.x
+                let y = verticalFirst.y
                 guard let horizontalWord = wordAt(x, y: y, string: String(horizontalSort.flatMap {$0.letter}), horizontal: true) else {
                     return .InvalidArrangement
                 }
@@ -296,8 +299,8 @@ struct Solver {
                     score: score, intersections: intersections, blanks: blanks))
             }
             else if isVertical {
-                let x = horizontalSort.first!.x
-                let y = verticalSort.first!.y
+                let x = horizontalFirst.x
+                let y = verticalFirst.y
                 guard let verticalWord = wordAt(x, y: y, string: String(verticalSort.flatMap {$0.letter}), horizontal: false) else {
                     return .InvalidArrangement
                 }
@@ -345,8 +348,11 @@ struct Solver {
             return nil
         }
         
+        let currentX = horizontal ? firstOffset : x
+        let currentY = horizontal ? y : firstOffset
+        
         // Get all letters that are possible to be used
-        let anagramLetters = (letters/*.map({ $0.letter })*/ + fixedLetters.values)
+        let anagramLetters = (letters + fixedLetters.values)
         
         // Calculate permutations, then filter any that are lexicographically equivalent to reduce work of anagram dictionary
         let combinations = Set(anagramLetters.combinations(length).map({ String($0.sort()) }))
@@ -362,12 +368,11 @@ struct Solver {
             var tempPlayer = Human(rackTiles: rackLetters)
             var blanks = [(x: Int, y: Int)]()
             for (index, letter) in Array(word.characters).enumerate() {
-                let offset = firstOffset + index
-                let intersectHorizontally = !horizontal
-                if let intersected = wordAt(intersectHorizontally ? x : offset,
-                                         y: intersectHorizontally ? offset : y,
+                let point = horizontal ? (firstOffset + index, y) : (x, firstOffset + index)
+                if let intersected = wordAt(point.0,
+                                         y: point.1,
                                          string: String(letter),
-                                         horizontal: intersectHorizontally) {
+                                         horizontal: !horizontal) {
                     if intersected.valid {
                         if debug {
                             print("Valid intersecting word: \(intersected)")
@@ -384,17 +389,13 @@ struct Solver {
                 // Possible improvement here could be to find the most valuable spot to play a `real` letter
                 // and use the blank in the least valuable spot.
                 if tempPlayer.removeLetter(letter).wasBlank {
-                    if horizontal {
-                        blanks.append((offset, y))
-                    } else {
-                        blanks.append((x, offset))
-                    }
+                    blanks.append(point)
                 }
             }
             if valid {
                 let mainWord = Word(word: word,
-                                    x: horizontal ? firstOffset : x,
-                                    y: horizontal ? y : firstOffset,
+                                    x: currentX,
+                                    y: currentY,
                                     horizontal: horizontal)
                 solves.append(Solution(word: mainWord.word,
                     x: mainWord.x,
