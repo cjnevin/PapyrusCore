@@ -102,30 +102,31 @@ struct Solver {
         self.anagramDictionary = anagramDictionary
     }
     
-    
-    typealias OffsetIndexValueMap = [Int: (index: Int, value: Character?)]
-    private func charactersAt(x: Int, y: Int, length: Int, horizontal: Bool) -> OffsetIndexValueMap? {
+    private func charactersAt(x: Int, y: Int, length: Int, horizontal: Bool) -> [Int: Character]? {
         let size = board.config.size
-        var filled = OffsetIndexValueMap()
+        var fixedLetters = [Int: Character]()
         var index = 0
         var offset = boardState[horizontal][y][x]
-        let getValue = { self.board.letterAt(horizontal ? offset : x, horizontal ? y : offset) }
-        let addValue = {
-            if offset < size {
-                filled[offset] = (index, getValue())
+       
+        func addCharacter(mustExist: Bool, incrementAlways: Bool) -> Bool {
+            if offset >= size { return false }
+            var didExist = false
+            if let value = board.letterAt(horizontal ? offset : x, horizontal ? y : offset) {
+                fixedLetters[index] = value
+                didExist = true
+            }
+            if incrementAlways || didExist {
                 index += 1
                 offset += 1
             }
+            return mustExist == true ? didExist : true
         }
-        let collect = {
-            while offset < size && getValue() != nil {
-                addValue()
-            }
-        }
-        collect()
-        (0..<length).forEach{ _ in addValue() }
-        collect()
-        return filled.count == 0 ? nil : filled
+
+        while addCharacter(true, incrementAlways: false) { }
+        for _ in 0..<length { addCharacter(false, incrementAlways: true) }
+        while addCharacter(true, incrementAlways: false) { }
+        
+        return length != index ? nil : fixedLetters
     }
     
     private func wordAt(x: Int, y: Int, string: String, horizontal: Bool) -> (word: Word, valid: Bool)? {
@@ -215,6 +216,7 @@ struct Solver {
         return dropped
     }
     
+    // TODO: Break into smaller methods; improve reuse of 'let word = ... where word.valid == false'
     func validate(points: [(x: Int, y: Int, letter: Character)], blanks: [(x: Int, y: Int)]) -> ValidationResponse {
         let allBlanks = board.playedBlanks + blanks
         if points.count == 0 {
@@ -269,6 +271,7 @@ struct Solver {
             if !isHorizontal && !isVertical {
                 return .InvalidArrangement
             }
+            // TODO: Cleanup duplication based on orientation here...
             if isHorizontal {
                 let x = horizontalFirst.x
                 let y = verticalFirst.y
@@ -336,18 +339,12 @@ struct Solver {
             return nil
         }
         
-        // Collect characters that are filled, return if word is longer than the one we are currently trying to check
-        guard let characters = charactersAt(x, y: y, length: length, horizontal: horizontal) where characters.count == length else {
+        // Collect characters that are filled
+        guard let fixedLetters = charactersAt(x, y: y, length: length, horizontal: horizontal) else {
             return nil
         }
         
-        // Convert to be accepted by anagram method
-        var fixedLetters = [Int: Character]()
-        characters.filter({ $1.value != nil }).forEach({ fixedLetters[$1.index] = $1.value! })
-        guard let firstOffset = characters.keys.sort().first else {
-            return nil
-        }
-        
+        let firstOffset = boardState[horizontal][y][x]
         let currentX = horizontal ? firstOffset : x
         let currentY = horizontal ? y : firstOffset
         
@@ -358,6 +355,7 @@ struct Solver {
         let combinations = Set(anagramLetters.combinations(length).map({ String($0.sort()) }))
         let words = combinations.flatMap({ anagramDictionary[$0, fixedLetters] }).flatten()
         
+        // TODO: Break into smaller methods
         var solves = [Solution]()
         for word in words {
             var valid = true
