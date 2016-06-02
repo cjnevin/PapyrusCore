@@ -18,6 +18,10 @@ public struct Board: Equatable, CustomDebugStringConvertible {
     public internal(set) var board: [[Character]]
     public internal(set) var playedBlanks = [(x: Int, y: Int)]()
     
+    subscript(x: Int, y: Int) -> Character? {
+        return letterAt(x, y)
+    }
+    
     public init(config: BoardConfig) {
         self.config = config
         board = config.board

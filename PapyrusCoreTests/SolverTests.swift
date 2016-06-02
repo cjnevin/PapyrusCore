@@ -65,19 +65,17 @@ class SolverTests: XCTestCase {
             let easy = self.solver.solve(solutions, difficulty: .Easy)!
             let veryEasy = self.solver.solve(solutions, difficulty: .VeryEasy)!
             
-            let hardExpectation = Solution(word: "tead", x: 6, y: 6, horizontal: true, score: 24, intersections: [
-                Word(word: "tasked", x: 6, y: 6, horizontal: false),
-                Word(word: "er", x: 7, y: 6, horizontal: false),
-                Word(word: "at", x: 8, y: 6, horizontal: false)], blanks: [])
+            let hardExpectation = Solution(word: "crated", x: 9, y: 5, horizontal: false, score: 24, intersections: [
+                Word(word: "carta", x: 5, y: 7, horizontal: true)], blanks: [])
             
             let mediumExpectation = Solution(word: "acted", x: 9, y: 7, horizontal: false, score: 17, intersections: [
-                PapyrusCore.Word(word: "carta", x: 5, y: 7, horizontal: true)], blanks: [])
+                Word(word: "carta", x: 5, y: 7, horizontal: true)], blanks: [])
 
             let easyExpectation = Solution(word: "ecad", x: 8, y: 8, horizontal: true, score: 11, intersections: [
-                PapyrusCore.Word(word: "te", x: 8, y: 7, horizontal: false)], blanks: [])
+                Word(word: "te", x: 8, y: 7, horizontal: false)], blanks: [])
 
-            let veryEasyExpectation = Solution(word: "ea", x: 5, y: 11, horizontal: false, score: 5, intersections: [
-                PapyrusCore.Word(word: "ed", x: 5, y: 11, horizontal: true)], blanks: [])
+            let veryEasyExpectation = Solution(word: "aret", x: 8, y: 7, horizontal: false, score: 5, intersections: [
+                Word(word: "carta", x: 5, y: 7, horizontal: true)], blanks: [])
 
             
             self.compareSolution(hard, expected: hardExpectation)

@@ -111,7 +111,7 @@ struct Solver {
         func addCharacter(mustExist: Bool, incrementAlways: Bool) -> Bool {
             if offset >= size { return false }
             var didExist = false
-            if let value = board.letterAt(horizontal ? offset : x, horizontal ? y : offset) {
+            if let value = board[horizontal ? offset : x, horizontal ? y : offset] {
                 fixedLetters[index] = value
                 didExist = true
             }
@@ -125,7 +125,7 @@ struct Solver {
         while addCharacter(true, incrementAlways: false) { }
         for _ in 0..<length { addCharacter(false, incrementAlways: true) }
         while addCharacter(true, incrementAlways: false) { }
-        
+
         return length != index ? nil : fixedLetters
     }
     
@@ -142,7 +142,7 @@ struct Solver {
         var chars = [Character]()
         let start: Int = boardState[horizontal][y][x]
         var end: Int = start
-        var valueFunc: (Int) -> (Character?) = { self.board.letterAt(horizontal ? $0 : x, horizontal ? y : $0) }
+        var valueFunc: (Int) -> (Character?) = { self.board[horizontal ? $0 : x, horizontal ? y : $0] }
         func collect() {
             if end >= size { return }
             var char: Character? = valueFunc(end)
@@ -334,6 +334,15 @@ struct Solver {
         }
     }
     
+    private func anagrams(forLetters letters: [Character], fixedLetters: [Int: Character], length: Int) -> Anagrams {
+        // Get all letters that are possible to be used
+        let anagramLetters = (letters + fixedLetters.values)
+        
+        // Calculate permutations, then filter any that are lexicographically equivalent to reduce work of anagram dictionary
+        let combinations = Set(anagramLetters.combinations(length).map({ String($0.sort()) }))
+        return combinations.flatMap({ anagramDictionary[$0, fixedLetters] }).flatMap({ $0 })
+    }
+    
     private func solutionsAt(x x: Int, y: Int, letters: [Character], rackLetters: [RackTile], length: Int, horizontal: Bool) -> [Solution]? {
         if !board.isValidSpot(x, y: y, length: length, horizontal: horizontal) {
             return nil
@@ -344,16 +353,11 @@ struct Solver {
             return nil
         }
         
-        let firstOffset = boardState[horizontal][y][x]
+        let firstOffset = boardState[horizontal][y][x] + (fixedLetters.keys.sort().first ?? 0)
         let currentX = horizontal ? firstOffset : x
         let currentY = horizontal ? y : firstOffset
         
-        // Get all letters that are possible to be used
-        let anagramLetters = (letters + fixedLetters.values)
-        
-        // Calculate permutations, then filter any that are lexicographically equivalent to reduce work of anagram dictionary
-        let combinations = Set(anagramLetters.combinations(length).map({ String($0.sort()) }))
-        let words = combinations.flatMap({ anagramDictionary[$0, fixedLetters] }).flatten()
+        let words = anagrams(forLetters: letters, fixedLetters: fixedLetters, length: length)
         
         // TODO: Break into smaller methods
         var solves = [Solution]()
