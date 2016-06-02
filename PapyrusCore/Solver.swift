@@ -198,14 +198,19 @@ struct Solver {
             return blanks.contains({ $0.x == x && $0.y == y})
         }
         
-        func wordSum(word: Word) -> Int {
-            return word.toPoints().enumerate().reduce(0, combine: { (sum, e: (index: Int, point: (x: Int, y: Int))) -> Int in
-                return sum + (isBlankAt(e.point.x, y: e.point.y) ? 0 : distribution.letterPoints[Array(word.word.characters)[e.index]]!)
-            })
+        func letterPoints(letter: Character, atX x: Int, y: Int) -> Int {
+            return isBlankAt(x, y: y) ? 0 : distribution.letterPoints[letter]!
+        }
+        
+        func scoreWord(word: Word) -> Int {
+            let chars = Array(word.word.characters)
+            return word.toPoints().enumerate()
+                .flatMap({ letterPoints(chars[$0], atX: $1.x, y: $1.y) })
+                .reduce(0, combine: +)
         }
         
         func scoreLetter(letter: Character, x: Int, y: Int) {
-            let value = isBlankAt(x, y: y) ? 0 : distribution.letterPoints[letter]!
+            let value = letterPoints(letter, atX: x, y: y)
             if board.isFilledAt(x, y) {
                 score += value
                 return
@@ -216,8 +221,8 @@ struct Solver {
             score += value * letterMultiplier
             scoreMultiplier *= wordMultiplier
             if let intersectingWord = wordAt(x, y: y, string: String(letter), horizontal: !word.horizontal) where intersectingWord.valid {
-                // wordSum method will score this letter once, so lets just add the remaining amount if placed on a premium square.
-                let wordScore = wordSum(intersectingWord.word) + (value * (letterMultiplier - 1))
+                // scoreWord method will score this letter once, so lets just add the remaining amount if placed on a premium square.
+                let wordScore = scoreWord(intersectingWord.word) + (value * (letterMultiplier - 1))
                 intersectionsScore += wordScore * wordMultiplier
             }
         }
