@@ -199,9 +199,9 @@ struct Solver {
         }
         
         func wordSum(word: Word) -> Int {
-            return word.toPoints().enumerate()
-                .flatMap({ isBlankAt($1.x, y: $1.y) ? nil : distribution.letterPoints[Array(word.word.characters)[$0]] })
-                .reduce(0, combine: +)
+            return word.toPoints().enumerate().reduce(0, combine: { (sum, e: (index: Int, point: (x: Int, y: Int))) -> Int in
+                return sum + (isBlankAt(e.point.x, y: e.point.y) ? 0 : distribution.letterPoints[Array(word.word.characters)[e.index]]!)
+            })
         }
         
         func scoreLetter(letter: Character, x: Int, y: Int) {
