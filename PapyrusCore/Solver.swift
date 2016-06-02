@@ -20,8 +20,12 @@ protocol WordRepresentation {
 }
 
 extension WordRepresentation {
+    func start() -> Int {
+        return (horizontal ? x : y)
+    }
+    
     func end() -> Int {
-        return word.characters.count + (horizontal ? x : y)
+        return word.characters.count + start()
     }
     
     func length() -> Int {
@@ -29,17 +33,11 @@ extension WordRepresentation {
     }
     
     func toRange() -> Range<Int> {
-        return horizontal ?
-            (x..<(x + word.characters.count)) :
-            (y..<(y + word.characters.count))
+        return start()..<end()
     }
     
     func toPoints() -> [(x: Int, y: Int)] {
-        if horizontal {
-            return toRange().flatMap({ ($0, y) })
-        } else {
-            return toRange().flatMap({ (x, $0) })
-        }
+        return toRange().flatMap({ horizontal ? ($0, y) : (x, $0) })
     }
 }
 
@@ -201,13 +199,9 @@ struct Solver {
         }
         
         func wordSum(word: Word) -> Int {
-            var score = 0
-            for (index, point) in word.toPoints().enumerate() {
-                if !isBlankAt(point.x, y: point.y) {
-                    score += distribution.letterPoints[Array(word.word.characters)[index]]!
-                }
-            }
-            return score
+            return word.toPoints().enumerate()
+                .flatMap({ isBlankAt($1.x, y: $1.y) ? nil : distribution.letterPoints[Array(word.word.characters)[$0]] })
+                .reduce(0, combine: +)
         }
         
         func scoreLetter(letter: Character, x: Int, y: Int) {
@@ -221,14 +215,17 @@ struct Solver {
             tilesUsed += 1
             score += value * letterMultiplier
             scoreMultiplier *= wordMultiplier
-            if let intersectingWord = wordAt(x, y: y, string: String(letter), horizontal: !word.horizontal) where intersectingWord.1 == true {
-                let wordScore = wordSum(intersectingWord.0) + (value * (letterMultiplier - 1))
+            if let intersectingWord = wordAt(x, y: y, string: String(letter), horizontal: !word.horizontal) where intersectingWord.valid {
+                // wordSum method will score this letter once, so lets just add the remaining amount if placed on a premium square.
+                let wordScore = wordSum(intersectingWord.word) + (value * (letterMultiplier - 1))
                 intersectionsScore += wordScore * wordMultiplier
             }
         }
         
         for (i, letter) in word.word.characters.enumerate() {
-            scoreLetter(letter, x: word.horizontal ? word.x + i : word.x, y: word.horizontal ? word.y : word.y + i)
+            scoreLetter(letter,
+                        x: word.x + (word.horizontal ? i : 0),
+                        y: word.y + (word.horizontal ? 0 : i))
         }
         
         return (score * scoreMultiplier) + intersectionsScore + (tilesUsed == 7 ? allTilesUsedBonus : 0)
@@ -322,7 +319,7 @@ struct Solver {
         return anagrams.count > 0 ? anagrams : nil
     }
     
-    private func position(forIndex index: Int, word: Word) -> (x: Int, y: Int) {
+    private func position(forIndex index: Int, word: WordRepresentation) -> (x: Int, y: Int) {
         let x = word.x + (word.horizontal ? index : 0)
         let y = word.y + (word.horizontal ? 0 : index)
         return (x, y)
@@ -336,7 +333,7 @@ struct Solver {
     }
     
     /// - returns: `words` will contain the first invalid intersection if `valid` is `false` or the array of intersections if `valid` is `true`. `valid` should be handled appropriately.
-    private func intersections(forWord word: Word) -> (valid: Bool, words: [Word]) {
+    private func intersections(forWord word: WordRepresentation) -> (valid: Bool, words: [Word]) {
         var words = [Word]()
         for (index, letter) in word.word.characters.enumerate() {
             let pos = position(forIndex: index, word: word)
