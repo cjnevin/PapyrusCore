@@ -52,6 +52,10 @@ struct BoardState: CustomDebugStringConvertible, Equatable {
         vertical = v
     }
     
+    subscript(isHorizontal: Bool, y: Int, x: Int) -> Int {
+        return self[isHorizontal][y][x]
+    }
+    
     subscript(isHorizontal: Bool) -> [[Int]] {
         return isHorizontal ? horizontal : vertical
     }
