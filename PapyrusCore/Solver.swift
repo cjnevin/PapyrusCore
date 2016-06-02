@@ -164,7 +164,7 @@ struct Solver {
         var chars = [Character]()
         let start: Int = boardState[horizontal, y, x]
         var end: Int = start
-        var valueFunc: (Int) -> (Character?) = { self.board[horizontal ? $0 : x, horizontal ? y : $0] }
+        let valueFunc: (Int) -> (Character?) = { self.board[horizontal ? $0 : x, horizontal ? y : $0] }
         func collect() {
             if end >= size { return }
             var char: Character? = valueFunc(end)
@@ -183,8 +183,10 @@ struct Solver {
         if chars.count < 2 {
             return nil
         }
-        let word = horizontal ? Word(word: String(chars), x: start, y: y, horizontal: horizontal)
-            : Word(word: String(chars), x: x, y: start, horizontal: horizontal)
+        let word = Word(word: String(chars),
+                        x: horizontal ? start : x,
+                        y: horizontal ? y : start,
+                        horizontal: horizontal)
         return (word, dictionary.lookup(word.word))
     }
     
