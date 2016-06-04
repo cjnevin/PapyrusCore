@@ -44,11 +44,11 @@ public struct Word: WordRepresentation {
 }
 
 public struct Solution: WordRepresentation {
-    let word: String
-    let x: Int
-    let y: Int
-    let horizontal: Bool
-    let score: Int
+    public let word: String
+    public let x: Int
+    public let y: Int
+    public let horizontal: Bool
+    public let score: Int
     let intersections: [Word]
     let blanks: [(x: Int, y: Int)]
     
@@ -254,7 +254,7 @@ struct Solver {
             if let word = horizontalWord where word.valid == false {
                 return .invalid(withWord: word.word)
             }
-            let verticalWord = wordAt(x, y: y, string: String(letter), horizontal: true)
+            let verticalWord = wordAt(x, y: y, string: String(letter), horizontal: false)
             if let word = verticalWord where word.valid == false {
                 return .invalid(withWord: word.word)
             }
@@ -287,8 +287,7 @@ struct Solver {
             }
             
             let lettersString = isHorizontal ? String(horizontalSort.flatMap {$0.letter}) : String(verticalSort.flatMap {$0.letter})
-            guard let (word, valid) = wordAt(horizontalFirst.x, y: verticalFirst.y, string: lettersString, horizontal: isHorizontal)
-                where word.length() == points.count else {
+            guard let (word, valid) = wordAt(horizontalFirst.x, y: verticalFirst.y, string: lettersString, horizontal: isHorizontal) else {
                 return .InvalidArrangement
             }
             if !valid {

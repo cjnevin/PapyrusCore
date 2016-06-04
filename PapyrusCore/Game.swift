@@ -183,4 +183,14 @@ public class Game {
     public func validate(points: [(x: Int, y: Int, letter: Character)], blanks: [(x: Int, y: Int)]) -> ValidationResponse {
         return solver.validate(points, blanks: blanks)
     }
+    
+    public func getHint(completion: (Solution?) -> ()) {
+        solver.solutions(player.rack, serial: false) { [weak self] solutions in
+            guard let solutions = solutions, best = self?.solver.solve(solutions, difficulty: .Hard) else {
+                completion(nil)
+                return
+            }
+            completion(best)
+        }
+    }
 }
