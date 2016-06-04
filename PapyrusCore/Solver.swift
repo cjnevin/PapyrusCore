@@ -16,21 +16,12 @@ protocol WordRepresentation {
     var y: Int { get }
     var horizontal: Bool { get }
     
-    func end() -> Int
     func length() -> Int
     func toPositions() -> [WordPosition]
     func position(forIndex index: Int) -> WordPosition
 }
 
 extension WordRepresentation {
-    func start() -> Int {
-        return (horizontal ? x : y)
-    }
-    
-    func end() -> Int {
-        return start() + length() - 1
-    }
-    
     func length() -> Int {
         return word.characters.count
     }
