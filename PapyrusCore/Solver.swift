@@ -377,7 +377,7 @@ struct Solver {
             return nil
         }
         
-        let firstOffset = boardState[horizontal, y, x] + (fixedLetters.keys.sort().first ?? 0)
+        let firstOffset = boardState[horizontal][y][x]
         let currentX = horizontal ? firstOffset : x
         let currentY = horizontal ? y : firstOffset
         
