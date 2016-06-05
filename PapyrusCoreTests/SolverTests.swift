@@ -42,6 +42,17 @@ class SolverTests: XCTestCase {
         }
     }
     
+    func testLexicographicalString() {
+        let letters: [Character] = ["z", "a", "p", "p", "e", "r"]
+        XCTAssertEqual(solver.lexicographicalString(withLetters: letters), "aepprz")
+    }
+    
+    func testBlanks() {
+        let rackTiles: [RackTile] = [("a", false), ("c", true), ("r", false), ("o", true), ("n", false), ("h", false)]
+        let word = Word(word: "archon", x: 7, y: 7, horizontal: true)
+        XCTAssertEqual(solver.blanks(forWord: word, rackLetters: rackTiles).map({ $0.x }), [9, 11])
+    }
+    
     func compareSolution(solution: Solution, expected: Solution) {
         XCTAssertEqual(expected.word, solution.word)
         XCTAssertEqual(expected.score, solution.score)

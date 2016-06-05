@@ -123,23 +123,24 @@ struct Solver {
         var index = 0
         var offset = boardState[horizontal, y, x]
        
-        func addCharacter(mustExist: Bool, incrementAlways: Bool) -> Bool {
+        func addCharacter(mustExist: Bool, alwaysIncrement: Bool) -> Bool {
             if offset >= size { return false }
             var didExist = false
             if let value = board[horizontal ? offset : x, horizontal ? y : offset] {
                 fixedLetters[index] = value
                 didExist = true
             }
-            if incrementAlways || didExist {
+            // Only increment if alwaysIncrement is set or we found a value.
+            if alwaysIncrement || didExist {
                 index += 1
                 offset += 1
             }
             return mustExist == true ? didExist : true
         }
 
-        while addCharacter(true, incrementAlways: false) { }
-        for _ in 0..<length { addCharacter(false, incrementAlways: true) }
-        while addCharacter(true, incrementAlways: false) { }
+        while addCharacter(true, alwaysIncrement: false) { }
+        for _ in 0..<length { addCharacter(false, alwaysIncrement: true) }
+        while addCharacter(true, alwaysIncrement: false) { }
         
         return length != index ? nil : fixedLetters
     }
@@ -154,25 +155,28 @@ struct Solver {
         }
         
         let size = board.config.size
-        var chars = [Character]()
         let start: Int = boardState[horizontal, y, x]
-        var end: Int = start
-        let valueFunc: (Int) -> (Character?) = { self.board[horizontal ? $0 : x, horizontal ? y : $0] }
-        func collect() {
-            if end >= size { return }
-            var char: Character? = valueFunc(end)
-            while let value = char {
-                chars.append(value)
-                end += 1
-                char = end < size ? valueFunc(end) : nil
-            }
-        }
-        collect()
-        for char in string.characters {
+        var offset: Int = start
+        var chars = [Character]()
+        
+        func addCharacter(char: Character) {
             chars.append(char)
-            end += 1
-            collect()
+            offset += 1
         }
+        
+        func addBoardCharacter() -> Bool {
+            if offset >= size { return false }
+            guard let value = board[horizontal ? offset : x, horizontal ? y : offset] else {
+                return false
+            }
+            addCharacter(value)
+            return true
+        }
+
+        while addBoardCharacter() { }
+        string.characters.forEach(addCharacter)
+        while addBoardCharacter() { }
+        
         if chars.count < 2 {
             return nil
         }
@@ -294,20 +298,27 @@ struct Solver {
                 return .invalid(withWord: word)
             }
             
+            // Collect intersections for this word, if any are invalid lets return
             let (intersectionsValid, intersectedWords) = intersections(forWord: word)
             if !intersectionsValid {
-                return .invalid(withWord: word)
+                // If we get here we will have an intersected word (it will be the invalid one).
+                return .invalid(withWord: intersectedWords.first!)
             }
             
-            // First turn is only one that can not intersect a word
+            // First turn is only one that cannot intersect a word other plays must intersect
             if !board.isFirstPlay && intersectedWords.count == 0 {
                 return .InvalidArrangement
             }
             
+            // Calculate score and return solution
             let score = calculateScore(word, intersectedWords: intersectedWords, blanks: allBlanks)
             let solution = Solution(word: word, score: score, intersections: intersectedWords, blanks: blanks)
             return .Valid(solution: solution)
         }
+    }
+    
+    func lexicographicalString(withLetters letters: [Character]) -> String {
+        return String(letters.sort())
     }
     
     /// - parameter letters: Refers to the tiles in a user's rack we can use, i.e. unplayed/unfixed letters.
@@ -320,15 +331,16 @@ struct Solver {
         // Calculate permutations, then filter any that are lexicographically equivalent to reduce work of anagram dictionary
         var combinations: [String]
         if length == anagramLetters.count {
-            combinations = [anagramLetters].map({ String($0.sort()) })
+            combinations = [anagramLetters].map(lexicographicalString)
         } else {
-            combinations = Array(Set(anagramLetters.combinations(length).map({ String($0.sort()) })))
+            combinations = Array(Set(anagramLetters.combinations(length).map(lexicographicalString)))
         }
         let anagrams = combinations.flatMap({ anagramDictionary[$0, fixedLetters] }).flatMap({ $0 })
         return anagrams.count > 0 ? anagrams : nil
     }
     
-    private func blanks(forWord word: Word, rackLetters: [RackTile]) -> [(x: Int, y: Int)] {
+    /// - returns: Offsets in word that are blank using a players rack tiles.
+    func blanks(forWord word: Word, rackLetters: [RackTile]) -> [(x: Int, y: Int)] {
         var tempPlayer = Human(rackTiles: rackLetters)
         return word.word.characters.enumerate().flatMap({ (index, letter) in
             tempPlayer.removeLetter(letter).wasBlank ? word.position(forIndex: index) : nil
@@ -350,7 +362,7 @@ struct Solver {
         return (true, words)
     }
     
-    private func solution(forWord word: Word, rackLetters: [RackTile]) -> Solution? {
+    func solution(forWord word: Word, rackLetters: [RackTile]) -> Solution? {
         let (valid, _intersectedWords) = intersections(forWord: word)
         if !valid {
             return nil
