@@ -17,7 +17,7 @@ class SolverTests: XCTestCase {
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        solver = Solver(board: Board(config: ScrabbleBoardConfig()), anagramDictionary: AnagramDictionary.singleton, dictionary: Dawg.singleton, distribution: distribution)
+        solver = Solver(board: Board(config: ScrabbleBoardConfig()), lookup: Lookup.singleton, distribution: distribution)
         // Setup default state
         let intersection = Word(word: "cart", x: 6, y: 7, horizontal: false)
         solver.play(Solution(word: "cart", x: 5, y: 7, horizontal: true, score: 0, intersections: [], blanks: []))
@@ -80,33 +80,32 @@ class SolverTests: XCTestCase {
     }
     
     func testScaling() {
-            let rack: [RackTile] = ["c", "a", "r", "t", "e", "d"].map({ ($0, false) })
-            self.solver.solutions(rack, serial: true) { (solutions) in
-                guard let solutions = solutions else { XCTAssert(false); return }
-                let hard = self.solver.solve(solutions)!
-                let medium = self.solver.solve(solutions, difficulty: .Medium)!
-                let easy = self.solver.solve(solutions, difficulty: .Easy)!
-                let veryEasy = self.solver.solve(solutions, difficulty: .VeryEasy)!
-                
-                let hardExpectation = Solution(word: "raced", x: 7, y: 10, horizontal: false, score: 33, intersections: [
-                    Word(word: "er", x: 6, y: 10, horizontal: true),
-                    Word(word: "da", x: 6, y: 11, horizontal: true)], blanks: [])
-                
-                let mediumExpectation = Solution(word: "crated", x: 9, y: 5, horizontal: false, score: 24, intersections: [
-                    Word(word: "carta", x: 5, y: 7, horizontal: true)], blanks: [])
-                
-                let easyExpectation = Solution(word: "recta", x: 9, y: 6, horizontal: false, score: 16, intersections: [
-                    Word(word: "carte", x: 5, y: 7, horizontal: true)], blanks: [])
-                
-                let veryEasyExpectation = Solution(word: "aret", x: 8, y: 8, horizontal: true, score: 8, intersections: [
-                    Word(word: "ta", x: 8, y: 7, horizontal: false)], blanks: [])
-
-                
-                self.compareSolution(hard, expected: hardExpectation)
-                self.compareSolution(medium, expected: mediumExpectation)
-                self.compareSolution(easy, expected: easyExpectation)
-                self.compareSolution(veryEasy, expected: veryEasyExpectation)
-            }
+        let rack: [RackTile] = ["c", "a", "r", "t", "e", "d"].map({ ($0, false) })
+        self.solver.solutions(rack, serial: true) { (solutions) in
+            guard let solutions = solutions else { XCTAssert(false); return }
+            let hard = self.solver.solve(solutions)!
+            let medium = self.solver.solve(solutions, difficulty: .Medium)!
+            let easy = self.solver.solve(solutions, difficulty: .Easy)!
+            let veryEasy = self.solver.solve(solutions, difficulty: .VeryEasy)!
+            
+            let hardExpectation = Solution(word: "created", x: 4, y: 10, horizontal: true, score: 40, intersections: [
+                Word(word: "asked", x: 6, y: 7, horizontal: false)], blanks: [])
+            
+            let mediumExpectation = Solution(word: "derat", x: 7, y: 10, horizontal: false, score: 28, intersections: [
+                Word(word: "ed", x: 6, y: 10, horizontal: true),
+                Word(word: "de", x: 6, y: 11, horizontal: true)], blanks: [])
+            
+            let easyExpectation = Solution(word: "tacked", x: 3, y: 9, horizontal: true, score: 19, intersections: [
+                Word(word: "asked", x: 6, y: 7, horizontal: false)], blanks: [])
+            
+            let veryEasyExpectation = Solution(word: "tetrad", x: 8, y: 5, horizontal: false, score: 9, intersections: [
+                Word(word: "cart", x: 5, y: 7, horizontal: true)], blanks: [])
+            
+            self.compareSolution(hard, expected: hardExpectation)
+            self.compareSolution(medium, expected: mediumExpectation)
+            self.compareSolution(easy, expected: easyExpectation)
+            self.compareSolution(veryEasy, expected: veryEasyExpectation)
+        }
     }
     
     func testZeroTilesSolution() {
@@ -131,15 +130,15 @@ class SolverTests: XCTestCase {
         
         let expectations = [
             Solution(word: "tiars", x: 7, y: 10, horizontal: false, score: 24, intersections: [Word(word: "et", x: 6, y: 10, horizontal: true), Word(word: "di", x: 6, y: 11, horizontal: true)], blanks: []),
-            Solution(word: "beath", x: 6, y: 6, horizontal: true, score: 35, intersections: [Word(word: "basked", x: 6, y: 6, horizontal: false), Word(word: "er", x: 7, y: 6, horizontal: false), Word(word: "at", x: 8, y: 6, horizontal: false)], blanks: []),
-            Solution(word: "cicale", x: 8, y: 5, horizontal: true, score: 30, intersections: [Word(word: "cat", x: 8, y: 5, horizontal: false), Word(word: "it", x: 9, y: 5, horizontal: false), Word(word: "ch", x: 10, y: 5, horizontal: false)], blanks: []),
-            Solution(word: "bez", x: 9, y: 4, horizontal: true, score: 60, intersections: [Word(word: "bit", x: 9, y: 4, horizontal: false), Word(word: "ech", x: 10, y: 4, horizontal: false), Word(word: "za", x: 11, y: 4, horizontal: false)], blanks: []),
-            Solution(word: "nye", x: 8, y: 11, horizontal: false, score: 25, intersections: [Word(word: "din", x: 6, y: 11, horizontal: true), Word(word: "ay", x: 7, y: 12, horizontal: true), Word(word: "re", x: 7, y: 13, horizontal: true)], blanks: []),
-            Solution(word: "egads", x: 10, y: 7, horizontal: true, score: 36, intersections: [Word(word: "eche", x: 10, y: 4, horizontal: false)], blanks: []),
-            Solution(word: "git", x: 12, y: 8, horizontal: true, score: 16, intersections: [Word(word: "ag", x: 12, y: 7, horizontal: false), Word(word: "di", x: 13, y: 7, horizontal: false), Word(word: "st", x: 14, y: 7, horizontal: false)], blanks: []),
-            Solution(word: "nag", x: 11, y: 9, horizontal: true, score: 21, intersections: [Word(word: "aga", x: 12, y: 7, horizontal: false), Word(word: "dig", x: 13, y: 7, horizontal: false)], blanks: []),
-            Solution(word: "gi", x: 9, y: 13, horizontal: false, score: 15, intersections: [Word(word: "reg", x: 7, y: 13, horizontal: true)], blanks: []),
-            Solution(word: "cat", x: 9, y: 9, horizontal: false, score: 16, intersections: [Word(word: "dint", x: 6, y: 11, horizontal: true)], blanks: [])]
+            Solution(word: "abetter", x: 4, y: 10, horizontal: true, score: 36, intersections: [Word(word: "asked", x: 6, y: 7, horizontal: false), Word(word: "tiars", x: 7, y: 10, horizontal: false)], blanks: []),
+            Solution(word: "ceil", x: 6, y: 6, horizontal: true, score: 31, intersections: [Word(word: "casked", x: 6, y: 6, horizontal: false), Word(word: "er", x: 7, y: 6, horizontal: false), Word(word: "it", x: 8, y: 6, horizontal: false)], blanks: []),
+            Solution(word: "zebra", x: 0, y: 11, horizontal: true, score: 54, intersections: [Word(word: "aa", x: 4, y: 10, horizontal: false)], blanks: []),
+            Solution(word: "queyn", x: 1, y: 9, horizontal: false, score: 74, intersections: [Word(word: "zebra", x: 0, y: 11, horizontal: true)], blanks: []),
+            Solution(word: "tsade", x: 0, y: 14, horizontal: true, score: 42, intersections: [Word(word: "queyns", x: 1, y: 9, horizontal: false)], blanks: []),
+            Solution(word: "gratin", x: 10, y: 2, horizontal: false, score: 21, intersections: [Word(word: "ceili", x: 6, y: 6, horizontal: true)], blanks: []),
+            Solution(word: "gant", x: 10, y: 8, horizontal: true, score: 15, intersections: [Word(word: "grating", x: 10, y: 2, horizontal: false)], blanks: []),
+            Solution(word: "ngati", x: 2, y: 5, horizontal: false, score: 20, intersections: [Word(word: "qi", x: 1, y: 9, horizontal: true)], blanks: []),
+            Solution(word: "cat", x: 8, y: 5, horizontal: true, score: 16, intersections: [Word(word: "cit", x: 8, y: 5, horizontal: false), Word(word: "al", x: 9, y: 5, horizontal: false), Word(word: "grating", x: 10, y: 2, horizontal: false)], blanks: [])]
         
         multipleRacksTest(racks, solutions: expectations)
         
