@@ -44,10 +44,10 @@ let game = Game.newGame(lookup: lookup, players: players) { event in
         print("Swapped Tiles")
     }
   }
-  
-  // Finally, when you're ready to start the game you can call
-  game.start()
 }
+
+// Finally, when you're ready to start the game you can call
+game.start()
 ```
 
 ### Object Types
