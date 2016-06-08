@@ -47,7 +47,7 @@ public class Game {
         self.eventHandler = eventHandler
     }
     
-    public static func newGame(gameType: GameType = .Scrabble, lookup: Lookup, players: [Player], serial: Bool = false, eventHandler: EventHandler) -> Game? {
+    public static func newGame(gameType: GameType = .Scrabble, lookup: Lookup, players: [Player], serial: Bool = false, eventHandler: EventHandler) -> Game {
         let board = Board(config: gameType == .Scrabble ? ScrabbleBoardConfig() : SuperScrabbleBoardConfig())
         let bag = Bag(distribution: gameType == .Scrabble ? ScrabbleDistribution() : SuperScrabbleDistribution())
         let solver = Solver(board: board, lookup: lookup, distribution: bag.distribution)
