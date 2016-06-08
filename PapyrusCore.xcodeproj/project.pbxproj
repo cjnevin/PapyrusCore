@@ -25,15 +25,10 @@
 		995DD8371BB62121009B409D /* sowpods.bin in Resources */ = {isa = PBXBuildFile; fileRef = 995DD8351BB62121009B409D /* sowpods.bin */; };
 		995DD8381BB62121009B409D /* twl06.bin in Resources */ = {isa = PBXBuildFile; fileRef = 995DD8361BB62121009B409D /* twl06.bin */; };
 		995DD8481BB68C69009B409D /* Dawg.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995DD8441BB68C69009B409D /* Dawg.swift */; };
-		995DD8491BB68C69009B409D /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 995DD8451BB68C69009B409D /* LICENSE */; };
-		995DD84A1BB68C69009B409D /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 995DD8461BB68C69009B409D /* README.md */; };
 		9960AD6E1BA589D800765614 /* PapyrusCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 9960AD6D1BA589D800765614 /* PapyrusCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9960AD751BA589D800765614 /* PapyrusCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9960AD6A1BA589D800765614 /* PapyrusCore.framework */; };
 		996E23AA1BAA334A0052F1E2 /* sowpods.txt in Resources */ = {isa = PBXBuildFile; fileRef = 996E23A91BAA334A0052F1E2 /* sowpods.txt */; };
-		9975A2AA1CF8C8B7003D315F /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 9975A2A61CF8C8B7003D315F /* .gitignore */; };
 		9975A2AB1CF8C8B7003D315F /* AnagramDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9975A2A71CF8C8B7003D315F /* AnagramDictionary.swift */; };
-		9975A2AC1CF8C8B7003D315F /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 9975A2A81CF8C8B7003D315F /* LICENSE */; };
-		9975A2AD1CF8C8B7003D315F /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 9975A2A91CF8C8B7003D315F /* README.md */; };
 		99778D981CF7C1260056DEB0 /* DawgBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99778D971CF7C1260056DEB0 /* DawgBuilder.swift */; };
 		99FB2D0E1CF900A2005E611F /* Array+Combinations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FB2D0D1CF900A2005E611F /* Array+Combinations.swift */; };
 		99FD43151BA58A6400F50DCF /* DawgTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD430E1BA58A6400F50DCF /* DawgTests.swift */; };
@@ -282,9 +277,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9975A2AC1CF8C8B7003D315F /* LICENSE in Resources */,
-				9975A2AA1CF8C8B7003D315F /* .gitignore in Resources */,
-				995DD8491BB68C69009B409D /* LICENSE in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -317,9 +309,7 @@
 				995CBC181CCCB5FC00DF06B8 /* BoardState.swift in Sources */,
 				995CBC161CCCB58A00DF06B8 /* Board.swift in Sources */,
 				995CBC0C1CCCB1E000DF06B8 /* Bag.swift in Sources */,
-				9975A2AD1CF8C8B7003D315F /* README.md in Sources */,
 				99FB2D0E1CF900A2005E611F /* Array+Combinations.swift in Sources */,
-				995DD84A1BB68C69009B409D /* README.md in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
