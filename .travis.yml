@@ -1,4 +1,19 @@
 language: objective-c
-xcode_project: PapyrusCore.xcodeproj # path to your xcodeproj folder
-xcode_scheme: PapyrusCore
 osx_image: xcode7.3
+
+script:
+
+  xctool
+  -project PapyrusCore.xcodeproj
+  -scheme PapyrusCore
+  -sdk iphonesimulator
+  -destination 'platform=iOS Simulator,name=iPhone 6 Plus'
+  build 
+  test
+  ONLY_ACTIVE_ARCH=NO
+  CODE_SIGN_IDENTITY=""
+  CODE_SIGNING_REQUIRED=NO
+
+before_install:
+  - brew update
+  - brew uninstall xctool && brew install --HEAD xctool
