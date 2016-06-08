@@ -1,6 +1,7 @@
 # PapyrusCore
 
 ![](https://reposs.herokuapp.com/?path=ChrisAU/PapyrusCore&style=flat)
+![](https://travis-ci.org/ChrisAU/PapyrusCore.svg?branch=master)
 
 Reusable library for playing Scrabble games.
 
