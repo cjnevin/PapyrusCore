@@ -7,20 +7,11 @@ Reusable library for playing Scrabble games.
 
 ```swift
 
-// NOTE: Rather than block the main thread, dictionaries should be created on a background thread
+// NOTE: Rather than block the main thread, the 'Lookup' object should be created on a background thread
 // this has been omitted to reduce complexity
 
-// Create a dictionary for efficiently looking up anagrams
-let anagramDictionary = AnagramDictionary.deserialize(DATA)
-
-// Create a dictionary for efficiently looking up words
-let dawg = Dawg.load(PATH)
-
-// Create board appropriate to the type of game you want to play
-let board = Board(config: ScrabbleBoardConfig())
-
-// Create tile bag appropriate to the type of game you want to play
-let bag = Bag(distribution: ScrabbleDistribution())
+// Create a lookup object for determining and validating moves
+let lookup = Lookup(dictionaryFilename: "DICTIONARY", anagramFilename: "ANAGRAMS")!
 
 // Create players that will be challenging eachother
 let human = Human()
@@ -29,7 +20,8 @@ let easyAI = Computer(difficulty: .Easy)
 let players = [human, hardAI, easyAI]
 
 // Now we have everything configured, we can create a Game object
-let game = Game.newGame(anagramDictionary, dictionary: dawg, board: board, bag: bag, players: players) { event in 
+let game = Game.newGame(lookup: lookup, players: players) { event in 
+  // Switch to main thread before updating UI...
   NSOperationQueue.mainQueue().addOperationWithBlock {
     switch event {
       case let .Over(winner):
@@ -53,10 +45,10 @@ let game = Game.newGame(anagramDictionary, dictionary: dawg, board: board, bag: 
         print("Swapped Tiles")
     }
   }
-  
-  // Finally, when you're ready to start the game you can call
-  game.start()
 }
+
+// Finally, when you're ready to start the game you can call
+game.start()
 ```
 
 ### Object Types
