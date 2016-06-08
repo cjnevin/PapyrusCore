@@ -62,10 +62,10 @@ let game = Game.newGame(anagramDictionary, dictionary: dawg, board: board, bag: 
 ### Object Types
 
 #### Bag
-The tile bag, provides methods for drawing and replacing tiles.
+The tile bag, provides methods for drawing and replacing tiles in a distribution.
 
 #### Board
-The current board representation.
+The current board representation, can be configured based on different game types.
 
 #### Game
 Initialising a game of scrabble can be done using this class, simply call the newGame or restoreGame.
