@@ -22,6 +22,7 @@ public enum GameType {
     case SuperScrabble
 }
 
+
 let aiCanPlayBlanks = false
 
 public typealias EventHandler = (GameEvent) -> ()
