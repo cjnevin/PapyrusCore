@@ -21,6 +21,7 @@ let players = [human, hardAI, easyAI]
 
 // Now we have everything configured, we can create a Game object
 let game = Game.newGame(lookup: lookup, players: players) { event in 
+  // Switch to main thread before updating UI...
   NSOperationQueue.mainQueue().addOperationWithBlock {
     switch event {
       case let .Over(winner):
