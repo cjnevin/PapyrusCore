@@ -17,6 +17,11 @@ public enum GameEvent {
     case TurnEnded
 }
 
+public enum GameType {
+    case Scrabble
+    case SuperScrabble
+}
+
 let aiCanPlayBlanks = false
 
 public typealias EventHandler = (GameEvent) -> ()
@@ -42,8 +47,10 @@ public class Game {
         self.eventHandler = eventHandler
     }
     
-    public static func newGame(anagramDictionary: AnagramDictionary, dictionary: Dawg, board: Board, bag: Bag, players: [Player], serial: Bool = false, eventHandler: EventHandler) -> Game {
-        let solver = Solver(board: board, anagramDictionary: anagramDictionary, dictionary: dictionary, distribution: bag.distribution)
+    public static func newGame(gameType: GameType = .Scrabble, lookup: Lookup, players: [Player], serial: Bool = false, eventHandler: EventHandler) -> Game? {
+        let board = Board(config: gameType == .Scrabble ? ScrabbleBoardConfig() : SuperScrabbleBoardConfig())
+        let bag = Bag(distribution: gameType == .Scrabble ? ScrabbleDistribution() : SuperScrabbleDistribution())
+        let solver = Solver(board: board, lookup: lookup, distribution: bag.distribution)
         let game = Game(solver: solver, bag: bag, players: players, playerIndex: 0, serial: serial, eventHandler: eventHandler)
         for _ in players {
             game.replenishRack()
@@ -53,8 +60,8 @@ public class Game {
         return game
     }
     
-    public static func restoreGame(anagramDictionary: AnagramDictionary, dictionary: Dawg, board: Board, bag: Bag, players: [Player], playerIndex: Int, eventHandler: EventHandler) -> Game {
-        var solver = Solver(board: board, anagramDictionary: anagramDictionary, dictionary: dictionary, distribution: bag.distribution)
+    public static func restoreGame(board: Board, bag: Bag, lookup: Lookup, players: [Player], playerIndex: Int, eventHandler: EventHandler) -> Game? {
+        var solver = Solver(board: board, lookup: lookup, distribution: bag.distribution)
         for player in players {
             for solution in player.solves {
                 solver.play(solution)

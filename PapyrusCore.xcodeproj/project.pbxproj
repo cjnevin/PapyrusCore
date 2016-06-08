@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		990826DC1D089EDD001D425E /* Lookup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990826DB1D089EDD001D425E /* Lookup.swift */; };
 		993CB5EB1BB4776D00692603 /* twl06.txt in Resources */ = {isa = PBXBuildFile; fileRef = 993CB5EA1BB4776D00692603 /* twl06.txt */; };
 		99417A621CF96F4800553AE0 /* AnagramSingleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99417A611CF96F4800553AE0 /* AnagramSingleton.swift */; };
 		99417A641CF96F6400553AE0 /* sowpods_anagrams.bin in Resources */ = {isa = PBXBuildFile; fileRef = 99417A631CF96F6400553AE0 /* sowpods_anagrams.bin */; };
@@ -48,6 +49,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		990826DB1D089EDD001D425E /* Lookup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lookup.swift; sourceTree = "<group>"; };
 		993CB5EA1BB4776D00692603 /* twl06.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = twl06.txt; sourceTree = "<group>"; };
 		99417A611CF96F4800553AE0 /* AnagramSingleton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnagramSingleton.swift; sourceTree = "<group>"; };
 		99417A631CF96F6400553AE0 /* sowpods_anagrams.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = sowpods_anagrams.bin; sourceTree = "<group>"; };
@@ -138,6 +140,7 @@
 				995CBC151CCCB58A00DF06B8 /* Board.swift */,
 				995CBC171CCCB5FC00DF06B8 /* BoardState.swift */,
 				995CBC051CCCB19000DF06B8 /* Game.swift */,
+				990826DB1D089EDD001D425E /* Lookup.swift */,
 				995CBC091CCCB1C400DF06B8 /* Player.swift */,
 				995CBC071CCCB1A000DF06B8 /* Solver.swift */,
 				9975A2A51CF8C8B7003D315F /* AnagramDictionary */,
@@ -304,6 +307,7 @@
 				995DD8481BB68C69009B409D /* Dawg.swift in Sources */,
 				9975A2AB1CF8C8B7003D315F /* AnagramDictionary.swift in Sources */,
 				99778D981CF7C1260056DEB0 /* DawgBuilder.swift in Sources */,
+				990826DC1D089EDD001D425E /* Lookup.swift in Sources */,
 				995CBC061CCCB19000DF06B8 /* Game.swift in Sources */,
 				995CBC081CCCB1A000DF06B8 /* Solver.swift in Sources */,
 				995CBC0A1CCCB1C400DF06B8 /* Player.swift in Sources */,

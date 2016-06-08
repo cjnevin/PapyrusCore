@@ -43,7 +43,7 @@ public extension Player {
     }
     
     mutating func shuffle() {
-        rack.sortInPlace {_, _ in arc4random() % 2 == 0}
+        rack.shuffle()
     }
     
     mutating func played(solution: Solution, tiles: [Character]) {

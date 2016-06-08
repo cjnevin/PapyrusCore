@@ -101,20 +101,18 @@ struct Solver {
     private(set) var board: Board
     private(set) var boardState: BoardState
     private(set) var distribution: LetterDistribution
-    let anagramDictionary: AnagramDictionary
-    let dictionary: Dawg
+    let lookup: Lookup
     private let debug: Bool
     private let maximumWordLength = 15
     private let allTilesUsedBonus = 50
     private let operationQueue = NSOperationQueue()
     
-    init(board: Board, anagramDictionary: AnagramDictionary, dictionary: Dawg, distribution: LetterDistribution, debug: Bool = false) {
+    init(board: Board, lookup: Lookup, distribution: LetterDistribution, debug: Bool = false) {
         self.board = board
         self.distribution = distribution
         boardState = BoardState(board: board)
         self.debug = debug
-        self.dictionary = dictionary
-        self.anagramDictionary = anagramDictionary
+        self.lookup = lookup
     }
     
     private func charactersAt(x: Int, y: Int, length: Int, horizontal: Bool) -> [Int: Character]? {
@@ -145,47 +143,37 @@ struct Solver {
         return length != index ? nil : fixedLetters
     }
     
-    private func wordAt(x: Int, y: Int, string: String, horizontal: Bool) -> (word: Word, valid: Bool)? {
-        assert(!string.isEmpty)
-        
+    private func wordAt(x: Int, y: Int, points: [(x: Int, y: Int, letter: Character)], horizontal: Bool) -> (word: Word, valid: Bool)? {
         if horizontal && x > 0 && board.isFilledAt(x - 1, y) {
-            return wordAt(x - 1, y: y, string: string, horizontal: horizontal)
+            return wordAt(x - 1, y: y, points: points, horizontal: horizontal)
         } else if !horizontal && y > 0 && board.isFilledAt(x, y - 1) {
-            return wordAt(x, y: y - 1, string: string, horizontal: horizontal)
+            return wordAt(x, y: y - 1, points: points, horizontal: horizontal)
         }
         
         let size = board.config.size
         let start: Int = boardState[horizontal, y, x]
         var offset: Int = start
-        var chars = [Character]()
+        var characters = [Character]()
         
-        func addCharacter(char: Character) {
-            chars.append(char)
+        while offset < size {
+            let _x = horizontal ? offset : x
+            let _y = horizontal ? y : offset
+            guard let letter = board[_x, _y] ?? points.filter({ $0.x == _x && $0.y == _y}).first?.letter else {
+                break
+            }
+            characters.append(letter)
             offset += 1
         }
         
-        func addBoardCharacter() -> Bool {
-            if offset >= size { return false }
-            guard let value = board[horizontal ? offset : x, horizontal ? y : offset] else {
-                return false
-            }
-            addCharacter(value)
-            return true
-        }
-
-        while addBoardCharacter() { }
-        string.characters.forEach(addCharacter)
-        while addBoardCharacter() { }
-        
-        if chars.count < 2 {
+        if characters.count < 2 {
             return nil
         }
-
-        let word = Word(word: String(chars),
+        
+        let word = Word(word: String(characters),
                         x: horizontal ? start : x,
                         y: horizontal ? y : start,
                         horizontal: horizontal)
-        return (word, dictionary.lookup(word.word))
+        return (word, lookup.dictionary.lookup(word.word))
     }
     
     private func calculateScore(word: WordRepresentation, intersectedWords: [Word], blanks: [(x: Int, y: Int)]) -> Int {
@@ -253,12 +241,11 @@ struct Solver {
         if points.count == 1 {
             let x = points.first!.x
             let y = points.first!.y
-            let letter = points.first!.letter
-            let horizontalWord = wordAt(x, y: y, string: String(letter), horizontal: true)
+            let horizontalWord = wordAt(x, y: y, points: points, horizontal: true)
             if let word = horizontalWord where word.valid == false {
                 return .invalid(withWord: word.word)
             }
-            let verticalWord = wordAt(x, y: y, string: String(letter), horizontal: false)
+            let verticalWord = wordAt(x, y: y, points: points, horizontal: false)
             if let word = verticalWord where word.valid == false {
                 return .invalid(withWord: word.word)
             }
@@ -290,8 +277,7 @@ struct Solver {
                 return .InvalidArrangement
             }
             
-            let lettersString = isHorizontal ? String(horizontalSort.flatMap {$0.letter}) : String(verticalSort.flatMap {$0.letter})
-            guard let (word, valid) = wordAt(horizontalFirst.x, y: verticalFirst.y, string: lettersString, horizontal: isHorizontal) else {
+            guard let (word, valid) = wordAt(horizontalFirst.x, y: verticalFirst.y, points: isHorizontal ? horizontalSort : verticalSort, horizontal: isHorizontal) else {
                 return .InvalidArrangement
             }
             if !valid {
@@ -335,7 +321,7 @@ struct Solver {
         } else {
             combinations = Array(Set(anagramLetters.combinations(length).map(lexicographicalString)))
         }
-        let anagrams = combinations.flatMap({ anagramDictionary[$0, fixedLetters] }).flatMap({ $0 })
+        let anagrams = combinations.flatMap({ lookup.anagrams[$0, fixedLetters] }).flatMap({ $0 })
         return anagrams.count > 0 ? anagrams : nil
     }
     
@@ -352,7 +338,7 @@ struct Solver {
         var words = [Word]()
         for (index, letter) in word.word.characters.enumerate() {
             let pos = word.position(forIndex: index)
-            if let intersectedWord = wordAt(pos.x, y: pos.y, string: String(letter), horizontal: !word.horizontal) {
+            if let intersectedWord = wordAt(pos.x, y: pos.y, points: [(x: pos.x, y: pos.y, letter: letter)], horizontal: !word.horizontal) {
                 if !intersectedWord.valid {
                     return (false, [intersectedWord.word])
                 }

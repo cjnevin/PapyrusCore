@@ -73,7 +73,7 @@ public struct Bag {
         for (character, i) in distribution.letterCounts {
             remaining += Array(count: i, repeatedValue: character)
         }
-        remaining.sortInPlace {_, _ in arc4random() % 2 == 0}
+        remaining.shuffle()
     }
     
     mutating func replace(letter: Character) {
