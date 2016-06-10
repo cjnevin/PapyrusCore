@@ -43,4 +43,28 @@ class BagTests : XCTestCase {
         bag.draw()
         XCTAssertEqual(bag.remaining.count, bag.distribution.total - 1)
     }
+    
+    func testReplace() {
+        var bag = Bag(distribution: SuperScrabbleDistribution())
+        XCTAssertEqual(bag.remaining.count, bag.distribution.total)
+        bag.replace("A")
+        XCTAssertEqual(bag.remaining.count, bag.distribution.total + 1)
+    }
+    
+    func testLetterPoints() {
+        let bag = Bag(distribution: SuperScrabbleDistribution())
+        XCTAssertEqual(bag.letterPoints, bag.distribution.letterPoints)
+    }
+    
+    func testDraw() {
+        var bag = Bag(distribution: SuperScrabbleDistribution())
+        var removed = 0
+        for _ in 0..<bag.distribution.total {
+            XCTAssertNotNil(bag.draw())
+            removed += 1
+        }
+        XCTAssertEqual(removed, bag.distribution.total)
+        XCTAssertEqual(bag.remaining.count, 0)
+        XCTAssertNil(bag.draw())
+    }
 }
