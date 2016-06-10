@@ -371,14 +371,14 @@ class SolverTests: XCTestCase {
         let expectations = [
             Solution(word: "tiars", x: 7, y: 10, horizontal: false, score: 24, intersections: [Word(word: "et", x: 6, y: 10, horizontal: true), Word(word: "di", x: 6, y: 11, horizontal: true)], blanks: []),
             Solution(word: "abetter", x: 4, y: 10, horizontal: true, score: 36, intersections: [Word(word: "asked", x: 6, y: 7, horizontal: false), Word(word: "tiars", x: 7, y: 10, horizontal: false)], blanks: []),
-            Solution(word: "ceil", x: 6, y: 6, horizontal: true, score: 31, intersections: [Word(word: "casked", x: 6, y: 6, horizontal: false), Word(word: "er", x: 7, y: 6, horizontal: false), Word(word: "it", x: 8, y: 6, horizontal: false)], blanks: []),
-            Solution(word: "zebra", x: 0, y: 11, horizontal: true, score: 54, intersections: [Word(word: "aa", x: 4, y: 10, horizontal: false)], blanks: []),
-            Solution(word: "queyn", x: 1, y: 9, horizontal: false, score: 74, intersections: [Word(word: "zebra", x: 0, y: 11, horizontal: true)], blanks: []),
-            Solution(word: "tsade", x: 0, y: 14, horizontal: true, score: 42, intersections: [Word(word: "queyns", x: 1, y: 9, horizontal: false)], blanks: []),
-            Solution(word: "gratin", x: 10, y: 2, horizontal: false, score: 21, intersections: [Word(word: "ceili", x: 6, y: 6, horizontal: true)], blanks: []),
-            Solution(word: "gant", x: 10, y: 8, horizontal: true, score: 15, intersections: [Word(word: "grating", x: 10, y: 2, horizontal: false)], blanks: []),
-            Solution(word: "ngati", x: 2, y: 5, horizontal: false, score: 20, intersections: [Word(word: "qi", x: 1, y: 9, horizontal: true)], blanks: []),
-            Solution(word: "cat", x: 8, y: 5, horizontal: true, score: 16, intersections: [Word(word: "cit", x: 8, y: 5, horizontal: false), Word(word: "al", x: 9, y: 5, horizontal: false), Word(word: "grating", x: 10, y: 2, horizontal: false)], blanks: [])]
+            Solution(word: "ceca", x: 11, y: 7, horizontal: true, score: 33, intersections: [], blanks: []),
+            Solution(word: "zerebas", x: 12, y: 6, horizontal: false, score: 58, intersections: [Word(word: "ceca", x: 11, y: 7, horizontal: true)], blanks: []),
+            Solution(word: "queeny", x: 8, y: 2, horizontal: true, score: 56, intersections: [], blanks: []),
+            Solution(word: "aced", x: 13, y: 6, horizontal: false, score: 31, intersections: [Word(word: "za", x: 12, y: 6, horizontal: true), Word(word: "ceca", x: 11, y: 7, horizontal: true), Word(word: "re", x: 12, y: 8, horizontal: true), Word(word: "ed", x: 12, y: 9, horizontal: true)], blanks: []),
+            Solution(word: "grain", x: 9, y: 1, horizontal: true, score: 43, intersections: [Word(word: "gu", x: 9, y: 1, horizontal: false), Word(word: "re", x: 10, y: 1, horizontal: false), Word(word: "ae", x: 11, y: 1, horizontal: false), Word(word: "in", x: 12, y: 1, horizontal: false), Word(word: "ny", x: 13, y: 1, horizontal: false)], blanks: []),
+            Solution(word: "gat", x: 12, y: 0, horizontal: true, score: 22, intersections: [Word(word: "gin", x: 12, y: 0, horizontal: false), Word(word: "any", x: 13, y: 0, horizontal: false)], blanks: []),
+            Solution(word: "ting", x: 7, y: 3, horizontal: true, score: 25, intersections: [Word(word: "qi", x: 8, y: 2, horizontal: false), Word(word: "gun", x: 9, y: 1, horizontal: false), Word(word: "reg", x: 10, y: 1, horizontal: false)], blanks: []),
+            Solution(word: "ta", x: 6, y: 6, horizontal: true, score: 17, intersections: [Word(word: "tasked", x: 6, y: 6, horizontal: false), Word(word: "ar", x: 7, y: 6, horizontal: false)], blanks: [])]
        
         for (index, rack) in racks.enumerate() {
             let expectation = expectations[index]
@@ -388,8 +388,5 @@ class SolverTests: XCTestCase {
                 self.solver.play(best)
             })
         }
-        
-        print(solver.board)
-        print(solver.boardState)
     }
 }
