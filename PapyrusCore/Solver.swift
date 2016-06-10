@@ -363,7 +363,7 @@ struct Solver {
     private func solutionsAt(x x: Int, y: Int, letters: [Character], rackLetters: [RackTile], length: Int, horizontal: Bool) -> [Solution]? {
         assert((horizontal ? x : y) + length - 1 < board.config.size)
         
-        if !board.isValidSpot(x, y: y, length: length, horizontal: horizontal) {
+        if !board.isValidAt(x, y, length: length, horizontal: horizontal) {
             return nil
         }
         // Is valid spot should filter these...

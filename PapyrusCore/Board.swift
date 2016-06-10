@@ -13,6 +13,18 @@ public func == (lhs: Board, rhs: Board) -> Bool {
     return true
 }
 
+struct Edge: OptionSetType {
+    let rawValue: Int
+    
+    static let None = Edge(rawValue: 0)
+    static let Left = Edge(rawValue: 1 << 0)
+    static let Right = Edge(rawValue: 1 << 1)
+    static let Top = Edge(rawValue: 1 << 2)
+    static let Bottom = Edge(rawValue: 1 << 3)
+    static let LeftAndRight: Edge = [Left, Right]
+    static let TopAndBottom: Edge = [Top, Bottom]
+}
+
 public struct Board: Equatable, CustomDebugStringConvertible {
     public let config: BoardConfig
     public internal(set) var board: [[Character]]
@@ -53,81 +65,123 @@ public struct Board: Equatable, CustomDebugStringConvertible {
         return board[y][x] != config.empty
     }
     
-    public func isValidSpot(x: Int, y: Int, length: Int, horizontal: Bool) -> Bool {
-        if isFilledAt(x, y) {
+    public func isCenterAt(x: Int, _ y: Int) -> Bool {
+        return x == config.center && y == config.center
+    }
+    
+    func verticallyTouchesAt(x: Int, _ y: Int, length: Int, edges: Edge) -> Bool {
+        let size = config.size
+        
+        if y + length > size {
             return false
         }
-        if x == config.center && y == config.center && isFirstPlay {
+        
+        if edges.contains(.Top) && y > 0 && isFilledAt(x, y - 1) {
+            return true
+        }
+        else if edges.contains(.Bottom) && y + length < size && isFilledAt(x, y + length) {
             return true
         }
         
-        let size = config.size
-        var currentLength = length
-        var currentX = x
-        var currentY = y
-        
-        while currentLength > 0 && (horizontal && currentX < size || !horizontal && currentY < size)  {
-            if isEmptyAt(currentX, currentY) {
-                currentLength -= 1
-            }
-            if horizontal {
-                currentX += 1
-            } else {
-                currentY += 1
-            }
-        }
-        
-        // Too long
-        if currentLength != 0 {
-            return false
-        }
-        
-        if horizontal {
-            // Touches on left (cannot accept prefixed spots)
-            if x > 0 && isFilledAt(x - 1, y) {
-                return false
-            }
-                // Touches on right (cannot accept suffixed spots)
-            else if x + length < size && isFilledAt(x + length, y) {
-                return false
-            }
-                // Intersects other letters
-            else if currentX > x + length {
-                return true
-            }
-            // Touches on top or bottom
-            for i in x..<(x + length) {
-                if y > 0 && isFilledAt(i, y - 1) {
-                    return true
-                }
-                else if y < (size - 1) && isFilledAt(i, y + 1) {
-                    return true
-                }
-            }
-        } else {
-            // Touches on bottom (cannot accept suffixed spots)
-            if y + length < size && isFilledAt(x, y + length) {
-                return false
-            }
-                // Touches on top (cannot accept prefixed spots)
-            else if y > 0 && isFilledAt(x, y - 1) {
-                return false
-            }
-                // Intersects other letters
-            else if currentY > y + length {
-                return true
-            }
-            // Touches on left/right
+        let (left, right) = (edges.contains(.Left), edges.contains(.Right))
+        if left || right {
             for i in y..<(y + length) {
-                if x > 0 && isFilledAt(x - 1, i) {
+                if left && x > 0 && isFilledAt(x - 1, i) {
                     return true
                 }
-                if x < (size - 1) && isFilledAt(x + 1, i) {
+                if right && x < (size - 1) && isFilledAt(x + 1, i) {
                     return true
                 }
             }
         }
         return false
+    }
+    
+    func horizontallyTouchesAt(x: Int, _ y: Int, length: Int, edges: Edge) -> Bool {
+        let size = config.size
+        
+        if x + length > size {
+            return false
+        }
+        
+        if edges.contains(.Left) && x > 0 && isFilledAt(x - 1, y) {
+            return true
+        }
+        else if edges.contains(.Right) && x + length < size && isFilledAt(x + length, y) {
+            return true
+        }
+        
+        let (top, bottom) = (edges.contains(.Top), edges.contains(.Bottom))
+        if top || bottom {
+            for i in x..<(x + length) {
+                if top && y > 0 && isFilledAt(i, y - 1) {
+                    return true
+                }
+                else if bottom && y < (size - 1) && isFilledAt(i, y + 1) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+    
+    func exceedsBoundaryAt(inout x: Int, inout _ y: Int, length: Int, horizontal: Bool) -> Bool {
+        let size = config.size
+        var currentLength = length
+
+        while currentLength > 0 && (horizontal && x < size || !horizontal && y < size)  {
+            if isEmptyAt(x, y) {
+                currentLength -= 1
+            }
+            if horizontal {
+                x += 1
+            } else {
+                y += 1
+            }
+        }
+        
+        return currentLength != 0
+    }
+    
+    public func isValidAt(x: Int, _ y: Int, length: Int, horizontal: Bool) -> Bool {
+        if isFilledAt(x, y) {
+            return false
+        }
+        
+        // Too long?
+        var currentX = x
+        var currentY = y
+        if exceedsBoundaryAt(&currentX, &currentY, length: length, horizontal: horizontal) {
+            return false
+        }
+        
+        if isCenterAt(x, y) && isFirstPlay {
+            return true
+        }
+        
+        // Intersects other letters?
+        if currentX > x + length && horizontal || currentY > y + length && !horizontal {
+            return true
+        }
+        
+        // Horizontal?
+        if horizontal {
+            // Touches on left or right (cannot accept prefixed or suffixed spots)
+            if horizontallyTouchesAt(x, y, length: length, edges: .LeftAndRight) {
+                return false
+            }
+            // Touches on top or bottom (allowed)
+            return horizontallyTouchesAt(x, y, length: length, edges: .TopAndBottom)
+        }
+        
+        // Otherwise, must be vertical...
+        
+        // Touches on bottom or top (cannot accept prefixed or suffixed spots)
+        if verticallyTouchesAt(x, y, length: length, edges: .TopAndBottom) {
+            return false
+        }
+        // Touches on left or right (allowed)
+        return verticallyTouchesAt(x, y, length: length, edges: .LeftAndRight)
     }
     
     mutating public func play(solution: Solution) -> [Character] {

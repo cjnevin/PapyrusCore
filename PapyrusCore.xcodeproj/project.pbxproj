@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		990826DC1D089EDD001D425E /* Lookup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990826DB1D089EDD001D425E /* Lookup.swift */; };
 		990826E11D08B45C001D425E /* LookupSingleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990826E01D08B45C001D425E /* LookupSingleton.swift */; };
+		9938B4021D0AED130018B8D2 /* ScrabbleBoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9938B4011D0AED130018B8D2 /* ScrabbleBoardTests.swift */; };
+		9938B4041D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9938B4031D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift */; };
 		993CB5EB1BB4776D00692603 /* twl06.txt in Resources */ = {isa = PBXBuildFile; fileRef = 993CB5EA1BB4776D00692603 /* twl06.txt */; };
 		99417A621CF96F4800553AE0 /* AnagramSingleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99417A611CF96F4800553AE0 /* AnagramSingleton.swift */; };
 		99417A641CF96F6400553AE0 /* sowpods_anagrams.bin in Resources */ = {isa = PBXBuildFile; fileRef = 99417A631CF96F6400553AE0 /* sowpods_anagrams.bin */; };
@@ -47,6 +49,8 @@
 /* Begin PBXFileReference section */
 		990826DB1D089EDD001D425E /* Lookup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lookup.swift; sourceTree = "<group>"; };
 		990826E01D08B45C001D425E /* LookupSingleton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LookupSingleton.swift; sourceTree = "<group>"; };
+		9938B4011D0AED130018B8D2 /* ScrabbleBoardTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrabbleBoardTests.swift; sourceTree = "<group>"; };
+		9938B4031D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuperScrabbleBoardTests.swift; sourceTree = "<group>"; };
 		993CB5EA1BB4776D00692603 /* twl06.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = twl06.txt; sourceTree = "<group>"; };
 		99417A611CF96F4800553AE0 /* AnagramSingleton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnagramSingleton.swift; sourceTree = "<group>"; };
 		99417A631CF96F6400553AE0 /* sowpods_anagrams.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = sowpods_anagrams.bin; sourceTree = "<group>"; };
@@ -155,6 +159,8 @@
 				995CBC131CCCB39A00DF06B8 /* DawgSingleton.swift */,
 				99FD430E1BA58A6400F50DCF /* DawgTests.swift */,
 				995CBC0D1CCCB20A00DF06B8 /* BagTests.swift */,
+				9938B4011D0AED130018B8D2 /* ScrabbleBoardTests.swift */,
+				9938B4031D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift */,
 				995CBC0F1CCCB24800DF06B8 /* GameTests.swift */,
 				995CBC111CCCB27300DF06B8 /* SolverTests.swift */,
 				9960AD7B1BA589D800765614 /* Info.plist */,
@@ -323,6 +329,8 @@
 				995CBC101CCCB24800DF06B8 /* GameTests.swift in Sources */,
 				995CBC141CCCB39A00DF06B8 /* DawgSingleton.swift in Sources */,
 				995CBC121CCCB27300DF06B8 /* SolverTests.swift in Sources */,
+				9938B4021D0AED130018B8D2 /* ScrabbleBoardTests.swift in Sources */,
+				9938B4041D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift in Sources */,
 				99FD43151BA58A6400F50DCF /* DawgTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
