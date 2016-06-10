@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		990826DC1D089EDD001D425E /* Lookup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990826DB1D089EDD001D425E /* Lookup.swift */; };
 		990826E11D08B45C001D425E /* LookupSingleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990826E01D08B45C001D425E /* LookupSingleton.swift */; };
+		990E2E471D0B14E500E2748F /* HumanPlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990E2E461D0B14E500E2748F /* HumanPlayerTests.swift */; };
+		990E2E491D0B1A1F00E2748F /* ComputerPlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990E2E481D0B1A1F00E2748F /* ComputerPlayerTests.swift */; };
 		9938B4021D0AED130018B8D2 /* ScrabbleBoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9938B4011D0AED130018B8D2 /* ScrabbleBoardTests.swift */; };
 		9938B4041D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9938B4031D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift */; };
 		993CB5EB1BB4776D00692603 /* twl06.txt in Resources */ = {isa = PBXBuildFile; fileRef = 993CB5EA1BB4776D00692603 /* twl06.txt */; };
@@ -49,6 +51,8 @@
 /* Begin PBXFileReference section */
 		990826DB1D089EDD001D425E /* Lookup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lookup.swift; sourceTree = "<group>"; };
 		990826E01D08B45C001D425E /* LookupSingleton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LookupSingleton.swift; sourceTree = "<group>"; };
+		990E2E461D0B14E500E2748F /* HumanPlayerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HumanPlayerTests.swift; sourceTree = "<group>"; };
+		990E2E481D0B1A1F00E2748F /* ComputerPlayerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComputerPlayerTests.swift; sourceTree = "<group>"; };
 		9938B4011D0AED130018B8D2 /* ScrabbleBoardTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrabbleBoardTests.swift; sourceTree = "<group>"; };
 		9938B4031D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuperScrabbleBoardTests.swift; sourceTree = "<group>"; };
 		993CB5EA1BB4776D00692603 /* twl06.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = twl06.txt; sourceTree = "<group>"; };
@@ -162,6 +166,8 @@
 				9938B4011D0AED130018B8D2 /* ScrabbleBoardTests.swift */,
 				9938B4031D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift */,
 				995CBC0F1CCCB24800DF06B8 /* GameTests.swift */,
+				990E2E481D0B1A1F00E2748F /* ComputerPlayerTests.swift */,
+				990E2E461D0B14E500E2748F /* HumanPlayerTests.swift */,
 				995CBC111CCCB27300DF06B8 /* SolverTests.swift */,
 				9960AD7B1BA589D800765614 /* Info.plist */,
 				99F53A0A1BABEED300A88AA2 /* TestDictionaries */,
@@ -323,10 +329,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				990E2E471D0B14E500E2748F /* HumanPlayerTests.swift in Sources */,
 				995CBC0E1CCCB20A00DF06B8 /* BagTests.swift in Sources */,
 				990826E11D08B45C001D425E /* LookupSingleton.swift in Sources */,
 				99417A621CF96F4800553AE0 /* AnagramSingleton.swift in Sources */,
 				995CBC101CCCB24800DF06B8 /* GameTests.swift in Sources */,
+				990E2E491D0B1A1F00E2748F /* ComputerPlayerTests.swift in Sources */,
 				995CBC141CCCB39A00DF06B8 /* DawgSingleton.swift in Sources */,
 				995CBC121CCCB27300DF06B8 /* SolverTests.swift in Sources */,
 				9938B4021D0AED130018B8D2 /* ScrabbleBoardTests.swift in Sources */,

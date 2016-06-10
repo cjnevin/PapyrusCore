@@ -1,0 +1,96 @@
+//
+//  PlayerTests.swift
+//  PapyrusCore
+//
+//  Created by Chris Nevin on 10/06/2016.
+//  Copyright © 2016 CJNevin. All rights reserved.
+//
+
+import XCTest
+@testable import PapyrusCore
+
+class HumanPlayerTests : XCTestCase {
+    
+    var player: Player!
+    let config = ScrabbleBoardConfig()
+
+    func rackTiles() -> [RackTile] {
+        return [("?", true), ("A", false), ("B", false), ("C", false), ("D", false), ("E", false), ("F", false)]
+    }
+    
+    override func setUp() {
+        super.setUp()
+        player = Human(rackTiles: rackTiles())
+        let _ = Human(rack: [], score: 0, solves: [], consecutiveSkips: 0)
+    }
+    
+    override func tearDown() {
+        super.tearDown()
+        player = nil
+    }
+    
+    func sortRack(rack: [RackTile]) -> [RackTile] {
+        return rack.sort({ $0.letter < $1.letter })
+    }
+    
+    func charactersForRack(rack: [RackTile]) -> [Character] {
+        return rack.map({ $0.letter })
+    }
+    
+    func sortedCharactersForRack(rack: [RackTile]) -> [Character] {
+        return sortRack(rack).map({ $0.letter })
+    }
+    
+    func testRack() {
+        XCTAssertEqual(sortedCharactersForRack(player.rack), sortedCharactersForRack(rackTiles()))
+    }
+    
+    func testScoreIsZero() {
+        XCTAssertEqual(player.score, 0)
+    }
+    
+    func testSolvesIsEmpty() {
+        XCTAssertTrue(player.solves.isEmpty)
+    }
+    
+    func testConsecutiveSkips() {
+        XCTAssertEqual(player.consecutiveSkips, 0)
+    }
+    
+    func testShuffle() {
+        let originalRack = charactersForRack(player.rack)
+        while charactersForRack(player.rack) == originalRack {
+            player.shuffle()
+        }
+        XCTAssertTrue(true)
+    }
+    
+    func testSwapped() {
+        player.swapped(["A"], newTiles: ["G"])
+        XCTAssertEqual(sortedCharactersForRack(player.rack).last, "G")
+    }
+    
+    func testUpdateBlank() {
+        player.updateBlank("Z")
+        XCTAssertEqual(sortedCharactersForRack(player.rack).last, "Z")
+    }
+    
+    func testRemoveLetter() {
+        player.removeLetter("F")
+        XCTAssertEqual(player.rack.count, 6)
+        XCTAssertEqual(sortedCharactersForRack(player.rack).last, "E")
+    }
+    
+    func testRemoveBlank() {
+        player.removeLetter("Z")
+        XCTAssertEqual(player.rack.count, 6)
+        XCTAssertEqual(sortedCharactersForRack(player.rack).first, "A")
+    }
+    
+    func testPlayed() {
+        let solution = Solution(word: "BEAT", x: config.center, y: config.center, horizontal: true, score: 6, intersections: [], blanks: [])
+        player.played(solution, tiles: ["B", "E", "A"])
+        XCTAssertEqual(player.rack.count, 4)
+        XCTAssertEqual(player.score, 6)
+    }
+}
