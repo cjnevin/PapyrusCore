@@ -13,6 +13,8 @@
 		990E2E491D0B1A1F00E2748F /* ComputerPlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990E2E481D0B1A1F00E2748F /* ComputerPlayerTests.swift */; };
 		990E2E4B1D0B1DF100E2748F /* WordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990E2E4A1D0B1DF100E2748F /* WordTests.swift */; };
 		990E2E4D1D0B1F4400E2748F /* SolutionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990E2E4C1D0B1F4400E2748F /* SolutionTests.swift */; };
+		990E2E4F1D0B5BE000E2748F /* WordRepresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990E2E4E1D0B5BE000E2748F /* WordRepresentation.swift */; };
+		990E2E511D0B605500E2748F /* LookupTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990E2E501D0B605500E2748F /* LookupTests.swift */; };
 		9938B4021D0AED130018B8D2 /* ScrabbleBoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9938B4011D0AED130018B8D2 /* ScrabbleBoardTests.swift */; };
 		9938B4041D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9938B4031D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift */; };
 		993CB5EB1BB4776D00692603 /* twl06.txt in Resources */ = {isa = PBXBuildFile; fileRef = 993CB5EA1BB4776D00692603 /* twl06.txt */; };
@@ -57,6 +59,8 @@
 		990E2E481D0B1A1F00E2748F /* ComputerPlayerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComputerPlayerTests.swift; sourceTree = "<group>"; };
 		990E2E4A1D0B1DF100E2748F /* WordTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordTests.swift; sourceTree = "<group>"; };
 		990E2E4C1D0B1F4400E2748F /* SolutionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SolutionTests.swift; sourceTree = "<group>"; };
+		990E2E4E1D0B5BE000E2748F /* WordRepresentation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordRepresentation.swift; sourceTree = "<group>"; };
+		990E2E501D0B605500E2748F /* LookupTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LookupTests.swift; sourceTree = "<group>"; };
 		9938B4011D0AED130018B8D2 /* ScrabbleBoardTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrabbleBoardTests.swift; sourceTree = "<group>"; };
 		9938B4031D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuperScrabbleBoardTests.swift; sourceTree = "<group>"; };
 		993CB5EA1BB4776D00692603 /* twl06.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = twl06.txt; sourceTree = "<group>"; };
@@ -152,6 +156,7 @@
 				990826DB1D089EDD001D425E /* Lookup.swift */,
 				995CBC091CCCB1C400DF06B8 /* Player.swift */,
 				995CBC071CCCB1A000DF06B8 /* Solver.swift */,
+				990E2E4E1D0B5BE000E2748F /* WordRepresentation.swift */,
 				9975A2A51CF8C8B7003D315F /* AnagramDictionary */,
 				995DD8421BB68C69009B409D /* Dawg */,
 				9960AD6F1BA589D800765614 /* Info.plist */,
@@ -165,6 +170,7 @@
 				99417A611CF96F4800553AE0 /* AnagramSingleton.swift */,
 				990826E01D08B45C001D425E /* LookupSingleton.swift */,
 				995CBC131CCCB39A00DF06B8 /* DawgSingleton.swift */,
+				990E2E501D0B605500E2748F /* LookupTests.swift */,
 				99FD430E1BA58A6400F50DCF /* DawgTests.swift */,
 				995CBC0D1CCCB20A00DF06B8 /* BagTests.swift */,
 				9938B4011D0AED130018B8D2 /* ScrabbleBoardTests.swift */,
@@ -327,6 +333,7 @@
 				995CBC181CCCB5FC00DF06B8 /* BoardState.swift in Sources */,
 				995CBC161CCCB58A00DF06B8 /* Board.swift in Sources */,
 				995CBC0C1CCCB1E000DF06B8 /* Bag.swift in Sources */,
+				990E2E4F1D0B5BE000E2748F /* WordRepresentation.swift in Sources */,
 				99FB2D0E1CF900A2005E611F /* Array+Combinations.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -339,6 +346,7 @@
 				995CBC0E1CCCB20A00DF06B8 /* BagTests.swift in Sources */,
 				990826E11D08B45C001D425E /* LookupSingleton.swift in Sources */,
 				99417A621CF96F4800553AE0 /* AnagramSingleton.swift in Sources */,
+				990E2E511D0B605500E2748F /* LookupTests.swift in Sources */,
 				995CBC101CCCB24800DF06B8 /* GameTests.swift in Sources */,
 				990E2E491D0B1A1F00E2748F /* ComputerPlayerTests.swift in Sources */,
 				995CBC141CCCB39A00DF06B8 /* DawgSingleton.swift in Sources */,

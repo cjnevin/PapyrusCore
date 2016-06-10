@@ -43,6 +43,16 @@ class WordTests : XCTestCase {
         XCTAssertEqual(word.length(), 4)
     }
     
+    func testEqual() {
+        let comparison = Word(word: "TEST", x: 4, y: 6, horizontal: true)
+        XCTAssertEqual(comparison, (word as! PapyrusCore.Word))
+    }
+    
+    func testNotEqual() {
+        let comparison = Word(word: "REST", x: 4, y: 6, horizontal: true)
+        XCTAssertNotEqual(comparison, (word as! PapyrusCore.Word))
+    }
+    
     func testToPositions() {
         let positions: [WordPosition] = [(4, 6), (5, 6), (6, 6), (7, 6)]
         XCTAssertEqual(word.toPositions().map({ $0.x }), positions.map({ $0.x }))

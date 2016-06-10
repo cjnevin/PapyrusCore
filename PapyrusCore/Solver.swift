@@ -8,97 +8,14 @@
 
 import Foundation
 
-typealias WordPosition = (x: Int, y: Int)
-
-protocol WordRepresentation {
-    var word: String { get }
-    var x: Int { get }
-    var y: Int { get }
-    var horizontal: Bool { get }
-    
-    func length() -> Int
-    func toPositions() -> [WordPosition]
-    func position(forIndex index: Int) -> WordPosition
-}
-
-extension WordRepresentation {
-    func length() -> Int {
-        return word.characters.count
-    }
-    
-    func toPositions() -> [WordPosition] {
-        return (0..<word.characters.count).flatMap{ position(forIndex: $0) }
-    }
-    
-    func position(forIndex index: Int) -> WordPosition {
-        return (x + (horizontal ? index : 0),
-                y + (horizontal ? 0 : index))
-    }
-}
-
-public struct Word: WordRepresentation {
-    let word: String
-    let x: Int
-    let y: Int
-    let horizontal: Bool
-}
-
-public struct Solution: WordRepresentation {
-    public let word: String
-    public let x: Int
-    public let y: Int
-    public let horizontal: Bool
-    public let score: Int
-    let intersections: [Word]
-    let blanks: [(x: Int, y: Int)]
-    
-    init(word: String, x: Int, y: Int, horizontal: Bool, score: Int, intersections: [Word], blanks: [(x: Int, y: Int)]) {
-        self.word = word
-        self.x = x
-        self.y = y
-        self.horizontal = horizontal
-        
-        self.intersections = intersections
-        self.score = score
-        self.blanks = blanks
-    }
-    
-    init(word: Word, score: Int, intersections: [Word], blanks: [(x: Int, y: Int)]) {
-        self.word = word.word
-        self.x = word.x
-        self.y = word.y
-        self.horizontal = word.horizontal
-        
-        self.intersections = intersections
-        self.score = score
-        self.blanks = blanks
-    }
-    
-    public func getPositions() -> [(x: Int, y: Int)] {
-        var points = toPositions()
-        intersections.map({ $0.toPositions() }).forEach({ intersectedPoints in
-            intersectedPoints.forEach({ intersectedPoint in
-                if !points.contains({ $0.x == intersectedPoint.x && $0.y == intersectedPoint.y }) {
-                    points.append(intersectedPoint)
-                }
-            })
-        })
-        return points
-    }
-}
-
 public enum ValidationResponse {
     case InvalidArrangement
-    case InvalidWord(x: Int, y: Int, word: String)
+    case InvalidWord(Word)
     case Valid(solution: Solution)
-    
-    static func invalid(withWord word: Word) -> ValidationResponse {
-        return .InvalidWord(x: word.x, y: word.y, word: word.word)
-    }
 }
 
 struct Solver {
-    private(set) var board: Board
+    var board: Board
     private(set) var boardState: BoardState
     private(set) var distribution: LetterDistribution
     let lookup: Lookup
@@ -115,7 +32,7 @@ struct Solver {
         self.lookup = lookup
     }
     
-    private func charactersAt(x: Int, y: Int, length: Int, horizontal: Bool) -> [Int: Character]? {
+    func charactersAt(x: Int, y: Int, length: Int, horizontal: Bool) -> [Int: Character]? {
         let size = board.config.size
         var fixedLetters = [Int: Character]()
         var index = 0
@@ -143,29 +60,35 @@ struct Solver {
         return length != index ? nil : fixedLetters
     }
     
-    private func wordAt(x: Int, y: Int, points: [(x: Int, y: Int, letter: Character)], horizontal: Bool) -> (word: Word, valid: Bool)? {
+    func wordAt(x: Int, _ y: Int, points: [(x: Int, y: Int, letter: Character)], horizontal: Bool) -> (word: Word, valid: Bool)? {
         if horizontal && x > 0 && board.isFilledAt(x - 1, y) {
-            return wordAt(x - 1, y: y, points: points, horizontal: horizontal)
+            return wordAt(x - 1, y, points: points, horizontal: horizontal)
         } else if !horizontal && y > 0 && board.isFilledAt(x, y - 1) {
-            return wordAt(x, y: y - 1, points: points, horizontal: horizontal)
+            return wordAt(x, y - 1, points: points, horizontal: horizontal)
         }
         
         let size = board.config.size
         let start: Int = boardState[horizontal, y, x]
         var offset: Int = start
         var characters = [Character]()
+        var remainingPoints = points
         
         while offset < size {
             let _x = horizontal ? offset : x
             let _y = horizontal ? y : offset
-            guard let letter = board[_x, _y] ?? points.filter({ $0.x == _x && $0.y == _y}).first?.letter else {
+            var fixedLetter: Character?
+            if let index = remainingPoints.indexOf({ $0.x == _x && $0.y == _y}) {
+                fixedLetter = remainingPoints[index].letter
+                remainingPoints.removeAtIndex(index)
+            }
+            guard let letter = fixedLetter ?? board[_x, _y] else {
                 break
             }
             characters.append(letter)
             offset += 1
         }
         
-        if characters.count < 2 {
+        if characters.count < 2 || remainingPoints.count > 0 {
             return nil
         }
         
@@ -176,7 +99,7 @@ struct Solver {
         return (word, lookup.dictionary.lookup(word.word))
     }
     
-    private func calculateScore(word: WordRepresentation, intersectedWords: [Word], blanks: [(x: Int, y: Int)]) -> Int {
+    private func calculateScore<T: WordRepresentation>(word: T, intersectedWords: [Word], blanks: [(x: Int, y: Int)]) -> Int {
         var tilesUsed = 0
         var score = 0
         var scoreMultiplier = 1
@@ -231,23 +154,23 @@ struct Solver {
         return dropped
     }
     
-    // TODO: Break into smaller methods; improve reuse of 'let word = ... where word.valid == false'
     func validate(points: [(x: Int, y: Int, letter: Character)], blanks: [(x: Int, y: Int)]) -> ValidationResponse {
         if points.count == 0 || (points.count == 1 && board.isFirstPlay) {
             return .InvalidArrangement
         }
         
         let allBlanks = board.playedBlanks + blanks
+        
         if points.count == 1 {
             let x = points.first!.x
             let y = points.first!.y
-            let horizontalWord = wordAt(x, y: y, points: points, horizontal: true)
+            let horizontalWord = wordAt(x, y, points: points, horizontal: true)
             if let word = horizontalWord where word.valid == false {
-                return .invalid(withWord: word.word)
+                return .InvalidWord(word.word)
             }
-            let verticalWord = wordAt(x, y: y, points: points, horizontal: false)
+            let verticalWord = wordAt(x, y, points: points, horizontal: false)
             if let word = verticalWord where word.valid == false {
-                return .invalid(withWord: word.word)
+                return .InvalidWord(word.word)
             }
             if let word = horizontalWord?.word {
                 let intersections = verticalWord != nil ? [verticalWord!.word] : []
@@ -256,51 +179,48 @@ struct Solver {
                 return .Valid(solution:solution)
             }
             else if let word = verticalWord?.word {
-                let intersections = horizontalWord != nil ? [horizontalWord!.word] : []
-                let score = calculateScore(word, intersectedWords: intersections, blanks: allBlanks)
-                let solution = Solution(word: word, score: score, intersections: intersections, blanks: blanks)
+                let score = calculateScore(word, intersectedWords: [], blanks: allBlanks)
+                let solution = Solution(word: word, score: score, intersections: [], blanks: blanks)
                 return .Valid(solution: solution)
             }
             return .InvalidArrangement
         }
-        else {
-            // Determine direction of word
-            let horizontalSort = points.sort({ $0.x < $1.x })
-            let verticalSort = points.sort({ $0.y < $1.y })
-            
-            guard let horizontalFirst = horizontalSort.first, verticalFirst = verticalSort.first else {
-                return .InvalidArrangement
-            }
-            let isHorizontal = horizontalFirst.y == horizontalSort.last?.y
-            let isVertical = verticalFirst.x == verticalSort.last?.x
-            if !isHorizontal && !isVertical {
-                return .InvalidArrangement
-            }
-            
-            guard let (word, valid) = wordAt(horizontalFirst.x, y: verticalFirst.y, points: isHorizontal ? horizontalSort : verticalSort, horizontal: isHorizontal) else {
-                return .InvalidArrangement
-            }
-            if !valid {
-                return .invalid(withWord: word)
-            }
-            
-            // Collect intersections for this word, if any are invalid lets return
-            let (intersectionsValid, intersectedWords) = intersections(forWord: word)
-            if !intersectionsValid {
-                // If we get here we will have an intersected word (it will be the invalid one).
-                return .invalid(withWord: intersectedWords.first!)
-            }
-            
-            // First turn is only one that cannot intersect a word other plays must intersect
-            if !board.isFirstPlay && intersectedWords.count == 0 {
-                return .InvalidArrangement
-            }
-            
-            // Calculate score and return solution
-            let score = calculateScore(word, intersectedWords: intersectedWords, blanks: allBlanks)
-            let solution = Solution(word: word, score: score, intersections: intersectedWords, blanks: blanks)
-            return .Valid(solution: solution)
+        
+        // Determine direction of word
+        let horizontalSort = points.sort({ $0.x < $1.x })
+        let verticalSort = points.sort({ $0.y < $1.y })
+        
+        let horizontalFirst = horizontalSort.first!
+        let verticalFirst = verticalSort.first!
+        let isHorizontal = horizontalFirst.y == horizontalSort.last!.y
+        let isVertical = verticalFirst.x == verticalSort.last!.x
+        if !isHorizontal && !isVertical {
+            return .InvalidArrangement
         }
+        
+        guard let (word, valid) = wordAt(horizontalFirst.x, verticalFirst.y, points: isHorizontal ? horizontalSort : verticalSort, horizontal: isHorizontal) else {
+            return .InvalidArrangement
+        }
+        if !valid {
+            return .InvalidWord(word)
+        }
+        
+        // Collect intersections for this word, if any are invalid lets return
+        let (intersectionsValid, intersectedWords) = intersections(forWord: word)
+        if !intersectionsValid {
+            // If we get here we will have an intersected word (it will be the invalid one).
+            return .InvalidWord(intersectedWords.first!)
+        }
+        
+        // First turn is only one that cannot intersect a word other plays must intersect
+        if !board.isFirstPlay && intersectedWords.count == 0 {
+            return .InvalidArrangement
+        }
+        
+        // Calculate score and return solution
+        let score = calculateScore(word, intersectedWords: intersectedWords, blanks: allBlanks)
+        let solution = Solution(word: word, score: score, intersections: intersectedWords, blanks: blanks)
+        return .Valid(solution: solution)
     }
     
     func lexicographicalString(withLetters letters: [Character]) -> String {
@@ -334,11 +254,11 @@ struct Solver {
     }
     
     /// - returns: `words` will contain the first invalid intersection if `valid` is `false` or the array of intersections if `valid` is `true`. `valid` should be handled appropriately.
-    private func intersections(forWord word: WordRepresentation) -> (valid: Bool, words: [Word]) {
+    func intersections<T: WordRepresentation>(forWord word: T) -> (valid: Bool, words: [Word]) {
         var words = [Word]()
         for (index, letter) in word.word.characters.enumerate() {
             let pos = word.position(forIndex: index)
-            if let intersectedWord = wordAt(pos.x, y: pos.y, points: [(x: pos.x, y: pos.y, letter: letter)], horizontal: !word.horizontal) {
+            if let intersectedWord = wordAt(pos.x, pos.y, points: [(x: pos.x, y: pos.y, letter: letter)], horizontal: !word.horizontal) {
                 if !intersectedWord.valid {
                     return (false, [intersectedWord.word])
                 }
@@ -349,12 +269,10 @@ struct Solver {
     }
     
     func solution(forWord word: Word, rackLetters: [RackTile]) -> Solution? {
-        let (valid, _intersectedWords) = intersections(forWord: word)
+        let (valid, intersectedWords) = intersections(forWord: word)
         if !valid {
             return nil
         }
-        let intersectedWords = _intersectedWords ?? []
-        
         let blankSpots = blanks(forWord: word, rackLetters: rackLetters)
         let score = calculateScore(word, intersectedWords: intersectedWords, blanks: blankSpots)
         return Solution(word: word, score: score, intersections: intersectedWords, blanks: blankSpots)
@@ -392,42 +310,34 @@ struct Solver {
         var count = 0
         let range = board.config.boardRange
         let size = board.config.size
+        
+        func collect(inout array: [Solution], effectiveRange: Range<Int>, length: Int) {
+            for x in range {
+                for y in range {
+                    if effectiveRange.contains(x) {
+                        if let solves = solutionsAt(x: x, y: y, letters: solutionLetters, rackLetters: letters, length: length, horizontal: true) {
+                            array += solves
+                        }
+                    }
+                    if effectiveRange.contains(y) {
+                        if let solves = solutionsAt(x: x, y: y, letters: solutionLetters, rackLetters: letters, length: length, horizontal: false) {
+                            array += solves
+                        }
+                    }
+                }
+            }
+        }
+        
         for length in 2...maximumWordLength {
             count += 1
             let effectiveRange = (0...(size - length))
             if serial {
-                for x in range {
-                    for y in range {
-                        if effectiveRange.contains(x) {
-                            if let solves = solutionsAt(x: x, y: y, letters: solutionLetters, rackLetters: letters, length: length, horizontal: true) {
-                                solutions += solves
-                            }
-                        }
-                        if effectiveRange.contains(y) {
-                            if let solves = solutionsAt(x: x, y: y, letters: solutionLetters, rackLetters: letters, length: length, horizontal: false) {
-                                solutions += solves
-                            }
-                        }
-                    }
-                }
+                collect(&solutions, effectiveRange: effectiveRange, length: length)
             } else {
                 let currentQueue = NSOperationQueue.currentQueue()
                 operationQueue.addOperationWithBlock({
                     var innerSolutions = [Solution]()
-                    for x in range {
-                        for y in range {
-                            if effectiveRange.contains(x) {
-                                if let solves = self.solutionsAt(x: x, y: y, letters: solutionLetters, rackLetters: letters, length: length, horizontal: true) {
-                                    innerSolutions += solves
-                                }
-                            }
-                            if effectiveRange.contains(y) {
-                                if let solves = self.solutionsAt(x: x, y: y, letters: solutionLetters, rackLetters: letters, length: length, horizontal: false) {
-                                    innerSolutions += solves
-                                }
-                            }
-                        }
-                    }
+                    collect(&innerSolutions, effectiveRange: effectiveRange, length: length)
                     currentQueue?.addOperationWithBlock({
                         solutions += innerSolutions
                         count -= 1

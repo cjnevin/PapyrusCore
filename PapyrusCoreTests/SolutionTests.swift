@@ -22,6 +22,16 @@ class SolutionTests : WordTests {
         word = Solution(word: word.word, x: word.x, y: word.y, horizontal: word.horizontal, score: 0, intersections: [intersection], blanks: [])
     }
     
+    override func testEqual() {
+        let comparison = Solution(word: word.word, x: word.x, y: word.y, horizontal: word.horizontal, score: 0, intersections: [intersection], blanks: [])
+        XCTAssertEqual(comparison, (word as! Solution))
+    }
+    
+    override func testNotEqual() {
+        let comparison = Solution(word: "RAT", x: word.x, y: word.y, horizontal: word.horizontal, score: 0, intersections: [intersection], blanks: [])
+        XCTAssertNotEqual(comparison, (word as! Solution))
+    }
+    
     func getXs(positions: [WordPosition]) -> [Int] {
         return Array(Set(positions.map({ $0.x }))).sort()
     }
