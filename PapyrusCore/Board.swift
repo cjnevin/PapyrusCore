@@ -169,22 +169,20 @@ public struct Board: Equatable, CustomDebugStringConvertible {
             if horizontallyTouchesAt(x, y, length: length, edges: .TopAndBottom) {
                 return true
             }
+            // Intersects other letters?
+            return currentX > x + length
+        } else {
+            // Touches on bottom or top (cannot accept prefixed or suffixed spots)
+            if verticallyTouchesAt(x, y, length: length, edges: .TopAndBottom) {
+                return false
+            }
+            // Touches on left or right (allowed)
+            if verticallyTouchesAt(x, y, length: length, edges: .LeftAndRight) {
+                return true
+            }
+            // Intersects other letters?
+            return currentY > y + length
         }
-        
-        // Otherwise, must be vertical...
-        
-        // Touches on bottom or top (cannot accept prefixed or suffixed spots)
-        if verticallyTouchesAt(x, y, length: length, edges: .TopAndBottom) {
-            return false
-        }
-        // Touches on left or right (allowed)
-        if verticallyTouchesAt(x, y, length: length, edges: .LeftAndRight) {
-            return true
-        }
-        
-        // Intersects other letters?
-        return (currentX > x + length && horizontal ||
-            currentY > y + length && !horizontal)
     }
     
     mutating public func play(solution: Solution) -> [Character] {
