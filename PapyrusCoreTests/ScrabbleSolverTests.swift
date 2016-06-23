@@ -9,15 +9,13 @@
 import XCTest
 @testable import PapyrusCore
 
-class SolverTests: XCTestCase {
-    
+class ScrabbleSolverTests: XCTestCase {
     var solver: Solver!
-    let distribution = ScrabbleDistribution()
     
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        solver = Solver(board: Board(config: ScrabbleBoardConfig()), lookup: Lookup.singleton, distribution: distribution)
+        solver = Solver(bagType: ScrabbleBag.self, board: ScrabbleBoard(), lookup: Lookup.singleton)
     }
     
     func dropWords() {
@@ -87,7 +85,7 @@ class SolverTests: XCTestCase {
     
     func testValidateWithOneLetterReturnsValidWords() {
         dropWords()
-        solver.board.board[6][6] = "t"
+        solver.board.layout[6][6] = "t"
         switch solver.validate([(7, 6, "a")], blanks: []) {
         case .Valid(_):
             XCTAssertTrue(true)
@@ -180,7 +178,7 @@ class SolverTests: XCTestCase {
     
     func testValidateWithVerticalWordReturnsValidWords() {
         dropWords()
-        solver.board.board[6][6] = "t"
+        solver.board.layout[6][6] = "t"
         switch solver.validate([(7, 6, "a"), (7, 5, "c")], blanks: []) {
         case .Valid(_):
             XCTAssertTrue(true)
@@ -191,7 +189,7 @@ class SolverTests: XCTestCase {
     
     func testValidateWithHorizontalWordReturnsValidWords() {
         dropWords()
-        solver.board.board[6][6] = "t"
+        solver.board.layout[6][6] = "t"
         switch solver.validate([(7, 6, "e"), (8, 6, "a")], blanks: []) {
         case .Valid(_):
             XCTAssertTrue(true)
@@ -273,7 +271,7 @@ class SolverTests: XCTestCase {
     
     func testSolutionForWordInvalidIntersection() {
         dropWords()
-        solver.board.board[6][6] = "z"
+        solver.board.layout[6][6] = "z"
         let word = solver.wordAt(5, 7, points: [], horizontal: true)!
         let solution = solver.solution(forWord: word.word, rackLetters: [])
         XCTAssertNil(solution)
@@ -364,8 +362,8 @@ class SolverTests: XCTestCase {
         racks.append([("q", false), ("u", false), ("e", false), ("e", false), ("n", false), ("y", false)])
         racks.append([("s", false), ("t", false), ("a", false), ("g", false), ("e", false), ("d", false)])
         racks.append([("r", false), ("a", false), ("t", false), ("i", false), ("n", false), ("g", false)])
-        racks.append([("?", true), ("a", false), ("t", false), ("?", true), ("n", false), ("g", false)])    // Double wildcard is very slow, CPU should not get two wildcards, if it does lets randomize one of them to a specific value
-        racks.append([("?", true), ("a", false), ("t", false), ("i", false), ("n", false), ("g", false)])    // Single wildcard is also slow, just not as bad
+        racks.append([(Game.blankLetter, true), ("a", false), ("t", false), (Game.blankLetter, true), ("n", false), ("g", false)])    // Double wildcard is very slow, CPU should not get two wildcards, if it does lets randomize one of them to a specific value
+        racks.append([(Game.blankLetter, true), ("a", false), ("t", false), ("i", false), ("n", false), ("g", false)])    // Single wildcard is also slow, just not as bad
         racks.append([("c", false), ("a", false), ("t", false)])
     
         let expectations = [

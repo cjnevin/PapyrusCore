@@ -8,9 +8,17 @@
 
 import Foundation
 
-public func == (lhs: Board, rhs: Board) -> Bool {
-    for (left, right) in zip(lhs.board, rhs.board) where left != right { return false }
+func compareBoards<T: Board>(lhs: T, _ rhs: T) -> Bool {
+    for (left, right) in zip(lhs.layout, rhs.layout) where left != right { return false }
     return true
+}
+
+public func ==(lhs: ScrabbleBoard, rhs: ScrabbleBoard) -> Bool {
+    return compareBoards(lhs, rhs)
+}
+
+public func ==(lhs: SuperScrabbleBoard, rhs: SuperScrabbleBoard) -> Bool {
+    return compareBoards(lhs, rhs)
 }
 
 struct Edge: OptionSetType {
@@ -25,122 +33,61 @@ struct Edge: OptionSetType {
     static let TopAndBottom: Edge = [Top, Bottom]
 }
 
-public struct Board: Equatable, CustomDebugStringConvertible {
-    public let config: BoardConfig
-    public internal(set) var board: [[Character]]
-    public internal(set) var playedBlanks = [(x: Int, y: Int)]()
+public protocol Board: CustomDebugStringConvertible {
+    var empty: Character { get }
+    var center: Int { get }
+    var size: Int { get }
+    var boardRange: Range<Int> { get }
+    var layout: [[Character]] { get set }
+    var blanks: [(x: Int, y: Int)] { get set }
+    var isFirstPlay: Bool { get }
+    var letterMultipliers: [[Int]] { get }
+    var wordMultipliers: [[Int]] { get }
     
-    subscript(x: Int, y: Int) -> Character? {
-        return letterAt(x, y)
-    }
+    subscript(x: Int, y: Int) -> Character? { get }
+    func letterAt(x: Int, _ y: Int) -> Character?
+    func isEmptyAt(x: Int, _ y: Int) -> Bool
+    func isFilledAt(x: Int, _ y: Int) -> Bool
+    func isCenterAt(x: Int, _ y: Int) -> Bool
+    func isValidAt(x: Int, _ y: Int, length: Int, horizontal: Bool) -> Bool
     
-    public init(config: BoardConfig) {
-        self.config = config
-        board = config.board
-    }
-    
+    mutating func play(solution: Solution) -> [Character]
+}
+
+extension Board {
     public var isFirstPlay: Bool {
-        return isEmptyAt(config.center, config.center)
+        return isEmptyAt(center, center)
+    }
+    
+    public var boardRange: Range<Int> {
+        return layout.indices
     }
     
     public var debugDescription: String {
-        func str(arr: [[Character]]) -> String {
-            return arr.map { (line) in
-                line.map({ String($0 == config.empty ? "_" : $0) }).joinWithSeparator(",")
-                }.joinWithSeparator("\n")
-        }
-        return str(board)
+        return layout.map { (line) in
+            line.map({ String($0 == empty ? "_" : $0) }).joinWithSeparator(",")
+            }.joinWithSeparator("\n")
+    }
+    
+    public subscript(x: Int, y: Int) -> Character? {
+        return letterAt(x, y)
     }
     
     public func letterAt(x: Int, _ y: Int) -> Character? {
-        let value = board[y][x]
-        return value == config.empty ? nil : value
+        let value = layout[y][x]
+        return value == empty ? nil : value
     }
     
     public func isEmptyAt(x: Int, _ y: Int) -> Bool {
-        return board[y][x] == config.empty
+        return layout[y][x] == empty
     }
     
     public func isFilledAt(x: Int, _ y: Int) -> Bool {
-        return board[y][x] != config.empty
+        return layout[y][x] != empty
     }
     
     public func isCenterAt(x: Int, _ y: Int) -> Bool {
-        return x == config.center && y == config.center
-    }
-    
-    func verticallyTouchesAt(x: Int, _ y: Int, length: Int, edges: Edge) -> Bool {
-        let size = config.size
-        
-        if y + length > size {
-            return false
-        }
-        
-        if edges.contains(.Top) && y > 0 && isFilledAt(x, y - 1) {
-            return true
-        }
-        else if edges.contains(.Bottom) && y + length < size && isFilledAt(x, y + length) {
-            return true
-        }
-        
-        let (left, right) = (edges.contains(.Left), edges.contains(.Right))
-        if left || right {
-            for i in y..<(y + length) {
-                if left && x > 0 && isFilledAt(x - 1, i) {
-                    return true
-                }
-                if right && x < (size - 1) && isFilledAt(x + 1, i) {
-                    return true
-                }
-            }
-        }
-        return false
-    }
-    
-    func horizontallyTouchesAt(x: Int, _ y: Int, length: Int, edges: Edge) -> Bool {
-        let size = config.size
-        
-        if x + length > size {
-            return false
-        }
-        
-        if edges.contains(.Left) && x > 0 && isFilledAt(x - 1, y) {
-            return true
-        }
-        else if edges.contains(.Right) && x + length < size && isFilledAt(x + length, y) {
-            return true
-        }
-        
-        let (top, bottom) = (edges.contains(.Top), edges.contains(.Bottom))
-        if top || bottom {
-            for i in x..<(x + length) {
-                if top && y > 0 && isFilledAt(i, y - 1) {
-                    return true
-                }
-                else if bottom && y < (size - 1) && isFilledAt(i, y + 1) {
-                    return true
-                }
-            }
-        }
-        return false
-    }
-    
-    func exceedsBoundaryAt(inout x: Int, inout _ y: Int, length: Int, horizontal: Bool) -> Bool {
-        let size = config.size
-        var currentLength = length
-
-        while currentLength > 0 && (horizontal && x < size || !horizontal && y < size)  {
-            if isEmptyAt(x, y) {
-                currentLength -= 1
-            }
-            if horizontal {
-                x += 1
-            } else {
-                y += 1
-            }
-        }
-        
-        return currentLength != 0
+        return x == center && y == center
     }
     
     public func isValidAt(x: Int, _ y: Int, length: Int, horizontal: Bool) -> Bool {
@@ -185,51 +132,101 @@ public struct Board: Equatable, CustomDebugStringConvertible {
         }
     }
     
+    func verticallyTouchesAt(x: Int, _ y: Int, length: Int, edges: Edge) -> Bool {
+        if y + length > size {
+            return false
+        }
+        
+        if edges.contains(.Top) && y > 0 && isFilledAt(x, y - 1) {
+            return true
+        }
+        else if edges.contains(.Bottom) && y + length < size && isFilledAt(x, y + length) {
+            return true
+        }
+        
+        let (left, right) = (edges.contains(.Left), edges.contains(.Right))
+        if left || right {
+            for i in y..<(y + length) {
+                if left && x > 0 && isFilledAt(x - 1, i) {
+                    return true
+                }
+                if right && x < (size - 1) && isFilledAt(x + 1, i) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+    
+    func horizontallyTouchesAt(x: Int, _ y: Int, length: Int, edges: Edge) -> Bool {
+        if x + length > size {
+            return false
+        }
+        
+        if edges.contains(.Left) && x > 0 && isFilledAt(x - 1, y) {
+            return true
+        }
+        else if edges.contains(.Right) && x + length < size && isFilledAt(x + length, y) {
+            return true
+        }
+        
+        let (top, bottom) = (edges.contains(.Top), edges.contains(.Bottom))
+        if top || bottom {
+            for i in x..<(x + length) {
+                if top && y > 0 && isFilledAt(i, y - 1) {
+                    return true
+                }
+                else if bottom && y < (size - 1) && isFilledAt(i, y + 1) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+    
+    func exceedsBoundaryAt(inout x: Int, inout _ y: Int, length: Int, horizontal: Bool) -> Bool {
+        var currentLength = length
+        
+        while currentLength > 0 && (horizontal && x < size || !horizontal && y < size)  {
+            if isEmptyAt(x, y) {
+                currentLength -= 1
+            }
+            if horizontal {
+                x += 1
+            } else {
+                y += 1
+            }
+        }
+        
+        return currentLength != 0
+    }
+    
     mutating public func play(solution: Solution) -> [Character] {
         var dropped = [Character]()
         for (i, letter) in solution.word.characters.enumerate() {
             if solution.horizontal {
                 if isEmptyAt(solution.x + i, solution.y) {
-                    board[solution.y][solution.x + i] = letter
+                    layout[solution.y][solution.x + i] = letter
                     dropped.append(letter)
                 }
             } else {
                 if isEmptyAt(solution.x, solution.y + i) {
-                    board[solution.y + i][solution.x] = letter
+                    layout[solution.y + i][solution.x] = letter
                     dropped.append(letter)
                 }
             }
         }
-        playedBlanks.appendContentsOf(solution.blanks)
+        blanks.appendContentsOf(solution.blanks)
         return dropped
     }
 }
 
-public protocol BoardConfig {
-    init()
-    var empty: Character { get }
-    var board: [[Character]] { get }
-    var boardRange: Range<Int> { get }
-    var size: Int { get }
-    var center: Int { get }
-    var letterMultipliers: [[Int]] { get }
-    var wordMultipliers: [[Int]] { get }
-}
-
-extension BoardConfig {
-    public var boardRange: Range<Int> {
-        return board.indices
-    }
-    public var size: Int {
-        return board.count
-    }
-}
-
-public struct ScrabbleBoardConfig: BoardConfig {
-    public init() { }
+public struct ScrabbleBoard: Board, Equatable {
     public let empty = Character(" ")
-    public let board = Array(count: 15, repeatedValue: Array(count: 15, repeatedValue: Character(" ")))
     public let center = 7
+    public let size = 15
+    public var layout = Array(count: 15, repeatedValue: Array(count: 15, repeatedValue: Character(" ")))
+    public var blanks = [(x: Int, y: Int)]()
     public let letterMultipliers = [
         [1,1,1,2,1,1,1,1,1,1,1,2,1,1,1],
         [1,1,1,1,1,3,1,1,1,3,1,1,1,1,1],
@@ -264,11 +261,12 @@ public struct ScrabbleBoardConfig: BoardConfig {
         [3,1,1,1,1,1,1,3,1,1,1,1,1,1,3]]
 }
 
-public struct SuperScrabbleBoardConfig: BoardConfig {
-    public init() { }
+public struct SuperScrabbleBoard: Board, Equatable {
     public let empty = Character(" ")
-    public let board = Array(count: 21, repeatedValue: Array(count: 21, repeatedValue: Character(" ")))
     public let center = 10
+    public let size = 21
+    public var layout = Array(count: 21, repeatedValue: Array(count: 21, repeatedValue: Character(" ")))
+    public var blanks = [(x: Int, y: Int)]()
     public let letterMultipliers = [
         [1,1,1,2,1,1,1,1,1,1,2,1,1,1,1,1,1,2,1,1,1],
         [1,1,1,1,3,1,1,1,1,1,1,1,1,1,1,1,3,1,1,1,1],

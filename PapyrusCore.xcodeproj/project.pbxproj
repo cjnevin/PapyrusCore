@@ -24,9 +24,9 @@
 		995CBC081CCCB1A000DF06B8 /* Solver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC071CCCB1A000DF06B8 /* Solver.swift */; };
 		995CBC0A1CCCB1C400DF06B8 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC091CCCB1C400DF06B8 /* Player.swift */; };
 		995CBC0C1CCCB1E000DF06B8 /* Bag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC0B1CCCB1E000DF06B8 /* Bag.swift */; };
-		995CBC0E1CCCB20A00DF06B8 /* BagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC0D1CCCB20A00DF06B8 /* BagTests.swift */; };
-		995CBC101CCCB24800DF06B8 /* GameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC0F1CCCB24800DF06B8 /* GameTests.swift */; };
-		995CBC121CCCB27300DF06B8 /* SolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC111CCCB27300DF06B8 /* SolverTests.swift */; };
+		995CBC0E1CCCB20A00DF06B8 /* ScrabbleBagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC0D1CCCB20A00DF06B8 /* ScrabbleBagTests.swift */; };
+		995CBC101CCCB24800DF06B8 /* ScrabbleGameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC0F1CCCB24800DF06B8 /* ScrabbleGameTests.swift */; };
+		995CBC121CCCB27300DF06B8 /* ScrabbleSolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC111CCCB27300DF06B8 /* ScrabbleSolverTests.swift */; };
 		995CBC141CCCB39A00DF06B8 /* DawgSingleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC131CCCB39A00DF06B8 /* DawgSingleton.swift */; };
 		995CBC161CCCB58A00DF06B8 /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC151CCCB58A00DF06B8 /* Board.swift */; };
 		995CBC181CCCB5FC00DF06B8 /* BoardState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC171CCCB5FC00DF06B8 /* BoardState.swift */; };
@@ -38,6 +38,9 @@
 		996E23AA1BAA334A0052F1E2 /* sowpods.txt in Resources */ = {isa = PBXBuildFile; fileRef = 996E23A91BAA334A0052F1E2 /* sowpods.txt */; };
 		9975A2AB1CF8C8B7003D315F /* AnagramDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9975A2A71CF8C8B7003D315F /* AnagramDictionary.swift */; };
 		99778D981CF7C1260056DEB0 /* DawgBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99778D971CF7C1260056DEB0 /* DawgBuilder.swift */; };
+		99A4C7181D1C77E9002C17E1 /* CombosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99A4C7171D1C77E9002C17E1 /* CombosTests.swift */; };
+		99A4C71A1D1C7A3C002C17E1 /* SuperScrabbleGameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99A4C7191D1C7A3C002C17E1 /* SuperScrabbleGameTests.swift */; };
+		99A4C71C1D1C7A5C002C17E1 /* SuperScrabbleBagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99A4C71B1D1C7A5C002C17E1 /* SuperScrabbleBagTests.swift */; };
 		99FB2D0E1CF900A2005E611F /* Array+Combinations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FB2D0D1CF900A2005E611F /* Array+Combinations.swift */; };
 		99FD43151BA58A6400F50DCF /* DawgTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FD430E1BA58A6400F50DCF /* DawgTests.swift */; };
 /* End PBXBuildFile section */
@@ -70,9 +73,9 @@
 		995CBC071CCCB1A000DF06B8 /* Solver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Solver.swift; sourceTree = "<group>"; };
 		995CBC091CCCB1C400DF06B8 /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		995CBC0B1CCCB1E000DF06B8 /* Bag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bag.swift; sourceTree = "<group>"; };
-		995CBC0D1CCCB20A00DF06B8 /* BagTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BagTests.swift; sourceTree = "<group>"; };
-		995CBC0F1CCCB24800DF06B8 /* GameTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameTests.swift; sourceTree = "<group>"; };
-		995CBC111CCCB27300DF06B8 /* SolverTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SolverTests.swift; sourceTree = "<group>"; };
+		995CBC0D1CCCB20A00DF06B8 /* ScrabbleBagTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrabbleBagTests.swift; sourceTree = "<group>"; };
+		995CBC0F1CCCB24800DF06B8 /* ScrabbleGameTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrabbleGameTests.swift; sourceTree = "<group>"; };
+		995CBC111CCCB27300DF06B8 /* ScrabbleSolverTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrabbleSolverTests.swift; sourceTree = "<group>"; };
 		995CBC131CCCB39A00DF06B8 /* DawgSingleton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DawgSingleton.swift; sourceTree = "<group>"; };
 		995CBC151CCCB58A00DF06B8 /* Board.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Board.swift; sourceTree = "<group>"; };
 		995CBC171CCCB5FC00DF06B8 /* BoardState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardState.swift; sourceTree = "<group>"; };
@@ -92,6 +95,9 @@
 		9975A2A81CF8C8B7003D315F /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		9975A2A91CF8C8B7003D315F /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		99778D971CF7C1260056DEB0 /* DawgBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DawgBuilder.swift; sourceTree = "<group>"; };
+		99A4C7171D1C77E9002C17E1 /* CombosTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CombosTests.swift; sourceTree = "<group>"; };
+		99A4C7191D1C7A3C002C17E1 /* SuperScrabbleGameTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuperScrabbleGameTests.swift; sourceTree = "<group>"; };
+		99A4C71B1D1C7A5C002C17E1 /* SuperScrabbleBagTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuperScrabbleBagTests.swift; sourceTree = "<group>"; };
 		99FB2D0D1CF900A2005E611F /* Array+Combinations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Combinations.swift"; sourceTree = "<group>"; };
 		99FD430E1BA58A6400F50DCF /* DawgTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DawgTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -167,18 +173,12 @@
 		9960AD781BA589D800765614 /* PapyrusCoreTests */ = {
 			isa = PBXGroup;
 			children = (
-				99417A611CF96F4800553AE0 /* AnagramSingleton.swift */,
-				990826E01D08B45C001D425E /* LookupSingleton.swift */,
-				995CBC131CCCB39A00DF06B8 /* DawgSingleton.swift */,
-				990E2E501D0B605500E2748F /* LookupTests.swift */,
-				99FD430E1BA58A6400F50DCF /* DawgTests.swift */,
-				995CBC0D1CCCB20A00DF06B8 /* BagTests.swift */,
-				9938B4011D0AED130018B8D2 /* ScrabbleBoardTests.swift */,
-				9938B4031D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift */,
-				995CBC0F1CCCB24800DF06B8 /* GameTests.swift */,
+				99A4C71F1D1C7B0B002C17E1 /* Dictionary */,
+				99A4C71D1D1C7A75002C17E1 /* Scrabble */,
+				99A4C71E1D1C7A7A002C17E1 /* SuperScrabble */,
+				99A4C7171D1C77E9002C17E1 /* CombosTests.swift */,
 				990E2E481D0B1A1F00E2748F /* ComputerPlayerTests.swift */,
 				990E2E461D0B14E500E2748F /* HumanPlayerTests.swift */,
-				995CBC111CCCB27300DF06B8 /* SolverTests.swift */,
 				990E2E4A1D0B1DF100E2748F /* WordTests.swift */,
 				990E2E4C1D0B1F4400E2748F /* SolutionTests.swift */,
 				9960AD7B1BA589D800765614 /* Info.plist */,
@@ -197,6 +197,39 @@
 			);
 			path = AnagramDictionary;
 			sourceTree = SOURCE_ROOT;
+		};
+		99A4C71D1D1C7A75002C17E1 /* Scrabble */ = {
+			isa = PBXGroup;
+			children = (
+				995CBC0D1CCCB20A00DF06B8 /* ScrabbleBagTests.swift */,
+				9938B4011D0AED130018B8D2 /* ScrabbleBoardTests.swift */,
+				995CBC0F1CCCB24800DF06B8 /* ScrabbleGameTests.swift */,
+				995CBC111CCCB27300DF06B8 /* ScrabbleSolverTests.swift */,
+			);
+			name = Scrabble;
+			sourceTree = "<group>";
+		};
+		99A4C71E1D1C7A7A002C17E1 /* SuperScrabble */ = {
+			isa = PBXGroup;
+			children = (
+				99A4C71B1D1C7A5C002C17E1 /* SuperScrabbleBagTests.swift */,
+				9938B4031D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift */,
+				99A4C7191D1C7A3C002C17E1 /* SuperScrabbleGameTests.swift */,
+			);
+			name = SuperScrabble;
+			sourceTree = "<group>";
+		};
+		99A4C71F1D1C7B0B002C17E1 /* Dictionary */ = {
+			isa = PBXGroup;
+			children = (
+				99417A611CF96F4800553AE0 /* AnagramSingleton.swift */,
+				990826E01D08B45C001D425E /* LookupSingleton.swift */,
+				990E2E501D0B605500E2748F /* LookupTests.swift */,
+				995CBC131CCCB39A00DF06B8 /* DawgSingleton.swift */,
+				99FD430E1BA58A6400F50DCF /* DawgTests.swift */,
+			);
+			name = Dictionary;
+			sourceTree = "<group>";
 		};
 		99F53A0A1BABEED300A88AA2 /* TestDictionaries */ = {
 			isa = PBXGroup;
@@ -343,14 +376,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				990E2E471D0B14E500E2748F /* HumanPlayerTests.swift in Sources */,
-				995CBC0E1CCCB20A00DF06B8 /* BagTests.swift in Sources */,
+				99A4C71A1D1C7A3C002C17E1 /* SuperScrabbleGameTests.swift in Sources */,
+				995CBC0E1CCCB20A00DF06B8 /* ScrabbleBagTests.swift in Sources */,
 				990826E11D08B45C001D425E /* LookupSingleton.swift in Sources */,
 				99417A621CF96F4800553AE0 /* AnagramSingleton.swift in Sources */,
 				990E2E511D0B605500E2748F /* LookupTests.swift in Sources */,
-				995CBC101CCCB24800DF06B8 /* GameTests.swift in Sources */,
+				995CBC101CCCB24800DF06B8 /* ScrabbleGameTests.swift in Sources */,
 				990E2E491D0B1A1F00E2748F /* ComputerPlayerTests.swift in Sources */,
 				995CBC141CCCB39A00DF06B8 /* DawgSingleton.swift in Sources */,
-				995CBC121CCCB27300DF06B8 /* SolverTests.swift in Sources */,
+				99A4C7181D1C77E9002C17E1 /* CombosTests.swift in Sources */,
+				995CBC121CCCB27300DF06B8 /* ScrabbleSolverTests.swift in Sources */,
+				99A4C71C1D1C7A5C002C17E1 /* SuperScrabbleBagTests.swift in Sources */,
 				9938B4021D0AED130018B8D2 /* ScrabbleBoardTests.swift in Sources */,
 				990E2E4D1D0B1F4400E2748F /* SolutionTests.swift in Sources */,
 				990E2E4B1D0B1DF100E2748F /* WordTests.swift in Sources */,

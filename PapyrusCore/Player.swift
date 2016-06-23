@@ -36,8 +36,8 @@ public extension Player {
             return (true, isBlank)
         }
         // Tile must be a blank? Lets check...
-        if rack.map({$0.0}).contains(Bag.blankLetter) {
-            return removeLetter(Bag.blankLetter)
+        if rack.map({$0.0}).contains(Game.blankLetter) {
+            return removeLetter(Game.blankLetter)
         }
         return (false, false)
     }
@@ -61,12 +61,12 @@ public extension Player {
     
     mutating func drew(tiles: [Character]) {
         for tile in tiles {
-            rack.append((tile, tile == Bag.blankLetter))
+            rack.append((tile, tile == Game.blankLetter))
         }
     }
     
     mutating func updateBlank(newValue: Character) {
-        for n in 0..<rack.count where rack[n].letter == Bag.blankLetter && rack[n].isBlank == true {
+        for n in 0..<rack.count where rack[n].letter == Game.blankLetter && rack[n].isBlank == true {
             rack[n] = (newValue, true)
             break
         }

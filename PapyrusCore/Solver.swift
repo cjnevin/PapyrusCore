@@ -17,23 +17,23 @@ public enum ValidationResponse {
 struct Solver {
     var board: Board
     private(set) var boardState: BoardState
-    private(set) var distribution: LetterDistribution
+    private(set) var bagType: Bag.Type
     let lookup: Lookup
     private let debug: Bool
     private let maximumWordLength = 15
     private let allTilesUsedBonus = 50
     private let operationQueue = NSOperationQueue()
     
-    init(board: Board, lookup: Lookup, distribution: LetterDistribution, debug: Bool = false) {
+    init(bagType: Bag.Type, board: Board, lookup: Lookup, debug: Bool = false) {
         self.board = board
-        self.distribution = distribution
+        self.bagType = bagType
         boardState = BoardState(board: board)
         self.debug = debug
         self.lookup = lookup
     }
     
     func charactersAt(x: Int, y: Int, length: Int, horizontal: Bool) -> [Int: Character]? {
-        let size = board.config.size
+        let size = board.size
         var fixedLetters = [Int: Character]()
         var index = 0
         var offset = boardState[horizontal, y, x]
@@ -67,7 +67,7 @@ struct Solver {
             return wordAt(x, y - 1, points: points, horizontal: horizontal)
         }
         
-        let size = board.config.size
+        let size = board.size
         let start: Int = boardState[horizontal, y, x]
         var offset: Int = start
         var characters = [Character]()
@@ -110,7 +110,7 @@ struct Solver {
         }
         
         func letterPoints(letter: Character, atX x: Int, y: Int) -> Int {
-            return isBlankAt(x, y: y) ? 0 : distribution.letterPoints[letter]!
+            return isBlankAt(x, y: y) ? 0 : bagType.letterPoints[letter]!
         }
         
         func scoreWord(word: Word) -> Int {
@@ -126,8 +126,8 @@ struct Solver {
                 score += value
                 return
             }
-            let letterMultiplier = board.config.letterMultipliers[y][x]
-            let wordMultiplier = board.config.wordMultipliers[y][x]
+            let letterMultiplier = board.letterMultipliers[y][x]
+            let wordMultiplier = board.wordMultipliers[y][x]
             tilesUsed += 1
             score += value * letterMultiplier
             scoreMultiplier *= wordMultiplier
@@ -159,7 +159,7 @@ struct Solver {
             return .InvalidArrangement
         }
         
-        let allBlanks = board.playedBlanks + blanks
+        let allBlanks = board.blanks + blanks
         
         if points.count == 1 {
             let x = points.first!.x
@@ -279,7 +279,7 @@ struct Solver {
     }
     
     private func solutionsAt(x x: Int, y: Int, letters: [Character], rackLetters: [RackTile], length: Int, horizontal: Bool) -> [Solution]? {
-        assert((horizontal ? x : y) + length - 1 < board.config.size)
+        assert((horizontal ? x : y) + length - 1 < board.size)
         
         if !board.isValidAt(x, y, length: length, horizontal: horizontal) {
             return nil
@@ -308,8 +308,8 @@ struct Solver {
         let solutionLetters = letters.map({ $0.letter })
         var solutions = [Solution]()
         var count = 0
-        let range = board.config.boardRange
-        let size = board.config.size
+        let range = board.boardRange
+        let size = board.size
         
         func collect(inout array: [Solution], effectiveRange: Range<Int>, length: Int) {
             for x in range {

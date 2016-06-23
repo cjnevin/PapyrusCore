@@ -12,10 +12,10 @@ import XCTest
 class HumanPlayerTests : XCTestCase {
     
     var player: Player!
-    let config = ScrabbleBoardConfig()
+    let board = ScrabbleBoard()
 
     func rackTiles() -> [RackTile] {
-        return [("?", true), ("A", false), ("B", false), ("C", false), ("D", false), ("E", false), ("F", false)]
+        return [(Game.blankLetter, true), ("A", false), ("B", false), ("C", false), ("D", false), ("E", false), ("F", false)]
     }
     
     override func setUp() {
@@ -88,7 +88,7 @@ class HumanPlayerTests : XCTestCase {
     }
     
     func testPlayed() {
-        let solution = Solution(word: "BEAT", x: config.center, y: config.center, horizontal: true, score: 6, intersections: [], blanks: [])
+        let solution = Solution(word: "BEAT", x: board.center, y: board.center, horizontal: true, score: 6, intersections: [], blanks: [])
         player.played(solution, tiles: ["B", "E", "A"])
         XCTAssertEqual(player.rack.count, 4)
         XCTAssertEqual(player.score, 6)

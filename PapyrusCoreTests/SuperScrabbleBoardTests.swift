@@ -12,7 +12,15 @@ import XCTest
 class SuperScrabbleBoardTests: ScrabbleBoardTests {
     override func setUp() {
         super.setUp()
-        config = SuperScrabbleBoardConfig()
-        board = Board(config: config)
+        board = SuperScrabbleBoard()
+        secondBoard = SuperScrabbleBoard()
+    }
+    
+    override func checkEquality(expected: Bool = true) {
+        if expected {
+            XCTAssertEqual(board as? SuperScrabbleBoard, secondBoard as? SuperScrabbleBoard)
+        } else {
+            XCTAssertNotEqual(board as? SuperScrabbleBoard, secondBoard as? SuperScrabbleBoard)
+        }
     }
 }

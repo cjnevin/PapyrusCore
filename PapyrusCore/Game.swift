@@ -27,6 +27,7 @@ let aiCanPlayBlanks = false
 
 public typealias EventHandler = (GameEvent) -> ()
 public class Game {
+    public static let blankLetter = Character(" ")
     var solver: Solver
     var serial: Bool = false
     public var bag: Bag
@@ -39,7 +40,19 @@ public class Game {
     }
     private let maximumConsecutiveSkips = 3
     
-    init(solver: Solver, bag: Bag, players: [Player], playerIndex: Int, serial: Bool = false, eventHandler: EventHandler) {
+    init(bag: Bag,
+         board: Board,
+         lookup: Lookup,
+         players: [Player],
+         playerIndex: Int,
+         serial: Bool = false,
+         eventHandler: EventHandler) {
+        var solver = Solver(bagType: bag.dynamicType, board: board, lookup: lookup)
+        for player in players {
+            for solution in player.solves {
+                solver.play(solution)
+            }
+        }
         self.solver = solver
         self.bag = bag
         self.serial = serial
@@ -49,10 +62,9 @@ public class Game {
     }
     
     public static func newGame(gameType: GameType = .Scrabble, lookup: Lookup, players: [Player], serial: Bool = false, eventHandler: EventHandler) -> Game {
-        let board = Board(config: gameType == .Scrabble ? ScrabbleBoardConfig() : SuperScrabbleBoardConfig())
-        let bag = Bag(distribution: gameType == .Scrabble ? ScrabbleDistribution() : SuperScrabbleDistribution())
-        let solver = Solver(board: board, lookup: lookup, distribution: bag.distribution)
-        let game = Game(solver: solver, bag: bag, players: players, playerIndex: 0, serial: serial, eventHandler: eventHandler)
+        let board: Board = gameType == .Scrabble ? ScrabbleBoard() : SuperScrabbleBoard()
+        let bag: Bag = gameType == .Scrabble ? ScrabbleBag() : SuperScrabbleBag()
+        let game = Game(bag: bag, board: board, lookup: lookup, players: players, playerIndex: 0, serial: serial, eventHandler: eventHandler)
         for _ in players {
             game.replenishRack()
             game.playerIndex += 1
@@ -62,13 +74,7 @@ public class Game {
     }
     
     public static func restoreGame(board: Board, bag: Bag, lookup: Lookup, players: [Player], playerIndex: Int, eventHandler: EventHandler) -> Game? {
-        var solver = Solver(board: board, lookup: lookup, distribution: bag.distribution)
-        for player in players {
-            for solution in player.solves {
-                solver.play(solution)
-            }
-        }
-        return Game(solver: solver, bag: bag, players: players, playerIndex: playerIndex, eventHandler: eventHandler)
+        return Game(bag: bag, board: board, lookup: lookup, players: players, playerIndex: playerIndex, eventHandler: eventHandler)
     }
     
     public func shuffleRack() {
@@ -96,7 +102,7 @@ public class Game {
         for i in 0..<newPlayers.count {
             for tile in newPlayers[i].rack {
                 if tile.1 == false {
-                    newPlayers[i].score -= bag.letterPoints[tile.0] ?? 0
+                    newPlayers[i].score -= bag.dynamicType.letterPoints[tile.0] ?? 0
                 }
             }
             newPlayers[i].rack = []
@@ -116,10 +122,12 @@ public class Game {
         eventHandler(.TurnStarted)
         if player is Computer {
             var ai = player as! Computer
-            while aiCanPlayBlanks == false && ai.rack.filter({$0.0 == Bag.blankLetter}).count > 0 {
-                if Set(ai.rack.map({$0.0})).intersect(Bag.vowels).count == 0 {
+            let vowels = bag.dynamicType.vowels
+            let blank = Game.blankLetter
+            while aiCanPlayBlanks == false && ai.rack.filter({$0.0 == blank}).count > 0 {
+                if Set(ai.rack.map({$0.0})).intersect(vowels).count == 0 {
                     // If we have no vowels lets pick a random vowel
-                    ai.updateBlank(Bag.vowels[Int(rand()) % Bag.vowels.count])
+                    ai.updateBlank(vowels[Int(rand()) % vowels.count])
                     print("AI set value of blank letter")
                 } else {
                     // We have vowels, lets choose 's'
