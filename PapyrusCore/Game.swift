@@ -28,6 +28,7 @@ let aiCanPlayBlanks = false
 public typealias EventHandler = (GameEvent) -> ()
 public class Game {
     public static let blankLetter = Character("_")
+    public static let rackAmount = 7
     var solver: Solver
     var serial: Bool = false
     public var bag: Bag
@@ -172,14 +173,15 @@ public class Game {
     }
     
     public func replenishRack() {
-        let amount = min(rackAmount - player.rack.count, bag.remaining.count)
+        let amount = min(Game.rackAmount - player.rack.count, bag.remaining.count)
         let newTiles = (0..<amount).flatMap { _ in bag.draw() }
         players[playerIndex].drew(newTiles)
         eventHandler(.DrewTiles(newTiles))
     }
     
-    public let rackAmount = 7
-    public var canSwap: Bool { return bag.remaining.count > rackAmount }
+    public var canSwap: Bool {
+        return bag.remaining.count > Game.rackAmount
+    }
     
     public func swapTiles(oldTiles: [Character]) -> Bool {
         if !canSwap { return false }
