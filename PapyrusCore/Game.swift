@@ -27,7 +27,7 @@ let aiCanPlayBlanks = false
 
 public typealias EventHandler = (GameEvent) -> ()
 public class Game {
-    public static let blankLetter = Character(" ")
+    public static let blankLetter = Character("_")
     var solver: Solver
     var serial: Bool = false
     public var bag: Bag

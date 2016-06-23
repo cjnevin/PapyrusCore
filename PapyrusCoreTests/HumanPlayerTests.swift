@@ -29,6 +29,11 @@ class HumanPlayerTests : XCTestCase {
         player = nil
     }
     
+    func testBlank() {
+        // Sorting only works if blank is _
+        XCTAssertEqual(Game.blankLetter, "_")
+    }
+    
     func sortRack(rack: [RackTile]) -> [RackTile] {
         return rack.sort({ $0.letter < $1.letter })
     }
@@ -67,24 +72,24 @@ class HumanPlayerTests : XCTestCase {
     
     func testSwapped() {
         player.swapped(["A"], newTiles: ["G"])
-        XCTAssertEqual(sortedCharactersForRack(player.rack).last, "G")
+        XCTAssertEqual(sortedCharactersForRack(player.rack)[5], "G")
     }
     
     func testUpdateBlank() {
         player.updateBlank("Z")
-        XCTAssertEqual(sortedCharactersForRack(player.rack).last, "Z")
+        XCTAssertEqual(sortedCharactersForRack(player.rack)[6], "Z")
     }
     
     func testRemoveLetter() {
         player.removeLetter("F")
         XCTAssertEqual(player.rack.count, 6)
-        XCTAssertEqual(sortedCharactersForRack(player.rack).last, "E")
+        XCTAssertEqual(sortedCharactersForRack(player.rack)[4], "E")
     }
     
     func testRemoveBlank() {
         player.removeLetter("Z")
         XCTAssertEqual(player.rack.count, 6)
-        XCTAssertEqual(sortedCharactersForRack(player.rack).first, "A")
+        XCTAssertEqual(sortedCharactersForRack(player.rack).last, "F")
     }
     
     func testPlayed() {
