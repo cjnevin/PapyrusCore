@@ -27,6 +27,12 @@
 		99139C101D1F173D0033E114 /* WordsWithFriendsBagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C0D1D1F173D0033E114 /* WordsWithFriendsBagTests.swift */; };
 		99139C111D1F173D0033E114 /* WordsWithFriendsBoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C0E1D1F173D0033E114 /* WordsWithFriendsBoardTests.swift */; };
 		99139C121D1F173D0033E114 /* WordsWithFriendsGameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C0F1D1F173D0033E114 /* WordsWithFriendsGameTests.swift */; };
+		99139C151D1F1A320033E114 /* WordfeudBag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C141D1F1A320033E114 /* WordfeudBag.swift */; };
+		99139C171D1F1AF00033E114 /* WordfeudBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C161D1F1AF00033E114 /* WordfeudBoard.swift */; };
+		99139C191D1F1B080033E114 /* WordfeudSolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C181D1F1B080033E114 /* WordfeudSolver.swift */; };
+		99139C1D1D1F1E0F0033E114 /* WordfeudBagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C1A1D1F1E0F0033E114 /* WordfeudBagTests.swift */; };
+		99139C1E1D1F1E0F0033E114 /* WordfeudBoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C1B1D1F1E0F0033E114 /* WordfeudBoardTests.swift */; };
+		99139C1F1D1F1E0F0033E114 /* WordfeudGameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C1C1D1F1E0F0033E114 /* WordfeudGameTests.swift */; };
 		9938B4021D0AED130018B8D2 /* ScrabbleBoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9938B4011D0AED130018B8D2 /* ScrabbleBoardTests.swift */; };
 		9938B4041D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9938B4031D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift */; };
 		993CB5EB1BB4776D00692603 /* twl06.txt in Resources */ = {isa = PBXBuildFile; fileRef = 993CB5EA1BB4776D00692603 /* twl06.txt */; };
@@ -88,6 +94,12 @@
 		99139C0D1D1F173D0033E114 /* WordsWithFriendsBagTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordsWithFriendsBagTests.swift; sourceTree = "<group>"; };
 		99139C0E1D1F173D0033E114 /* WordsWithFriendsBoardTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordsWithFriendsBoardTests.swift; sourceTree = "<group>"; };
 		99139C0F1D1F173D0033E114 /* WordsWithFriendsGameTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordsWithFriendsGameTests.swift; sourceTree = "<group>"; };
+		99139C141D1F1A320033E114 /* WordfeudBag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordfeudBag.swift; sourceTree = "<group>"; };
+		99139C161D1F1AF00033E114 /* WordfeudBoard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordfeudBoard.swift; sourceTree = "<group>"; };
+		99139C181D1F1B080033E114 /* WordfeudSolver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordfeudSolver.swift; sourceTree = "<group>"; };
+		99139C1A1D1F1E0F0033E114 /* WordfeudBagTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordfeudBagTests.swift; sourceTree = "<group>"; };
+		99139C1B1D1F1E0F0033E114 /* WordfeudBoardTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordfeudBoardTests.swift; sourceTree = "<group>"; };
+		99139C1C1D1F1E0F0033E114 /* WordfeudGameTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordfeudGameTests.swift; sourceTree = "<group>"; };
 		9938B4011D0AED130018B8D2 /* ScrabbleBoardTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrabbleBoardTests.swift; sourceTree = "<group>"; };
 		9938B4031D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuperScrabbleBoardTests.swift; sourceTree = "<group>"; };
 		993CB5EA1BB4776D00692603 /* twl06.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = twl06.txt; sourceTree = "<group>"; };
@@ -152,6 +164,7 @@
 				995CBC171CCCB5FC00DF06B8 /* BoardState.swift */,
 				99139BF21D1EF2D60033E114 /* ScrabbleBoard.swift */,
 				99139BF41D1EF2DE0033E114 /* SuperScrabbleBoard.swift */,
+				99139C161D1F1AF00033E114 /* WordfeudBoard.swift */,
 				99139BFA1D1EF91F0033E114 /* WordsWithFriendsBoard.swift */,
 			);
 			name = Board;
@@ -163,6 +176,7 @@
 				995CBC071CCCB1A000DF06B8 /* Solver.swift */,
 				99139BEE1D1EF2610033E114 /* ScrabbleSolver.swift */,
 				99139BF01D1EF2740033E114 /* UpwordsSolver.swift */,
+				99139C181D1F1B080033E114 /* WordfeudSolver.swift */,
 				99139BFC1D1EFB330033E114 /* WordsWithFriendsSolver.swift */,
 			);
 			name = Solver;
@@ -174,6 +188,7 @@
 				995CBC0B1CCCB1E000DF06B8 /* Bag.swift */,
 				99139BFE1D1EFB530033E114 /* ScrabbleBag.swift */,
 				99139C001D1EFB590033E114 /* SuperScrabbleBag.swift */,
+				99139C141D1F1A320033E114 /* WordfeudBag.swift */,
 				99139C021D1EFB7B0033E114 /* WordsWithFriendsBag.swift */,
 			);
 			name = Bag;
@@ -197,6 +212,16 @@
 				99139C0F1D1F173D0033E114 /* WordsWithFriendsGameTests.swift */,
 			);
 			name = WordsWithFriends;
+			sourceTree = "<group>";
+		};
+		99139C201D1F1E120033E114 /* Wordfeud */ = {
+			isa = PBXGroup;
+			children = (
+				99139C1A1D1F1E0F0033E114 /* WordfeudBagTests.swift */,
+				99139C1B1D1F1E0F0033E114 /* WordfeudBoardTests.swift */,
+				99139C1C1D1F1E0F0033E114 /* WordfeudGameTests.swift */,
+			);
+			name = Wordfeud;
 			sourceTree = "<group>";
 		};
 		995DD8421BB68C69009B409D /* Dawg */ = {
@@ -251,6 +276,7 @@
 				99A4C71F1D1C7B0B002C17E1 /* Dictionary */,
 				99A4C71D1D1C7A75002C17E1 /* Scrabble */,
 				99A4C71E1D1C7A7A002C17E1 /* SuperScrabble */,
+				99139C201D1F1E120033E114 /* Wordfeud */,
 				99139C131D1F17410033E114 /* WordsWithFriends */,
 				99A4C7171D1C77E9002C17E1 /* CombosTests.swift */,
 				990E2E481D0B1A1F00E2748F /* ComputerPlayerTests.swift */,
@@ -438,6 +464,8 @@
 				99139BF31D1EF2D60033E114 /* ScrabbleBoard.swift in Sources */,
 				99778D981CF7C1260056DEB0 /* DawgBuilder.swift in Sources */,
 				99139BFB1D1EF91F0033E114 /* WordsWithFriendsBoard.swift in Sources */,
+				99139C151D1F1A320033E114 /* WordfeudBag.swift in Sources */,
+				99139C171D1F1AF00033E114 /* WordfeudBoard.swift in Sources */,
 				990826DC1D089EDD001D425E /* Lookup.swift in Sources */,
 				995CBC061CCCB19000DF06B8 /* Game.swift in Sources */,
 				99139BF11D1EF2740033E114 /* UpwordsSolver.swift in Sources */,
@@ -448,6 +476,7 @@
 				995CBC181CCCB5FC00DF06B8 /* BoardState.swift in Sources */,
 				995CBC161CCCB58A00DF06B8 /* Board.swift in Sources */,
 				995CBC0C1CCCB1E000DF06B8 /* Bag.swift in Sources */,
+				99139C191D1F1B080033E114 /* WordfeudSolver.swift in Sources */,
 				990E2E4F1D0B5BE000E2748F /* WordRepresentation.swift in Sources */,
 				99139BFF1D1EFB530033E114 /* ScrabbleBag.swift in Sources */,
 				99139BEF1D1EF2610033E114 /* ScrabbleSolver.swift in Sources */,
@@ -470,11 +499,14 @@
 				995CBC101CCCB24800DF06B8 /* ScrabbleGameTests.swift in Sources */,
 				990E2E491D0B1A1F00E2748F /* ComputerPlayerTests.swift in Sources */,
 				99139C111D1F173D0033E114 /* WordsWithFriendsBoardTests.swift in Sources */,
+				99139C1D1D1F1E0F0033E114 /* WordfeudBagTests.swift in Sources */,
 				995CBC141CCCB39A00DF06B8 /* DawgSingleton.swift in Sources */,
 				99A4C7181D1C77E9002C17E1 /* CombosTests.swift in Sources */,
 				99139C101D1F173D0033E114 /* WordsWithFriendsBagTests.swift in Sources */,
 				995CBC121CCCB27300DF06B8 /* ScrabbleSolverTests.swift in Sources */,
+				99139C1F1D1F1E0F0033E114 /* WordfeudGameTests.swift in Sources */,
 				99A4C71C1D1C7A5C002C17E1 /* SuperScrabbleBagTests.swift in Sources */,
+				99139C1E1D1F1E0F0033E114 /* WordfeudBoardTests.swift in Sources */,
 				9938B4021D0AED130018B8D2 /* ScrabbleBoardTests.swift in Sources */,
 				990E2E4D1D0B1F4400E2748F /* SolutionTests.swift in Sources */,
 				990E2E4B1D0B1DF100E2748F /* WordTests.swift in Sources */,

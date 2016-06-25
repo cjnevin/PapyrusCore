@@ -20,6 +20,7 @@ public enum GameEvent {
 public enum GameType: Int {
     case Scrabble = 0
     case SuperScrabble
+    case Wordfeud
     case WordsWithFriends
 }
 
@@ -78,6 +79,9 @@ public class Game {
         case .SuperScrabble:
             board = SuperScrabbleBoard()
             bag = SuperScrabbleBag()
+        case .Wordfeud:
+            board = WordfeudBoard()
+            bag = WordfeudBag()
         case .WordsWithFriends:
             board = WordsWithFriendsBoard()
             bag = WordsWithFriendsBag()
