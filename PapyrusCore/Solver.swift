@@ -216,6 +216,9 @@ struct Solver {
         if !board.isFirstPlay && intersectedWords.count == 0 {
             return .InvalidArrangement
         }
+        else if board.isFirstPlay && !word.toPositions().contains({ board.isCenterAt($0.x, $0.y) }) {
+            return .InvalidArrangement
+        }
         
         // Calculate score and return solution
         let score = calculateScore(word, intersectedWords: intersectedWords, blanks: allBlanks)
