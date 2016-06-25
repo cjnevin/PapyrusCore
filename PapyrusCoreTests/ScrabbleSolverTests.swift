@@ -73,10 +73,9 @@ class ScrabbleSolverTests: XCTestCase {
         }
     }
     
-    func testValidateWithOneLetterReturnsValidHorizontalWord() {
-        dropWords()
-        switch solver.validate([(9, 7, "e")], blanks: []) {
-        case .Valid(_):
+    func testValidateWithNoCenterIntersectionReturnsInvalidArrangement() {
+        switch solver.validate([(4, 6, "s"), (5, 6, "h"), (6, 6, "e")], blanks: []) {
+        case .InvalidArrangement:
             XCTAssertTrue(true)
         default:
             XCTFail()
