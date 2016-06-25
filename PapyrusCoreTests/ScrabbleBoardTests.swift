@@ -13,12 +13,15 @@ class ScrabbleBoardTests: XCTestCase {
     var boardType: Board.Type!
     var board: Board!
     var secondBoard: Board!
+    var center: Int!
     
     override func setUp() {
         super.setUp()
         boardType = ScrabbleBoard.self
-        board = ScrabbleBoard()
+        let scrabbleBoard = ScrabbleBoard()
+        board = scrabbleBoard
         secondBoard = ScrabbleBoard()
+        center = scrabbleBoard.center
     }
     
     override func tearDown() {
@@ -29,14 +32,14 @@ class ScrabbleBoardTests: XCTestCase {
     // MARK: - IsValidAt
     
     func testIsValidAtCenterReturnsTrue() {
-        XCTAssertTrue(board.isValidAt(board.center, board.center, length: 1, horizontal: true))
-        XCTAssertTrue(board.isValidAt(board.center, board.center, length: 1, horizontal: false))
+        XCTAssertTrue(board.isValidAt(center, center, length: 1, horizontal: true))
+        XCTAssertTrue(board.isValidAt(center, center, length: 1, horizontal: false))
     }
     
     func testIsValidAtFilledReturnsFalse() {
-        board.layout[board.center][board.center] = "A"
-        XCTAssertFalse(board.isValidAt(board.center, board.center, length: 1, horizontal: true))
-        XCTAssertFalse(board.isValidAt(board.center, board.center, length: 1, horizontal: false))
+        board.layout[center][center] = "A"
+        XCTAssertFalse(board.isValidAt(center, center, length: 1, horizontal: true))
+        XCTAssertFalse(board.isValidAt(center, center, length: 1, horizontal: false))
     }
     
     func testIsValidAtExceedsBoundaryReturnsFalse() {
@@ -102,111 +105,111 @@ class ScrabbleBoardTests: XCTestCase {
     // MARK: - HorizontallyTouchesAt
     
     func testHorizontallyTouchesAtTopReturnsTrue() {
-        board.layout[board.center][board.center] = "A"
-        XCTAssertTrue(board.horizontallyTouchesAt(board.center, board.center + 1, length: 2, edges: .Top))
+        board.layout[center][center] = "A"
+        XCTAssertTrue(board.horizontallyTouchesAt(center, center + 1, length: 2, edges: .Top))
     }
     
     func testHorizontallyTouchesAtTopReturnsFalse() {
-        board.layout[board.center][board.center] = "A"
-        XCTAssertFalse(board.horizontallyTouchesAt(board.center, board.center, length: 1, edges: .Top))
+        board.layout[center][center] = "A"
+        XCTAssertFalse(board.horizontallyTouchesAt(center, center, length: 1, edges: .Top))
     }
     
     // This test covers all edges
     func testHorizontallyTouchesAtTopReturnsFalseIfXIsNegative() {
-        XCTAssertFalse(board.horizontallyTouchesAt(-1, board.center, length: 0, edges: .Top))
+        XCTAssertFalse(board.horizontallyTouchesAt(-1, center, length: 0, edges: .Top))
     }
     
     // This test covers all edges
     func testHorizontallyTouchesAtBottomReturnsFalseIfLengthExceedsBoardSize() {
-        XCTAssertFalse(board.horizontallyTouchesAt(1, board.center, length: board.size, edges: .Bottom))
+        XCTAssertFalse(board.horizontallyTouchesAt(1, center, length: board.size, edges: .Bottom))
     }
     
     func testHorizontallyTouchesAtBottomReturnsTrue() {
-        board.layout[board.center][board.center] = "A"
-        XCTAssertTrue(board.horizontallyTouchesAt(board.center, board.center - 1, length: 1, edges: .Bottom))
+        board.layout[center][center] = "A"
+        XCTAssertTrue(board.horizontallyTouchesAt(center, center - 1, length: 1, edges: .Bottom))
     }
     
     func testHorizontallyTouchesAtBottomReturnsFalse() {
-        board.layout[board.center][board.center] = "A"
-        XCTAssertFalse(board.horizontallyTouchesAt(board.center, board.center, length: 1, edges: .Bottom))
+        board.layout[center][center] = "A"
+        XCTAssertFalse(board.horizontallyTouchesAt(center, center, length: 1, edges: .Bottom))
     }
     
     func testHorizontallyTouchesAtLeftReturnsTrue() {
-        board.layout[board.center][board.center] = "A"
-        XCTAssertTrue(board.horizontallyTouchesAt(board.center + 1, board.center, length: 1, edges: .Left))
+        board.layout[center][center] = "A"
+        XCTAssertTrue(board.horizontallyTouchesAt(center + 1, center, length: 1, edges: .Left))
     }
     
     func testHorizontallyTouchesAtLeftReturnsFalse() {
-        board.layout[board.center][board.center] = "A"
-        XCTAssertFalse(board.horizontallyTouchesAt(board.center, board.center, length: 1, edges: .Left))
+        board.layout[center][center] = "A"
+        XCTAssertFalse(board.horizontallyTouchesAt(center, center, length: 1, edges: .Left))
     }
     
     func testHorizontallyTouchesAtRightReturnsTrue() {
-        board.layout[board.center][board.center] = "A"
-        XCTAssertTrue(board.horizontallyTouchesAt(board.center - 1, board.center, length: 1, edges: .Right))
+        board.layout[center][center] = "A"
+        XCTAssertTrue(board.horizontallyTouchesAt(center - 1, center, length: 1, edges: .Right))
     }
     
     func testHorizontallyTouchesAtRightReturnsFalse() {
-        board.layout[board.center][board.center] = "A"
-        XCTAssertFalse(board.horizontallyTouchesAt(board.center, board.center, length: 1, edges: .Right))
+        board.layout[center][center] = "A"
+        XCTAssertFalse(board.horizontallyTouchesAt(center, center, length: 1, edges: .Right))
     }
     
     
     // MARK: - VerticallyTouchesAt
     
     func testVerticallyTouchesAtTopReturnsTrue() {
-        board.layout[board.center][board.center] = "A"
-        XCTAssertTrue(board.verticallyTouchesAt(board.center, board.center + 1, length: 0, edges: .Top))
+        board.layout[center][center] = "A"
+        XCTAssertTrue(board.verticallyTouchesAt(center, center + 1, length: 0, edges: .Top))
     }
     
     func testVerticallyTouchesAtTopReturnsFalse() {
-        board.layout[board.center][board.center] = "A"
-        XCTAssertFalse(board.verticallyTouchesAt(board.center, board.center, length: 0, edges: .Top))
+        board.layout[center][center] = "A"
+        XCTAssertFalse(board.verticallyTouchesAt(center, center, length: 0, edges: .Top))
     }
     
     // This test covers all edges
     func testVerticallyTouchesAtTopReturnsFalseIfYIsNegative() {
-        XCTAssertFalse(board.verticallyTouchesAt(board.center, -1, length: 0, edges: .Top))
+        XCTAssertFalse(board.verticallyTouchesAt(center, -1, length: 0, edges: .Top))
     }
     
     // This test covers all edges
     func testVerticallyTouchesAtBottomReturnsFalseIfLengthExceedsBoardSize() {
-        XCTAssertFalse(board.verticallyTouchesAt(board.center, 1, length: board.size, edges: .Bottom))
+        XCTAssertFalse(board.verticallyTouchesAt(center, 1, length: board.size, edges: .Bottom))
     }
     
     func testVerticallyTouchesAtBottomReturnsTrue() {
-        board.layout[board.center][board.center] = "A"
-        XCTAssertTrue(board.verticallyTouchesAt(board.center, board.center - 1, length: 1, edges: .Bottom))
+        board.layout[center][center] = "A"
+        XCTAssertTrue(board.verticallyTouchesAt(center, center - 1, length: 1, edges: .Bottom))
     }
     
     func testVerticallyTouchesAtBottomReturnsFalse() {
-        board.layout[board.center][board.center] = "A"
-        XCTAssertFalse(board.verticallyTouchesAt(board.center, board.center, length: 2, edges: .Bottom))
+        board.layout[center][center] = "A"
+        XCTAssertFalse(board.verticallyTouchesAt(center, center, length: 2, edges: .Bottom))
     }
     
     func testVerticallyTouchesAtBottomReturnsFalseIfLengthIsTooLong() {
-        board.layout[board.center][board.center] = "A"
-        XCTAssertFalse(board.verticallyTouchesAt(board.center, board.center - 1, length: 2, edges: .Bottom))
+        board.layout[center][center] = "A"
+        XCTAssertFalse(board.verticallyTouchesAt(center, center - 1, length: 2, edges: .Bottom))
     }
     
     func testVerticallyTouchesAtLeftReturnsTrue() {
-        board.layout[board.center][board.center] = "A"
-        XCTAssertTrue(board.verticallyTouchesAt(board.center + 1, board.center, length: 1, edges: .Left))
+        board.layout[center][center] = "A"
+        XCTAssertTrue(board.verticallyTouchesAt(center + 1, center, length: 1, edges: .Left))
     }
     
     func testVerticallyTouchesAtLeftReturnsFalse() {
-        board.layout[board.center][board.center] = "A"
-        XCTAssertFalse(board.verticallyTouchesAt(board.center, board.center, length: 1, edges: .Left))
+        board.layout[center][center] = "A"
+        XCTAssertFalse(board.verticallyTouchesAt(center, center, length: 1, edges: .Left))
     }
     
     func testVerticallyTouchesAtRightReturnsTrue() {
-        board.layout[board.center][board.center] = "A"
-        XCTAssertTrue(board.verticallyTouchesAt(board.center - 1, board.center, length: 1, edges: .Right))
+        board.layout[center][center] = "A"
+        XCTAssertTrue(board.verticallyTouchesAt(center - 1, center, length: 1, edges: .Right))
     }
     
     func testVerticallyTouchesAtRightReturnsFalse() {
-        board.layout[board.center][board.center] = "A"
-        XCTAssertFalse(board.verticallyTouchesAt(board.center, board.center, length: 1, edges: .Right))
+        board.layout[center][center] = "A"
+        XCTAssertFalse(board.verticallyTouchesAt(center, center, length: 1, edges: .Right))
     }
     
     // MARK: - ExceedsBoundaryAt
@@ -289,15 +292,15 @@ class ScrabbleBoardTests: XCTestCase {
     // MARK: - IsCenterAt
     
     func testIsCenterAtReturnsTrue() {
-        XCTAssertTrue(board.isCenterAt(board.center, board.center))
+        XCTAssertTrue(board.isCenterAt(center, center))
     }
     
     func testIsCenterAtReturnsFalseIfYIsZero() {
-        XCTAssertFalse(board.isCenterAt(board.center, 0))
+        XCTAssertFalse(board.isCenterAt(center, 0))
     }
     
     func testIsCenterAtReturnsFalseIfXIsZero() {
-        XCTAssertFalse(board.isCenterAt(0, board.center))
+        XCTAssertFalse(board.isCenterAt(0, center))
     }
     
     // MARK: - Subscript
@@ -318,7 +321,7 @@ class ScrabbleBoardTests: XCTestCase {
     }
     
     func testIsFirstPlayReturnsFalse() {
-        board.layout[board.center][board.center] = "A"
+        board.layout[center][center] = "A"
         XCTAssertFalse(board.isFirstPlay)
     }
     
@@ -358,21 +361,21 @@ class ScrabbleBoardTests: XCTestCase {
     // MARK: - Play
     
     func testPlayHorizontal() {
-        let solution = Solution(word: "TEST", x: board.center, y: board.center, horizontal: true, score: 4, intersections: [], blanks: [])
+        let solution = Solution(word: "TEST", x: center, y: center, horizontal: true, score: 4, intersections: [], blanks: [])
         board.play(solution)
-        XCTAssertEqual(board.letterAt(board.center, board.center), "T")
-        XCTAssertEqual(board.letterAt(board.center + 1, board.center), "E")
-        XCTAssertEqual(board.letterAt(board.center + 2, board.center), "S")
-        XCTAssertEqual(board.letterAt(board.center + 3, board.center), "T")
+        XCTAssertEqual(board.letterAt(center, center), "T")
+        XCTAssertEqual(board.letterAt(center + 1, center), "E")
+        XCTAssertEqual(board.letterAt(center + 2, center), "S")
+        XCTAssertEqual(board.letterAt(center + 3, center), "T")
     }
     
     func testPlayVertical() {
-        let solution = Solution(word: "TEST", x: board.center, y: board.center, horizontal: false, score: 4, intersections: [], blanks: [])
+        let solution = Solution(word: "TEST", x: center, y: center, horizontal: false, score: 4, intersections: [], blanks: [])
         board.play(solution)
-        XCTAssertEqual(board.letterAt(board.center, board.center), "T")
-        XCTAssertEqual(board.letterAt(board.center, board.center + 1), "E")
-        XCTAssertEqual(board.letterAt(board.center, board.center + 2), "S")
-        XCTAssertEqual(board.letterAt(board.center, board.center + 3), "T")
+        XCTAssertEqual(board.letterAt(center, center), "T")
+        XCTAssertEqual(board.letterAt(center, center + 1), "E")
+        XCTAssertEqual(board.letterAt(center, center + 2), "S")
+        XCTAssertEqual(board.letterAt(center, center + 3), "T")
     }
     
     // MARK: - Board Range

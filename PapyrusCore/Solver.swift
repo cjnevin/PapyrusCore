@@ -14,22 +14,36 @@ public enum ValidationResponse {
     case Valid(solution: Solution)
 }
 
-struct Solver {
-    var board: Board
-    private(set) var boardState: BoardState
-    private(set) var bagType: Bag.Type
-    let lookup: Lookup
-    private let debug: Bool
-    private let maximumWordLength = 15
-    private let allTilesUsedBonus = 50
-    private let operationQueue = NSOperationQueue()
+protocol Solver {
+    var bagType: Bag.Type { get set }
+    var board: Board { get set }
+    var boardState: BoardState { get set }
+    var lookup: Lookup { get set }
+    var debug: Bool { get set }
+    var maximumWordLength: Int { get }
+    var allTilesUsedBonus: Int { get }
+    var operationQueue: NSOperationQueue { get }
     
-    init(bagType: Bag.Type, board: Board, lookup: Lookup, debug: Bool = false) {
-        self.board = board
-        self.bagType = bagType
-        boardState = BoardState(board: board)
-        self.debug = debug
-        self.lookup = lookup
+    init(bagType: Bag.Type, board: Board, lookup: Lookup, debug: Bool)
+    
+    func charactersAt(x: Int, y: Int, length: Int, horizontal: Bool) -> [Int: Character]?
+    func wordAt(x: Int, _ y: Int, points: [(x: Int, y: Int, letter: Character)], horizontal: Bool) -> (word: Word, valid: Bool)?
+    func validate(points: [(x: Int, y: Int, letter: Character)], blanks: [(x: Int, y: Int)]) -> ValidationResponse
+    func lexicographicalString(withLetters letters: [Character]) -> String
+    func unvalidatedWords(forLetters letters: [Character], fixedLetters: [Int: Character], length: Int) -> Anagrams?
+    func intersections<T: WordRepresentation>(forWord word: T) -> (valid: Bool, words: [Word])
+    func solution(forWord word: Word, rackLetters: [RackTile]) -> Solution?
+    func solve(solutions: [Solution], difficulty: Difficulty) -> Solution?
+    func solutions(letters: [RackTile], serial: Bool, completion: ([Solution]?) -> ())
+    mutating func play(solution: Solution) -> [Character]
+}
+
+
+// Characters
+
+extension Solver {
+    func lexicographicalString(withLetters letters: [Character]) -> String {
+        return String(letters.sort())
     }
     
     func charactersAt(x: Int, y: Int, length: Int, horizontal: Bool) -> [Int: Character]? {
@@ -37,7 +51,7 @@ struct Solver {
         var fixedLetters = [Int: Character]()
         var index = 0
         var offset = boardState[horizontal, y, x]
-       
+        
         func addCharacter(mustExist: Bool, alwaysIncrement: Bool) -> Bool {
             if offset >= size { return false }
             var didExist = false
@@ -52,106 +66,12 @@ struct Solver {
             }
             return mustExist == true ? didExist : true
         }
-
+        
         while addCharacter(true, alwaysIncrement: false) { }
         for _ in 0..<length { addCharacter(false, alwaysIncrement: true) }
         while addCharacter(true, alwaysIncrement: false) { }
         
         return length != index ? nil : fixedLetters
-    }
-    
-    func wordAt(x: Int, _ y: Int, points: [(x: Int, y: Int, letter: Character)], horizontal: Bool) -> (word: Word, valid: Bool)? {
-        if horizontal && x > 0 && board.isFilledAt(x - 1, y) {
-            return wordAt(x - 1, y, points: points, horizontal: horizontal)
-        } else if !horizontal && y > 0 && board.isFilledAt(x, y - 1) {
-            return wordAt(x, y - 1, points: points, horizontal: horizontal)
-        }
-        
-        let size = board.size
-        let start: Int = boardState[horizontal, y, x]
-        var offset: Int = start
-        var characters = [Character]()
-        var remainingPoints = points
-        
-        while offset < size {
-            let _x = horizontal ? offset : x
-            let _y = horizontal ? y : offset
-            var fixedLetter: Character?
-            if let index = remainingPoints.indexOf({ $0.x == _x && $0.y == _y}) {
-                fixedLetter = remainingPoints[index].letter
-                remainingPoints.removeAtIndex(index)
-            }
-            guard let letter = fixedLetter ?? board[_x, _y] else {
-                break
-            }
-            characters.append(letter)
-            offset += 1
-        }
-        
-        if characters.count < 2 || remainingPoints.count > 0 {
-            return nil
-        }
-        
-        let word = Word(word: String(characters),
-                        x: horizontal ? start : x,
-                        y: horizontal ? y : start,
-                        horizontal: horizontal)
-        return (word, lookup.dictionary.lookup(word.word))
-    }
-    
-    private func calculateScore<T: WordRepresentation>(word: T, intersectedWords: [Word], blanks: [(x: Int, y: Int)]) -> Int {
-        var tilesUsed = 0
-        var score = 0
-        var scoreMultiplier = 1
-        var intersectionsScore = 0
-        
-        func isBlankAt(x: Int, y: Int) -> Bool {
-            return blanks.contains({ $0.x == x && $0.y == y})
-        }
-        
-        func letterPoints(letter: Character, atX x: Int, y: Int) -> Int {
-            return isBlankAt(x, y: y) ? 0 : bagType.letterPoints[letter]!
-        }
-        
-        func scoreWord(word: Word) -> Int {
-            let chars = Array(word.word.characters)
-            return word.toPositions().enumerate()
-                .flatMap({ letterPoints(chars[$0], atX: $1.x, y: $1.y) })
-                .reduce(0, combine: +)
-        }
-        
-        func scoreLetter(letter: Character, x: Int, y: Int) {
-            let value = letterPoints(letter, atX: x, y: y)
-            if board.isFilledAt(x, y) {
-                score += value
-                return
-            }
-            let letterMultiplier = board.letterMultipliers[y][x]
-            let wordMultiplier = board.wordMultipliers[y][x]
-            tilesUsed += 1
-            score += value * letterMultiplier
-            scoreMultiplier *= wordMultiplier
-            
-            if let intersectingWord = intersectedWords.filter({ word.horizontal ? $0.x == x : $0.y == y }).first {
-                // scoreWord method will score this letter once, so lets just add the remaining amount if placed on a premium square.
-                let wordScore = scoreWord(intersectingWord) + (value * (letterMultiplier - 1))
-                intersectionsScore += wordScore * wordMultiplier
-            }
-        }
-        
-        for (i, letter) in word.word.characters.enumerate() {
-            scoreLetter(letter,
-                        x: word.x + (word.horizontal ? i : 0),
-                        y: word.y + (word.horizontal ? 0 : i))
-        }
-        
-        return (score * scoreMultiplier) + intersectionsScore + (tilesUsed == 7 ? allTilesUsedBonus : 0)
-    }
-    
-    mutating func play(solution: Solution) -> [Character] {
-        let dropped = board.play(solution)
-        boardState = BoardState(board: board)
-        return dropped
     }
     
     func validate(points: [(x: Int, y: Int, letter: Character)], blanks: [(x: Int, y: Int)]) -> ValidationResponse {
@@ -225,9 +145,80 @@ struct Solver {
         let solution = Solution(word: word, score: score, intersections: intersectedWords, blanks: blanks)
         return .Valid(solution: solution)
     }
+}
+
+// Word
+extension Solver {
+    /// - returns: Offsets in word that are blank using a players rack tiles.
+    func blanks(forWord word: Word, rackLetters: [RackTile]) -> [(x: Int, y: Int)] {
+        var tempPlayer = Human(rackTiles: rackLetters)
+        return word.word.characters.enumerate().flatMap({ (index, letter) in
+            tempPlayer.removeLetter(letter).wasBlank ? word.position(forIndex: index) : nil
+        })
+    }
     
-    func lexicographicalString(withLetters letters: [Character]) -> String {
-        return String(letters.sort())
+    private func calculateScore<T: WordRepresentation>(word: T, intersectedWords: [Word], blanks: [(x: Int, y: Int)]) -> Int {
+        var tilesUsed = 0
+        var score = 0
+        var scoreMultiplier = 1
+        var intersectionsScore = 0
+        
+        func isBlankAt(x: Int, y: Int) -> Bool {
+            return blanks.contains({ $0.x == x && $0.y == y})
+        }
+        
+        func letterPoints(letter: Character, atX x: Int, y: Int) -> Int {
+            return isBlankAt(x, y: y) ? 0 : bagType.letterPoints[letter]!
+        }
+        
+        func scoreWord(word: Word) -> Int {
+            let chars = Array(word.word.characters)
+            return word.toPositions().enumerate()
+                .flatMap({ letterPoints(chars[$0], atX: $1.x, y: $1.y) })
+                .reduce(0, combine: +)
+        }
+        
+        func scoreLetter(letter: Character, x: Int, y: Int) {
+            let value = letterPoints(letter, atX: x, y: y)
+            if board.isFilledAt(x, y) {
+                score += value
+                return
+            }
+            let letterMultiplier = board.letterMultipliers[y][x]
+            let wordMultiplier = board.wordMultipliers[y][x]
+            tilesUsed += 1
+            score += value * letterMultiplier
+            scoreMultiplier *= wordMultiplier
+            
+            if let intersectingWord = intersectedWords.filter({ word.horizontal ? $0.x == x : $0.y == y }).first {
+                // scoreWord method will score this letter once, so lets just add the remaining amount if placed on a premium square.
+                let wordScore = scoreWord(intersectingWord) + (value * (letterMultiplier - 1))
+                intersectionsScore += wordScore * wordMultiplier
+            }
+        }
+        
+        for (i, letter) in word.word.characters.enumerate() {
+            scoreLetter(letter,
+                        x: word.x + (word.horizontal ? i : 0),
+                        y: word.y + (word.horizontal ? 0 : i))
+        }
+        
+        return (score * scoreMultiplier) + intersectionsScore + (tilesUsed == 7 ? allTilesUsedBonus : 0)
+    }
+    
+    /// - returns: `words` will contain the first invalid intersection if `valid` is `false` or the array of intersections if `valid` is `true`. `valid` should be handled appropriately.
+    func intersections<T: WordRepresentation>(forWord word: T) -> (valid: Bool, words: [Word]) {
+        var words = [Word]()
+        for (index, letter) in word.word.characters.enumerate() {
+            let pos = word.position(forIndex: index)
+            if let intersectedWord = wordAt(pos.x, pos.y, points: [(x: pos.x, y: pos.y, letter: letter)], horizontal: !word.horizontal) {
+                if !intersectedWord.valid {
+                    return (false, [intersectedWord.word])
+                }
+                words.append(intersectedWord.word)
+            }
+        }
+        return (true, words)
     }
     
     /// - parameter letters: Refers to the tiles in a user's rack we can use, i.e. unplayed/unfixed letters.
@@ -248,27 +239,53 @@ struct Solver {
         return anagrams.count > 0 ? anagrams : nil
     }
     
-    /// - returns: Offsets in word that are blank using a players rack tiles.
-    func blanks(forWord word: Word, rackLetters: [RackTile]) -> [(x: Int, y: Int)] {
-        var tempPlayer = Human(rackTiles: rackLetters)
-        return word.word.characters.enumerate().flatMap({ (index, letter) in
-            tempPlayer.removeLetter(letter).wasBlank ? word.position(forIndex: index) : nil
-        })
+    func wordAt(x: Int, _ y: Int, points: [(x: Int, y: Int, letter: Character)], horizontal: Bool) -> (word: Word, valid: Bool)? {
+        if horizontal && x > 0 && board.isFilledAt(x - 1, y) {
+            return wordAt(x - 1, y, points: points, horizontal: horizontal)
+        } else if !horizontal && y > 0 && board.isFilledAt(x, y - 1) {
+            return wordAt(x, y - 1, points: points, horizontal: horizontal)
+        }
+        
+        let size = board.size
+        let start: Int = boardState[horizontal, y, x]
+        var offset: Int = start
+        var characters = [Character]()
+        var remainingPoints = points
+        
+        while offset < size {
+            let _x = horizontal ? offset : x
+            let _y = horizontal ? y : offset
+            var fixedLetter: Character?
+            if let index = remainingPoints.indexOf({ $0.x == _x && $0.y == _y}) {
+                fixedLetter = remainingPoints[index].letter
+                remainingPoints.removeAtIndex(index)
+            }
+            guard let letter = fixedLetter ?? board[_x, _y] else {
+                break
+            }
+            characters.append(letter)
+            offset += 1
+        }
+        
+        if characters.count < 2 || remainingPoints.count > 0 {
+            return nil
+        }
+        
+        let word = Word(word: String(characters),
+                        x: horizontal ? start : x,
+                        y: horizontal ? y : start,
+                        horizontal: horizontal)
+        return (word, lookup.dictionary.lookup(word.word))
     }
     
-    /// - returns: `words` will contain the first invalid intersection if `valid` is `false` or the array of intersections if `valid` is `true`. `valid` should be handled appropriately.
-    func intersections<T: WordRepresentation>(forWord word: T) -> (valid: Bool, words: [Word]) {
-        var words = [Word]()
-        for (index, letter) in word.word.characters.enumerate() {
-            let pos = word.position(forIndex: index)
-            if let intersectedWord = wordAt(pos.x, pos.y, points: [(x: pos.x, y: pos.y, letter: letter)], horizontal: !word.horizontal) {
-                if !intersectedWord.valid {
-                    return (false, [intersectedWord.word])
-                }
-                words.append(intersectedWord.word)
-            }
-        }
-        return (true, words)
+}
+
+// Solution
+extension Solver {
+    mutating func play(solution: Solution) -> [Character] {
+        let dropped = board.play(solution)
+        boardState = BoardState(board: board)
+        return dropped
     }
     
     func solution(forWord word: Word, rackLetters: [RackTile]) -> Solution? {
@@ -296,7 +313,7 @@ struct Solver {
         guard let
             fixedLetters = charactersAt(x, y: y, length: length, horizontal: horizontal),
             words = unvalidatedWords(forLetters: letters, fixedLetters: fixedLetters, length: length) else {
-            return nil
+                return nil
         }
         
         return words.flatMap({ solution(forWord: Word(word: $0, x: x, y: y, horizontal: horizontal), rackLetters: rackLetters) })
@@ -381,4 +398,3 @@ struct Solver {
         return suitable?.solution ?? best
     }
 }
-

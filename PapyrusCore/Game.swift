@@ -17,9 +17,11 @@ public enum GameEvent {
     case TurnEnded
 }
 
-public enum GameType {
-    case Scrabble
+public enum GameType: Int {
+    case Scrabble = 0
     case SuperScrabble
+    case UpWords
+    case WordsWithFriends
 }
 
 
@@ -48,7 +50,14 @@ public class Game {
          playerIndex: Int,
          serial: Bool = false,
          eventHandler: EventHandler) {
-        var solver = Solver(bagType: bag.dynamicType, board: board, lookup: lookup)
+        var solver: Solver!
+        if board is UpwordsBoard {
+            solver = UpwordsSolver(bagType: bag.dynamicType, board: board, lookup: lookup)
+        } else if board is WordsWithFriendsBoard {
+            solver = WordsWithFriendsSolver(bagType: bag.dynamicType, board: board, lookup: lookup)
+        } else {
+            solver = ScrabbleSolver(bagType: bag.dynamicType, board: board, lookup: lookup)
+        }
         for player in players {
             for solution in player.solves {
                 solver.play(solution)
@@ -63,8 +72,22 @@ public class Game {
     }
     
     public static func newGame(gameType: GameType = .Scrabble, lookup: Lookup, players: [Player], serial: Bool = false, eventHandler: EventHandler) -> Game {
-        let board: Board = gameType == .Scrabble ? ScrabbleBoard() : SuperScrabbleBoard()
-        let bag: Bag = gameType == .Scrabble ? ScrabbleBag() : SuperScrabbleBag()
+        var board: Board!
+        var bag: Bag!
+        switch gameType {
+        case .Scrabble:
+            board = ScrabbleBoard()
+            bag = ScrabbleBag()
+        case .SuperScrabble:
+            board = SuperScrabbleBoard()
+            bag = SuperScrabbleBag()
+        case .UpWords:
+            board = UpwordsBoard()
+            bag = ScrabbleBag()
+        case .WordsWithFriends:
+            board = WordsWithFriendsBoard()
+            bag = WordsWithFriendsBag()
+        }
         let game = Game(bag: bag, board: board, lookup: lookup, players: players, playerIndex: 0, serial: serial, eventHandler: eventHandler)
         for _ in players {
             game.replenishRack()

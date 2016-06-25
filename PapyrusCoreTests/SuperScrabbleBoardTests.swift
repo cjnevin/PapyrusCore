@@ -12,8 +12,10 @@ import XCTest
 class SuperScrabbleBoardTests: ScrabbleBoardTests {
     override func setUp() {
         super.setUp()
-        board = SuperScrabbleBoard()
+        let superScrabbleBoard = SuperScrabbleBoard()
+        board = superScrabbleBoard
         secondBoard = SuperScrabbleBoard()
+        center = superScrabbleBoard.center
     }
     
     override func checkEquality(expected: Bool = true) {
