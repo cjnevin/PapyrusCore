@@ -8,6 +8,8 @@
 
 import Foundation
 
+public typealias Tile = [Character]
+
 func compareBoards<T: Board>(lhs: T, _ rhs: T) -> Bool {
     for (left, right) in zip(lhs.layout, rhs.layout) where left != right { return false }
     return true
@@ -27,7 +29,7 @@ struct Edge: OptionSetType {
 
 public protocol Board: CustomDebugStringConvertible {
     var empty: Character { get }
-    var centers: [(x: Int, y: Int)] { get }
+    var center: Int { get }
     var size: Int { get }
     var boardRange: Range<Int> { get }
     var layout: [[Character]] { get set }
@@ -48,12 +50,7 @@ public protocol Board: CustomDebugStringConvertible {
 
 extension Board {
     public var isFirstPlay: Bool {
-        for (x, y) in centers {
-            if !isEmptyAt(x, y) {
-                return false
-            }
-        }
-        return true
+        return isEmptyAt(center, center)
     }
     
     public var boardRange: Range<Int> {
@@ -84,7 +81,7 @@ extension Board {
     }
     
     public func isCenterAt(x: Int, _ y: Int) -> Bool {
-        return centers.contains({ $0.x == x && $0.y == y })
+        return x == center && y == center
     }
     
     public func isValidAt(x: Int, _ y: Int, length: Int, horizontal: Bool) -> Bool {

@@ -14,10 +14,7 @@ public func ==(lhs: ScrabbleBoard, rhs: ScrabbleBoard) -> Bool {
 
 public struct ScrabbleBoard: Board, Equatable {
     public let empty = Character(" ")
-    public let centers = [(x: 7, y: 7)]
-    public var center: Int {
-        return centers.first!.x
-    }
+    public let center = 7
     public let size = 15
     public var layout = Array(count: 15, repeatedValue: Array(count: 15, repeatedValue: Character(" ")))
     public var blanks = [(x: Int, y: Int)]()

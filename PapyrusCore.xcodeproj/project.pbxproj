@@ -19,12 +19,14 @@
 		99139BF11D1EF2740033E114 /* UpwordsSolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139BF01D1EF2740033E114 /* UpwordsSolver.swift */; };
 		99139BF31D1EF2D60033E114 /* ScrabbleBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139BF21D1EF2D60033E114 /* ScrabbleBoard.swift */; };
 		99139BF51D1EF2DE0033E114 /* SuperScrabbleBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139BF41D1EF2DE0033E114 /* SuperScrabbleBoard.swift */; };
-		99139BF71D1EF2F60033E114 /* UpwordsBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139BF61D1EF2F60033E114 /* UpwordsBoard.swift */; };
 		99139BFB1D1EF91F0033E114 /* WordsWithFriendsBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139BFA1D1EF91F0033E114 /* WordsWithFriendsBoard.swift */; };
 		99139BFD1D1EFB330033E114 /* WordsWithFriendsSolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139BFC1D1EFB330033E114 /* WordsWithFriendsSolver.swift */; };
 		99139BFF1D1EFB530033E114 /* ScrabbleBag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139BFE1D1EFB530033E114 /* ScrabbleBag.swift */; };
 		99139C011D1EFB590033E114 /* SuperScrabbleBag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C001D1EFB590033E114 /* SuperScrabbleBag.swift */; };
 		99139C031D1EFB7B0033E114 /* WordsWithFriendsBag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C021D1EFB7B0033E114 /* WordsWithFriendsBag.swift */; };
+		99139C101D1F173D0033E114 /* WordsWithFriendsBagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C0D1D1F173D0033E114 /* WordsWithFriendsBagTests.swift */; };
+		99139C111D1F173D0033E114 /* WordsWithFriendsBoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C0E1D1F173D0033E114 /* WordsWithFriendsBoardTests.swift */; };
+		99139C121D1F173D0033E114 /* WordsWithFriendsGameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C0F1D1F173D0033E114 /* WordsWithFriendsGameTests.swift */; };
 		9938B4021D0AED130018B8D2 /* ScrabbleBoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9938B4011D0AED130018B8D2 /* ScrabbleBoardTests.swift */; };
 		9938B4041D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9938B4031D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift */; };
 		993CB5EB1BB4776D00692603 /* twl06.txt in Resources */ = {isa = PBXBuildFile; fileRef = 993CB5EA1BB4776D00692603 /* twl06.txt */; };
@@ -78,12 +80,14 @@
 		99139BF01D1EF2740033E114 /* UpwordsSolver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpwordsSolver.swift; sourceTree = "<group>"; };
 		99139BF21D1EF2D60033E114 /* ScrabbleBoard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrabbleBoard.swift; sourceTree = "<group>"; };
 		99139BF41D1EF2DE0033E114 /* SuperScrabbleBoard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuperScrabbleBoard.swift; sourceTree = "<group>"; };
-		99139BF61D1EF2F60033E114 /* UpwordsBoard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpwordsBoard.swift; sourceTree = "<group>"; };
 		99139BFA1D1EF91F0033E114 /* WordsWithFriendsBoard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordsWithFriendsBoard.swift; sourceTree = "<group>"; };
 		99139BFC1D1EFB330033E114 /* WordsWithFriendsSolver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordsWithFriendsSolver.swift; sourceTree = "<group>"; };
 		99139BFE1D1EFB530033E114 /* ScrabbleBag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrabbleBag.swift; sourceTree = "<group>"; };
 		99139C001D1EFB590033E114 /* SuperScrabbleBag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuperScrabbleBag.swift; sourceTree = "<group>"; };
 		99139C021D1EFB7B0033E114 /* WordsWithFriendsBag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordsWithFriendsBag.swift; sourceTree = "<group>"; };
+		99139C0D1D1F173D0033E114 /* WordsWithFriendsBagTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordsWithFriendsBagTests.swift; sourceTree = "<group>"; };
+		99139C0E1D1F173D0033E114 /* WordsWithFriendsBoardTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordsWithFriendsBoardTests.swift; sourceTree = "<group>"; };
+		99139C0F1D1F173D0033E114 /* WordsWithFriendsGameTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordsWithFriendsGameTests.swift; sourceTree = "<group>"; };
 		9938B4011D0AED130018B8D2 /* ScrabbleBoardTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrabbleBoardTests.swift; sourceTree = "<group>"; };
 		9938B4031D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuperScrabbleBoardTests.swift; sourceTree = "<group>"; };
 		993CB5EA1BB4776D00692603 /* twl06.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = twl06.txt; sourceTree = "<group>"; };
@@ -148,7 +152,6 @@
 				995CBC171CCCB5FC00DF06B8 /* BoardState.swift */,
 				99139BF21D1EF2D60033E114 /* ScrabbleBoard.swift */,
 				99139BF41D1EF2DE0033E114 /* SuperScrabbleBoard.swift */,
-				99139BF61D1EF2F60033E114 /* UpwordsBoard.swift */,
 				99139BFA1D1EF91F0033E114 /* WordsWithFriendsBoard.swift */,
 			);
 			name = Board;
@@ -163,6 +166,37 @@
 				99139BFC1D1EFB330033E114 /* WordsWithFriendsSolver.swift */,
 			);
 			name = Solver;
+			sourceTree = "<group>";
+		};
+		99139C041D1EFE7F0033E114 /* Bag */ = {
+			isa = PBXGroup;
+			children = (
+				995CBC0B1CCCB1E000DF06B8 /* Bag.swift */,
+				99139BFE1D1EFB530033E114 /* ScrabbleBag.swift */,
+				99139C001D1EFB590033E114 /* SuperScrabbleBag.swift */,
+				99139C021D1EFB7B0033E114 /* WordsWithFriendsBag.swift */,
+			);
+			name = Bag;
+			sourceTree = "<group>";
+		};
+		99139C051D1EFE8A0033E114 /* Lookup */ = {
+			isa = PBXGroup;
+			children = (
+				990826DB1D089EDD001D425E /* Lookup.swift */,
+				9975A2A51CF8C8B7003D315F /* AnagramDictionary */,
+				995DD8421BB68C69009B409D /* Dawg */,
+			);
+			name = Lookup;
+			sourceTree = "<group>";
+		};
+		99139C131D1F17410033E114 /* WordsWithFriends */ = {
+			isa = PBXGroup;
+			children = (
+				99139C0D1D1F173D0033E114 /* WordsWithFriendsBagTests.swift */,
+				99139C0E1D1F173D0033E114 /* WordsWithFriendsBoardTests.swift */,
+				99139C0F1D1F173D0033E114 /* WordsWithFriendsGameTests.swift */,
+			);
+			name = WordsWithFriends;
 			sourceTree = "<group>";
 		};
 		995DD8421BB68C69009B409D /* Dawg */ = {
@@ -199,18 +233,13 @@
 			children = (
 				99FB2D0D1CF900A2005E611F /* Array+Combinations.swift */,
 				9960AD6D1BA589D800765614 /* PapyrusCore.h */,
-				995CBC0B1CCCB1E000DF06B8 /* Bag.swift */,
-				99139BFE1D1EFB530033E114 /* ScrabbleBag.swift */,
-				99139C001D1EFB590033E114 /* SuperScrabbleBag.swift */,
-				99139C021D1EFB7B0033E114 /* WordsWithFriendsBag.swift */,
+				99139C041D1EFE7F0033E114 /* Bag */,
 				99139BF81D1EF6EC0033E114 /* Board */,
 				995CBC051CCCB19000DF06B8 /* Game.swift */,
-				990826DB1D089EDD001D425E /* Lookup.swift */,
+				99139C051D1EFE8A0033E114 /* Lookup */,
 				995CBC091CCCB1C400DF06B8 /* Player.swift */,
 				99139BF91D1EF7090033E114 /* Solver */,
 				990E2E4E1D0B5BE000E2748F /* WordRepresentation.swift */,
-				9975A2A51CF8C8B7003D315F /* AnagramDictionary */,
-				995DD8421BB68C69009B409D /* Dawg */,
 				9960AD6F1BA589D800765614 /* Info.plist */,
 			);
 			path = PapyrusCore;
@@ -222,6 +251,7 @@
 				99A4C71F1D1C7B0B002C17E1 /* Dictionary */,
 				99A4C71D1D1C7A75002C17E1 /* Scrabble */,
 				99A4C71E1D1C7A7A002C17E1 /* SuperScrabble */,
+				99139C131D1F17410033E114 /* WordsWithFriends */,
 				99A4C7171D1C77E9002C17E1 /* CombosTests.swift */,
 				990E2E481D0B1A1F00E2748F /* ComputerPlayerTests.swift */,
 				990E2E461D0B14E500E2748F /* HumanPlayerTests.swift */,
@@ -406,7 +436,6 @@
 				99139C011D1EFB590033E114 /* SuperScrabbleBag.swift in Sources */,
 				9975A2AB1CF8C8B7003D315F /* AnagramDictionary.swift in Sources */,
 				99139BF31D1EF2D60033E114 /* ScrabbleBoard.swift in Sources */,
-				99139BF71D1EF2F60033E114 /* UpwordsBoard.swift in Sources */,
 				99778D981CF7C1260056DEB0 /* DawgBuilder.swift in Sources */,
 				99139BFB1D1EF91F0033E114 /* WordsWithFriendsBoard.swift in Sources */,
 				990826DC1D089EDD001D425E /* Lookup.swift in Sources */,
@@ -432,6 +461,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				990E2E471D0B14E500E2748F /* HumanPlayerTests.swift in Sources */,
+				99139C121D1F173D0033E114 /* WordsWithFriendsGameTests.swift in Sources */,
 				99A4C71A1D1C7A3C002C17E1 /* SuperScrabbleGameTests.swift in Sources */,
 				995CBC0E1CCCB20A00DF06B8 /* ScrabbleBagTests.swift in Sources */,
 				990826E11D08B45C001D425E /* LookupSingleton.swift in Sources */,
@@ -439,8 +469,10 @@
 				990E2E511D0B605500E2748F /* LookupTests.swift in Sources */,
 				995CBC101CCCB24800DF06B8 /* ScrabbleGameTests.swift in Sources */,
 				990E2E491D0B1A1F00E2748F /* ComputerPlayerTests.swift in Sources */,
+				99139C111D1F173D0033E114 /* WordsWithFriendsBoardTests.swift in Sources */,
 				995CBC141CCCB39A00DF06B8 /* DawgSingleton.swift in Sources */,
 				99A4C7181D1C77E9002C17E1 /* CombosTests.swift in Sources */,
+				99139C101D1F173D0033E114 /* WordsWithFriendsBagTests.swift in Sources */,
 				995CBC121CCCB27300DF06B8 /* ScrabbleSolverTests.swift in Sources */,
 				99A4C71C1D1C7A5C002C17E1 /* SuperScrabbleBagTests.swift in Sources */,
 				9938B4021D0AED130018B8D2 /* ScrabbleBoardTests.swift in Sources */,

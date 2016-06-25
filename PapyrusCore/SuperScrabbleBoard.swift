@@ -14,10 +14,7 @@ public func ==(lhs: SuperScrabbleBoard, rhs: SuperScrabbleBoard) -> Bool {
 
 public struct SuperScrabbleBoard: Board, Equatable {
     public let empty = Character(" ")
-    public let centers = [(x: 10, y: 10)]
-    public var center: Int {
-        return centers.first!.x
-    }
+    public let center = 10
     public let size = 21
     public var layout = Array(count: 21, repeatedValue: Array(count: 21, repeatedValue: Character(" ")))
     public var blanks = [(x: Int, y: Int)]()

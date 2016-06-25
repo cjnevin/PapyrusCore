@@ -34,5 +34,6 @@ public extension Bag {
             tiles += Array(count: i, repeatedValue: character)
         }
         remaining = tiles.shuffled()
+        assert(remaining.count == self.dynamicType.total)
     }
 }

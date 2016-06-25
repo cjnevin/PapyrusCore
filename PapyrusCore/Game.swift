@@ -20,7 +20,6 @@ public enum GameEvent {
 public enum GameType: Int {
     case Scrabble = 0
     case SuperScrabble
-    case UpWords
     case WordsWithFriends
 }
 
@@ -51,9 +50,7 @@ public class Game {
          serial: Bool = false,
          eventHandler: EventHandler) {
         var solver: Solver!
-        if board is UpwordsBoard {
-            solver = UpwordsSolver(bagType: bag.dynamicType, board: board, lookup: lookup)
-        } else if board is WordsWithFriendsBoard {
+        if board is WordsWithFriendsBoard {
             solver = WordsWithFriendsSolver(bagType: bag.dynamicType, board: board, lookup: lookup)
         } else {
             solver = ScrabbleSolver(bagType: bag.dynamicType, board: board, lookup: lookup)
@@ -81,9 +78,6 @@ public class Game {
         case .SuperScrabble:
             board = SuperScrabbleBoard()
             bag = SuperScrabbleBag()
-        case .UpWords:
-            board = UpwordsBoard()
-            bag = ScrabbleBag()
         case .WordsWithFriends:
             board = WordsWithFriendsBoard()
             bag = WordsWithFriendsBag()
