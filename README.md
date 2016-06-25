@@ -12,8 +12,8 @@ Reusable library for playing Scrabble games.
 // NOTE: Rather than block the main thread, the 'Lookup' object should be created on a background thread
 // this has been omitted to reduce complexity
 
-// Create a lookup object for determining and validating moves
-let lookup = Lookup(dictionaryFilename: "DICTIONARY", anagramFilename: "ANAGRAMS")!
+// Create a dictionary object for determining and validating moves
+let dictionary = AnagramDictionary(filename: "DICTIONARY")!
 
 // Create players that will be challenging eachother
 let human = Human()
@@ -22,7 +22,7 @@ let easyAI = Computer(difficulty: .Easy)
 let players = [human, hardAI, easyAI]
 
 // Now we have everything configured, we can create a Game object
-let game = Game.newGame(lookup: lookup, players: players) { event in 
+let game = Game.newGame(dictionary: dictionary, players: players) { event in 
   // Switch to main thread before updating UI...
   NSOperationQueue.mainQueue().addOperationWithBlock {
     switch event {
@@ -77,9 +77,6 @@ A player can be either a Human or a Computer, Computer's have a difficulty assoc
 
 #### AnagramDictionary
 Allows us to quickly look-up anagrams using lexicographically equivalent comparison.
-
-#### Dawg
-Dawg stands for directed acyclic word graph, essentially an efficient dictionary.
 
 ### Thanks
 
