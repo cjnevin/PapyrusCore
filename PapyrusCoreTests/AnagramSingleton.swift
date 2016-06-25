@@ -10,5 +10,5 @@ import Foundation
 @testable import PapyrusCore
 
 extension AnagramDictionary {
-    static let singleton = AnagramDictionary.deserialize(NSData(contentsOfFile: NSBundle(forClass: LookupTests.self).pathForResource("sowpods_anagrams", ofType: "bin")!)!)
+    static let singleton = AnagramDictionary.deserialize(NSData(contentsOfFile: NSBundle(forClass: SolutionTests.self).pathForResource("sowpods_anagrams", ofType: "bin")!)!)
 }

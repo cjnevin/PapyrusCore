@@ -15,7 +15,7 @@ class ScrabbleSolverTests: XCTestCase {
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        solver = ScrabbleSolver(bagType: ScrabbleBag.self, board: ScrabbleBoard(), lookup: Lookup.singleton)
+        solver = ScrabbleSolver(bagType: ScrabbleBag.self, board: ScrabbleBoard(), dictionary: AnagramDictionary.singleton!)
     }
     
     func dropWords() {

@@ -12,18 +12,18 @@ struct ScrabbleSolver: Solver {
     var bagType: Bag.Type
     var board: Board
     var boardState: BoardState
-    var lookup: Lookup
+    var dictionary: AnagramDictionary
     var debug: Bool
     let maximumWordLength = 15
     let allTilesUsedBonus = 50
     let operationQueue = NSOperationQueue()
     
-    init(bagType: Bag.Type, board: Board, lookup: Lookup, debug: Bool = false) {
+    init(bagType: Bag.Type, board: Board, dictionary: AnagramDictionary, debug: Bool = false) {
         self.board = board
         self.bagType = bagType
         boardState = BoardState(board: board)
         self.debug = debug
-        self.lookup = lookup
+        self.dictionary = dictionary
     }
 }
 

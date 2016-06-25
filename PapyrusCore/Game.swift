@@ -24,7 +24,6 @@ public enum GameType: Int {
     case WordsWithFriends
 }
 
-
 let aiCanPlayBlanks = false
 
 public typealias EventHandler = (GameEvent) -> ()
@@ -45,16 +44,16 @@ public class Game {
     
     init(bag: Bag,
          board: Board,
-         lookup: Lookup,
+         dictionary: AnagramDictionary,
          players: [Player],
          playerIndex: Int,
          serial: Bool = false,
          eventHandler: EventHandler) {
         var solver: Solver!
         if board is WordsWithFriendsBoard {
-            solver = WordsWithFriendsSolver(bagType: bag.dynamicType, board: board, lookup: lookup)
+            solver = WordsWithFriendsSolver(bagType: bag.dynamicType, board: board, dictionary: dictionary)
         } else {
-            solver = ScrabbleSolver(bagType: bag.dynamicType, board: board, lookup: lookup)
+            solver = ScrabbleSolver(bagType: bag.dynamicType, board: board, dictionary: dictionary)
         }
         for player in players {
             for solution in player.solves {
@@ -69,7 +68,7 @@ public class Game {
         self.eventHandler = eventHandler
     }
     
-    public static func newGame(gameType: GameType = .Scrabble, lookup: Lookup, players: [Player], serial: Bool = false, eventHandler: EventHandler) -> Game {
+    public static func newGame(gameType: GameType = .Scrabble, dictionary: AnagramDictionary, players: [Player], serial: Bool = false, eventHandler: EventHandler) -> Game {
         var board: Board!
         var bag: Bag!
         switch gameType {
@@ -86,7 +85,7 @@ public class Game {
             board = WordsWithFriendsBoard()
             bag = WordsWithFriendsBag()
         }
-        let game = Game(bag: bag, board: board, lookup: lookup, players: players, playerIndex: 0, serial: serial, eventHandler: eventHandler)
+        let game = Game(bag: bag, board: board, dictionary: dictionary, players: players, playerIndex: 0, serial: serial, eventHandler: eventHandler)
         for _ in players {
             game.replenishRack()
             game.playerIndex += 1
@@ -95,8 +94,8 @@ public class Game {
         return game
     }
     
-    public static func restoreGame(board: Board, bag: Bag, lookup: Lookup, players: [Player], playerIndex: Int, eventHandler: EventHandler) -> Game? {
-        return Game(bag: bag, board: board, lookup: lookup, players: players, playerIndex: playerIndex, eventHandler: eventHandler)
+    public static func restoreGame(board: Board, bag: Bag, dictionary: AnagramDictionary, players: [Player], playerIndex: Int, eventHandler: EventHandler) -> Game? {
+        return Game(bag: bag, board: board, dictionary: dictionary, players: players, playerIndex: playerIndex, eventHandler: eventHandler)
     }
     
     public func shuffleRack() {

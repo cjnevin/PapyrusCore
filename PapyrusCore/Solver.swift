@@ -18,13 +18,13 @@ protocol Solver {
     var bagType: Bag.Type { get set }
     var board: Board { get set }
     var boardState: BoardState { get set }
-    var lookup: Lookup { get set }
+    var dictionary: AnagramDictionary { get set }
     var debug: Bool { get set }
     var maximumWordLength: Int { get }
     var allTilesUsedBonus: Int { get }
     var operationQueue: NSOperationQueue { get }
     
-    init(bagType: Bag.Type, board: Board, lookup: Lookup, debug: Bool)
+    init(bagType: Bag.Type, board: Board, dictionary: AnagramDictionary, debug: Bool)
     
     func charactersAt(x: Int, y: Int, length: Int, horizontal: Bool) -> [Int: Character]?
     func wordAt(x: Int, _ y: Int, points: [(x: Int, y: Int, letter: Character)], horizontal: Bool) -> (word: Word, valid: Bool)?
@@ -235,7 +235,7 @@ extension Solver {
         } else {
             combinations = Array(Set(anagramLetters.combinations(length).map(lexicographicalString)))
         }
-        let anagrams = combinations.flatMap({ lookup.anagrams[$0, fixedLetters] }).flatMap({ $0 })
+        let anagrams = combinations.flatMap({ dictionary[$0, fixedLetters] }).flatMap({ $0 })
         return anagrams.count > 0 ? anagrams : nil
     }
     
@@ -275,7 +275,7 @@ extension Solver {
                         x: horizontal ? start : x,
                         y: horizontal ? y : start,
                         horizontal: horizontal)
-        return (word, lookup.dictionary.lookup(word.word))
+        return (word, dictionary.lookup(word.word))
     }
     
 }

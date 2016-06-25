@@ -8,8 +8,6 @@
 
 import Foundation
 
-public typealias Tile = [Character]
-
 func compareBoards<T: Board>(lhs: T, _ rhs: T) -> Bool {
     for (left, right) in zip(lhs.layout, rhs.layout) where left != right { return false }
     return true
