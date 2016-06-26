@@ -157,7 +157,14 @@ extension Solver {
             tempPlayer.removeLetter(letter).wasBlank ? word.position(forIndex: index) : nil
         })
     }
-    
+    // TODO: Possible Improvement
+    // Scores could be weighted under the following circumstances:
+    // - Triple/Quadruple squares should get higher weighting (opportunistic instead of highest score)
+    // - All Tile Bonus could get higher weighting
+    // - If bag is empty using highest number of letters possible might be better (to end game sooner)
+    //
+    // This would make it more difficult for human players to compete against AI
+    // while also emptying the bag/rack faster (to achieve victory sooner)
     private func calculateScore<T: WordRepresentation>(word: T, intersectedWords: [Word], blanks: [(x: Int, y: Int)]) -> Int {
         var tilesUsed = 0
         var score = 0
