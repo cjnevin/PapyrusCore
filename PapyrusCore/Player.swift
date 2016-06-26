@@ -18,6 +18,7 @@ public enum Difficulty: Double {
 public typealias RackTile = (letter: Character, isBlank: Bool)
 
 public protocol Player {
+    var id: String { get }
     var rack: [RackTile] { get set }
     var score: Int { get set }
     var solves: [Solution] { get set }
@@ -74,6 +75,7 @@ public extension Player {
 }
 
 public struct Human: Player {
+    public let id = NSUUID().UUIDString
     public var rack: [RackTile] = []
     public var score: Int
     public var solves: [Solution]
@@ -93,6 +95,7 @@ public struct Human: Player {
 }
 
 public struct Computer: Player {
+    public let id = NSUUID().UUIDString
     public let difficulty: Difficulty
     public var rack: [RackTile] = []
     public var score: Int
