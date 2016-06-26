@@ -1,3 +1,6 @@
 [submodule "AnagramDictionary"]
 	path = AnagramDictionary
 	url = https://github.com/ChrisAU/AnagramDictionary.git
+[submodule "Lookup"]
+	path = Lookup
+	url = https://github.com/ChrisAU/LookupProtocol.git

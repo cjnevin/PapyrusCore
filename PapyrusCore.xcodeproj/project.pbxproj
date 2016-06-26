@@ -44,7 +44,6 @@
 		995CBC181CCCB5FC00DF06B8 /* BoardState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC171CCCB5FC00DF06B8 /* BoardState.swift */; };
 		9960AD6E1BA589D800765614 /* PapyrusCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 9960AD6D1BA589D800765614 /* PapyrusCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9960AD751BA589D800765614 /* PapyrusCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9960AD6A1BA589D800765614 /* PapyrusCore.framework */; };
-		9975A2AB1CF8C8B7003D315F /* AnagramDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9975A2A71CF8C8B7003D315F /* AnagramDictionary.swift */; };
 		99A4C7181D1C77E9002C17E1 /* CombosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99A4C7171D1C77E9002C17E1 /* CombosTests.swift */; };
 		99A4C71A1D1C7A3C002C17E1 /* SuperScrabbleGameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99A4C7191D1C7A3C002C17E1 /* SuperScrabbleGameTests.swift */; };
 		99A4C71C1D1C7A5C002C17E1 /* SuperScrabbleBagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99A4C71B1D1C7A5C002C17E1 /* SuperScrabbleBagTests.swift */; };
@@ -52,6 +51,55 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		991AE4681D1FC284001C98E4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 991AE4631D1FC284001C98E4 /* Lookup.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 99127A931D1FC082009DCF7A;
+			remoteInfo = Lookup;
+		};
+		991AE46A1D1FC284001C98E4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 991AE4631D1FC284001C98E4 /* Lookup.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 99127A9D1D1FC082009DCF7A;
+			remoteInfo = LookupTests;
+		};
+		991AE46C1D1FC28C001C98E4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 991AE4631D1FC284001C98E4 /* Lookup.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 99127A921D1FC082009DCF7A;
+			remoteInfo = Lookup;
+		};
+		991AE4751D1FC2AC001C98E4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 991AE46F1D1FC2AC001C98E4 /* AnagramDictionary.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 99127A591D1FBEFD009DCF7A;
+			remoteInfo = AnagramDictionary;
+		};
+		991AE4771D1FC2AC001C98E4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 991AE46F1D1FC2AC001C98E4 /* AnagramDictionary.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 99127A631D1FBEFD009DCF7A;
+			remoteInfo = AnagramDictionaryTests;
+		};
+		991AE4791D1FC336001C98E4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 991AE46F1D1FC2AC001C98E4 /* AnagramDictionary.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 99127A581D1FBEFD009DCF7A;
+			remoteInfo = AnagramDictionary;
+		};
+		991AE47B1D1FC33C001C98E4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 991AE4631D1FC284001C98E4 /* Lookup.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 99127A921D1FC082009DCF7A;
+			remoteInfo = Lookup;
+		};
 		9960AD761BA589D800765614 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 9960AD611BA589D800765614 /* Project object */;
@@ -84,6 +132,8 @@
 		99139C1A1D1F1E0F0033E114 /* WordfeudBagTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordfeudBagTests.swift; sourceTree = "<group>"; };
 		99139C1B1D1F1E0F0033E114 /* WordfeudBoardTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordfeudBoardTests.swift; sourceTree = "<group>"; };
 		99139C1C1D1F1E0F0033E114 /* WordfeudGameTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordfeudGameTests.swift; sourceTree = "<group>"; };
+		991AE4631D1FC284001C98E4 /* Lookup.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Lookup.xcodeproj; path = Lookup/Lookup.xcodeproj; sourceTree = SOURCE_ROOT; };
+		991AE46F1D1FC2AC001C98E4 /* AnagramDictionary.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = AnagramDictionary.xcodeproj; path = AnagramDictionary/AnagramDictionary.xcodeproj; sourceTree = SOURCE_ROOT; };
 		9938B4011D0AED130018B8D2 /* ScrabbleBoardTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrabbleBoardTests.swift; sourceTree = "<group>"; };
 		9938B4031D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuperScrabbleBoardTests.swift; sourceTree = "<group>"; };
 		99417A611CF96F4800553AE0 /* AnagramSingleton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnagramSingleton.swift; sourceTree = "<group>"; };
@@ -102,10 +152,6 @@
 		9960AD6F1BA589D800765614 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9960AD741BA589D800765614 /* PapyrusCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapyrusCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9960AD7B1BA589D800765614 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		9975A2A61CF8C8B7003D315F /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
-		9975A2A71CF8C8B7003D315F /* AnagramDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnagramDictionary.swift; sourceTree = "<group>"; };
-		9975A2A81CF8C8B7003D315F /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
-		9975A2A91CF8C8B7003D315F /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		99A4C7171D1C77E9002C17E1 /* CombosTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CombosTests.swift; sourceTree = "<group>"; };
 		99A4C7191D1C7A3C002C17E1 /* SuperScrabbleGameTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuperScrabbleGameTests.swift; sourceTree = "<group>"; };
 		99A4C71B1D1C7A5C002C17E1 /* SuperScrabbleBagTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuperScrabbleBagTests.swift; sourceTree = "<group>"; };
@@ -187,6 +233,32 @@
 			name = Wordfeud;
 			sourceTree = "<group>";
 		};
+		991AE4641D1FC284001C98E4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				991AE4691D1FC284001C98E4 /* Lookup.framework */,
+				991AE46B1D1FC284001C98E4 /* LookupTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		991AE46E1D1FC296001C98E4 /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				991AE4631D1FC284001C98E4 /* Lookup.xcodeproj */,
+			);
+			name = Libraries;
+			sourceTree = "<group>";
+		};
+		991AE4701D1FC2AC001C98E4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				991AE4761D1FC2AC001C98E4 /* AnagramDictionary.framework */,
+				991AE4781D1FC2AC001C98E4 /* AnagramDictionaryTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		9960AD601BA589D800765614 = {
 			isa = PBXGroup;
 			children = (
@@ -210,10 +282,10 @@
 			children = (
 				99FB2D0D1CF900A2005E611F /* Array+Combinations.swift */,
 				9960AD6D1BA589D800765614 /* PapyrusCore.h */,
-				9975A2A51CF8C8B7003D315F /* AnagramDictionary */,
 				99139C041D1EFE7F0033E114 /* Bag */,
 				99139BF81D1EF6EC0033E114 /* Board */,
 				995CBC051CCCB19000DF06B8 /* Game.swift */,
+				991AE46E1D1FC296001C98E4 /* Libraries */,
 				995CBC091CCCB1C400DF06B8 /* Player.swift */,
 				99139BF91D1EF7090033E114 /* Solver */,
 				990E2E4E1D0B5BE000E2748F /* WordRepresentation.swift */,
@@ -240,17 +312,6 @@
 			path = PapyrusCoreTests;
 			sourceTree = "<group>";
 		};
-		9975A2A51CF8C8B7003D315F /* AnagramDictionary */ = {
-			isa = PBXGroup;
-			children = (
-				9975A2A61CF8C8B7003D315F /* .gitignore */,
-				9975A2A71CF8C8B7003D315F /* AnagramDictionary.swift */,
-				9975A2A81CF8C8B7003D315F /* LICENSE */,
-				9975A2A91CF8C8B7003D315F /* README.md */,
-			);
-			path = AnagramDictionary;
-			sourceTree = SOURCE_ROOT;
-		};
 		99A4C71D1D1C7A75002C17E1 /* Scrabble */ = {
 			isa = PBXGroup;
 			children = (
@@ -275,6 +336,7 @@
 		99A4C71F1D1C7B0B002C17E1 /* Dictionary */ = {
 			isa = PBXGroup;
 			children = (
+				991AE46F1D1FC2AC001C98E4 /* AnagramDictionary.xcodeproj */,
 				99417A611CF96F4800553AE0 /* AnagramSingleton.swift */,
 				99417A631CF96F6400553AE0 /* sowpods_anagrams.bin */,
 			);
@@ -307,6 +369,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				991AE46D1D1FC28C001C98E4 /* PBXTargetDependency */,
 			);
 			name = PapyrusCore;
 			productName = PapyrusCore;
@@ -324,6 +387,8 @@
 			buildRules = (
 			);
 			dependencies = (
+				991AE47C1D1FC33C001C98E4 /* PBXTargetDependency */,
+				991AE47A1D1FC336001C98E4 /* PBXTargetDependency */,
 				9960AD771BA589D800765614 /* PBXTargetDependency */,
 			);
 			name = PapyrusCoreTests;
@@ -359,6 +424,16 @@
 			mainGroup = 9960AD601BA589D800765614;
 			productRefGroup = 9960AD6B1BA589D800765614 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 991AE4701D1FC2AC001C98E4 /* Products */;
+					ProjectRef = 991AE46F1D1FC2AC001C98E4 /* AnagramDictionary.xcodeproj */;
+				},
+				{
+					ProductGroup = 991AE4641D1FC284001C98E4 /* Products */;
+					ProjectRef = 991AE4631D1FC284001C98E4 /* Lookup.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				9960AD691BA589D800765614 /* PapyrusCore */,
@@ -366,6 +441,37 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		991AE4691D1FC284001C98E4 /* Lookup.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Lookup.framework;
+			remoteRef = 991AE4681D1FC284001C98E4 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		991AE46B1D1FC284001C98E4 /* LookupTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = LookupTests.xctest;
+			remoteRef = 991AE46A1D1FC284001C98E4 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		991AE4761D1FC2AC001C98E4 /* AnagramDictionary.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = AnagramDictionary.framework;
+			remoteRef = 991AE4751D1FC2AC001C98E4 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		991AE4781D1FC2AC001C98E4 /* AnagramDictionaryTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = AnagramDictionaryTests.xctest;
+			remoteRef = 991AE4771D1FC2AC001C98E4 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		9960AD681BA589D800765614 /* Resources */ = {
@@ -391,7 +497,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				99139C011D1EFB590033E114 /* SuperScrabbleBag.swift in Sources */,
-				9975A2AB1CF8C8B7003D315F /* AnagramDictionary.swift in Sources */,
 				99139BF31D1EF2D60033E114 /* ScrabbleBoard.swift in Sources */,
 				99139BFB1D1EF91F0033E114 /* WordsWithFriendsBoard.swift in Sources */,
 				99139C151D1F1A320033E114 /* WordfeudBag.swift in Sources */,
@@ -442,6 +547,21 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		991AE46D1D1FC28C001C98E4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Lookup;
+			targetProxy = 991AE46C1D1FC28C001C98E4 /* PBXContainerItemProxy */;
+		};
+		991AE47A1D1FC336001C98E4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = AnagramDictionary;
+			targetProxy = 991AE4791D1FC336001C98E4 /* PBXContainerItemProxy */;
+		};
+		991AE47C1D1FC33C001C98E4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Lookup;
+			targetProxy = 991AE47B1D1FC33C001C98E4 /* PBXContainerItemProxy */;
+		};
 		9960AD771BA589D800765614 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 9960AD691BA589D800765614 /* PapyrusCore */;
@@ -550,7 +670,7 @@
 				GCC_OPTIMIZATION_LEVEL = fast;
 				INFOPLIST_FILE = PapyrusCore/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjnevin.PapyrusCore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -569,7 +689,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = PapyrusCore/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjnevin.PapyrusCore;
 				PRODUCT_NAME = "$(TARGET_NAME)";

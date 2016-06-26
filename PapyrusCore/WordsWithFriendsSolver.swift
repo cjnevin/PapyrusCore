@@ -7,18 +7,19 @@
 //
 
 import Foundation
+import Lookup
 
 struct WordsWithFriendsSolver: Solver {
     var bagType: Bag.Type
     var board: Board
     var boardState: BoardState
-    var dictionary: AnagramDictionary
+    var dictionary: Lookup
     var debug: Bool
     let maximumWordLength = 15
     let allTilesUsedBonus = 35
     let operationQueue = NSOperationQueue()
     
-    init(bagType: Bag.Type, board: Board, dictionary: AnagramDictionary, debug: Bool = false) {
+    init(bagType: Bag.Type, board: Board, dictionary: Lookup, debug: Bool = false) {
         self.board = board
         self.bagType = bagType
         boardState = BoardState(board: board)

@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Lookup
 
 public enum GameEvent {
     case Over(Player?)
@@ -44,7 +45,7 @@ public class Game {
     
     init(bag: Bag,
          board: Board,
-         dictionary: AnagramDictionary,
+         dictionary: Lookup,
          players: [Player],
          playerIndex: Int,
          serial: Bool = false,
@@ -68,7 +69,7 @@ public class Game {
         self.eventHandler = eventHandler
     }
     
-    public static func newGame(gameType: GameType = .Scrabble, dictionary: AnagramDictionary, players: [Player], serial: Bool = false, eventHandler: EventHandler) -> Game {
+    public static func newGame(gameType: GameType = .Scrabble, dictionary: Lookup, players: [Player], serial: Bool = false, eventHandler: EventHandler) -> Game {
         var board: Board!
         var bag: Bag!
         switch gameType {
@@ -94,7 +95,7 @@ public class Game {
         return game
     }
     
-    public static func restoreGame(board: Board, bag: Bag, dictionary: AnagramDictionary, players: [Player], playerIndex: Int, eventHandler: EventHandler) -> Game? {
+    public static func restoreGame(board: Board, bag: Bag, dictionary: Lookup, players: [Player], playerIndex: Int, eventHandler: EventHandler) -> Game? {
         return Game(bag: bag, board: board, dictionary: dictionary, players: players, playerIndex: playerIndex, eventHandler: eventHandler)
     }
     

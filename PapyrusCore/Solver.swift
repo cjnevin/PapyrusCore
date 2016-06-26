@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Lookup
 
 public enum ValidationResponse {
     case InvalidArrangement
@@ -18,13 +19,13 @@ protocol Solver {
     var bagType: Bag.Type { get set }
     var board: Board { get set }
     var boardState: BoardState { get set }
-    var dictionary: AnagramDictionary { get set }
+    var dictionary: Lookup { get set }
     var debug: Bool { get set }
     var maximumWordLength: Int { get }
     var allTilesUsedBonus: Int { get }
     var operationQueue: NSOperationQueue { get }
     
-    init(bagType: Bag.Type, board: Board, dictionary: AnagramDictionary, debug: Bool)
+    init(bagType: Bag.Type, board: Board, dictionary: Lookup, debug: Bool)
     
     func charactersAt(x: Int, y: Int, length: Int, horizontal: Bool) -> [Int: Character]?
     func wordAt(x: Int, _ y: Int, points: [(x: Int, y: Int, letter: Character)], horizontal: Bool) -> (word: Word, valid: Bool)?
