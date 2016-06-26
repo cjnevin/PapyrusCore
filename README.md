@@ -13,6 +13,7 @@ Reusable library for playing Scrabble games.
 // this has been omitted to reduce complexity
 
 // Create a dictionary object for determining and validating moves
+// Dictionary must conform to 'Lookup' protocol (like my AnagramDictionary)
 let dictionary = AnagramDictionary(filename: "DICTIONARY")!
 
 // Create players that will be challenging eachother
@@ -77,6 +78,9 @@ A player can be either a Human or a Computer, Computer's have a difficulty assoc
 
 #### AnagramDictionary
 Allows us to quickly look-up anagrams using lexicographically equivalent comparison.
+
+#### Lookup
+Protocol for dictionary lookup.
 
 ### Thanks
 
