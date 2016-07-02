@@ -18,14 +18,23 @@ public enum Difficulty: Double {
 public typealias RackTile = (letter: Character, isBlank: Bool)
 
 public protocol Player {
+    /// Unique identifier for player.
     var id: String { get }
+    /// Current tiles in rack.
     var rack: [RackTile] { get set }
+    /// Current score.
     var score: Int { get set }
+    /// Solutions played.
     var solves: [Solution] { get set }
+    /// Times skipped in a row.
     var consecutiveSkips: Int { get set }
+    /// Add tiles to rack.
     mutating func drew(tiles: [Character])
+    /// Add solution to list of `solves`, removing `tiles` from `rack`.
     mutating func played(solution: Solution, tiles: [Character])
+    /// Swap out `tiles` in `rack` with `newTiles`.
     mutating func swapped(tiles: [Character], newTiles: [Character])
+    /// Shuffle rack tile order.
     mutating func shuffle()
 }
 

@@ -43,11 +43,11 @@ public class Game {
     }
     private let maximumConsecutiveSkips = 3
     
-    init(bag: Bag,
+    public init(bag: Bag,
          board: Board,
          dictionary: Lookup,
          players: [Player],
-         playerIndex: Int,
+         playerIndex: Int = 0,
          serial: Bool = false,
          eventHandler: EventHandler) {
         var solver: Solver!
@@ -56,11 +56,7 @@ public class Game {
         } else {
             solver = ScrabbleSolver(bagType: bag.dynamicType, board: board, dictionary: dictionary)
         }
-        for player in players {
-            for solution in player.solves {
-                solver.play(solution)
-            }
-        }
+        players.forEach({ $0.solves.forEach({ solver.play($0) }) })
         self.solver = solver
         self.bag = bag
         self.serial = serial
@@ -69,7 +65,7 @@ public class Game {
         self.eventHandler = eventHandler
     }
     
-    public static func newGame(gameType: GameType = .Scrabble, dictionary: Lookup, players: [Player], serial: Bool = false, eventHandler: EventHandler) -> Game {
+    public convenience init(gameType: GameType = .Scrabble, dictionary: Lookup, players: [Player], serial: Bool = false, eventHandler: EventHandler) {
         var board: Board!
         var bag: Bag!
         switch gameType {
@@ -86,17 +82,12 @@ public class Game {
             board = WordsWithFriendsBoard()
             bag = WordsWithFriendsBag()
         }
-        let game = Game(bag: bag, board: board, dictionary: dictionary, players: players, playerIndex: 0, serial: serial, eventHandler: eventHandler)
+        self.init(bag: bag, board: board, dictionary: dictionary, players: players, playerIndex: 0, serial: serial, eventHandler: eventHandler)
         for _ in players {
-            game.replenishRack()
-            game.playerIndex += 1
+            replenishRack()
+            playerIndex += 1
         }
-        game.playerIndex = 0
-        return game
-    }
-    
-    public static func restoreGame(board: Board, bag: Bag, dictionary: Lookup, players: [Player], playerIndex: Int, eventHandler: EventHandler) -> Game? {
-        return Game(bag: bag, board: board, dictionary: dictionary, players: players, playerIndex: playerIndex, eventHandler: eventHandler)
+        playerIndex = 0
     }
     
     public func shuffleRack() {
@@ -112,7 +103,7 @@ public class Game {
     public func skip() {
         print("Skipped")
         players[playerIndex].consecutiveSkips += 1
-        if player.consecutiveSkips >= maximumConsecutiveSkips {
+        guard player.consecutiveSkips < maximumConsecutiveSkips else {
             gameOver()
             return
         }
@@ -122,11 +113,9 @@ public class Game {
     private func gameOver() {
         var newPlayers = players
         for i in 0..<newPlayers.count {
-            for tile in newPlayers[i].rack {
-                if tile.1 == false {
-                    newPlayers[i].score -= bag.dynamicType.letterPoints[tile.0] ?? 0
-                }
-            }
+            newPlayers[i].score -= newPlayers[i].rack
+                .filter({ !$0.isBlank })
+                .reduce(0){ $0.0 + (bag.dynamicType.letterPoints[$0.1.letter] ?? 0) }
             newPlayers[i].rack = []
         }
         players = newPlayers
@@ -158,18 +147,21 @@ public class Game {
                 }
             }
             solver.solutions(ai.rack, completion: { solutions in
-                if let solutions = solutions, solution = self.solver.solve(solutions, difficulty: ai.difficulty) {
-                    print(ai.rack)
-                    self.play(solution)
-                    print(self.solver.board)
-                    self.nextTurn()
-                } else {
+                guard let solutions = solutions, solution = self.solver.solve(solutions, difficulty: ai.difficulty) else {
+                    // Can't find any solutions, attempt to swap tiles
                     let tiles = Array(ai.rack[0..<min(self.bag.remaining.count, ai.rack.count)])
-                    if !self.swapTiles(tiles.map({ $0.letter })) {
+                    guard self.swapTiles(tiles.map({ $0.letter })) else {
                         // We're stuck with these tiles, nothing AI can do, lets skip
                         self.skip()
+                        return
                     }
+                    return
                 }
+                // Play solution
+                print(ai.rack)
+                self.play(solution)
+                print(self.solver.board)
+                self.nextTurn()
             })
         }
     }
@@ -205,7 +197,7 @@ public class Game {
     }
     
     public func swapTiles(oldTiles: [Character]) -> Bool {
-        if !canSwap { return false }
+        guard canSwap else { return false }
         
         oldTiles.forEach { bag.replace($0) }
         let newTiles = oldTiles.flatMap { _ in bag.draw() }

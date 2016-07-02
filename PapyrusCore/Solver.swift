@@ -122,13 +122,13 @@ extension Solver {
         guard let (word, valid) = wordAt(horizontalFirst.x, verticalFirst.y, points: isHorizontal ? horizontalSort : verticalSort, horizontal: isHorizontal) else {
             return .InvalidArrangement
         }
-        if !valid {
+        guard valid else {
             return .InvalidWord(word)
         }
         
         // Collect intersections for this word, if any are invalid lets return
         let (intersectionsValid, intersectedWords) = intersections(forWord: word)
-        if !intersectionsValid {
+        guard intersectionsValid else {
             // If we get here we will have an intersected word (it will be the invalid one).
             return .InvalidWord(intersectedWords.first!)
         }
@@ -220,7 +220,7 @@ extension Solver {
         for (index, letter) in word.word.characters.enumerate() {
             let pos = word.position(forIndex: index)
             if let intersectedWord = wordAt(pos.x, pos.y, points: [(x: pos.x, y: pos.y, letter: letter)], horizontal: !word.horizontal) {
-                if !intersectedWord.valid {
+                guard intersectedWord.valid else {
                     return (false, [intersectedWord.word])
                 }
                 words.append(intersectedWord.word)
@@ -298,9 +298,7 @@ extension Solver {
     
     func solution(forWord word: Word, rackLetters: [RackTile]) -> Solution? {
         let (valid, intersectedWords) = intersections(forWord: word)
-        if !valid {
-            return nil
-        }
+        guard valid else { return nil }
         let blankSpots = blanks(forWord: word, rackLetters: rackLetters)
         let score = calculateScore(word, intersectedWords: intersectedWords, blanks: blankSpots)
         return Solution(word: word, score: score, intersections: intersectedWords, blanks: blankSpots)
@@ -309,9 +307,8 @@ extension Solver {
     private func solutionsAt(x x: Int, y: Int, letters: [Character], rackLetters: [RackTile], length: Int, horizontal: Bool) -> [Solution]? {
         assert((horizontal ? x : y) + length - 1 < board.size)
         
-        if !board.isValidAt(x, y, length: length, horizontal: horizontal) {
-            return nil
-        }
+        guard board.isValidAt(x, y, length: length, horizontal: horizontal) else { return nil }
+        
         // Is valid spot should filter these...
         let offset = boardState[horizontal][y][x]
         assert(offset == x && horizontal || offset == y && !horizontal)
