@@ -11,7 +11,7 @@ import XCTest
 
 class CombosTests: XCTestCase {
     func testMeasureCombos() {
-        measureBlock {
+        measure {
             for _ in 0..<100 {
                 for n in 2..<8 {
                     ["a", "b", "c", "d", "e", "f", "g"].combos(n)
@@ -21,7 +21,7 @@ class CombosTests: XCTestCase {
     }
     
     func testMeasureCombinations() {
-        measureBlock {
+        measure {
             for _ in 0..<100 {
                 for n in 2..<8 {
                     ["a", "b", "c", "d", "e", "f", "g"].combinations(n)

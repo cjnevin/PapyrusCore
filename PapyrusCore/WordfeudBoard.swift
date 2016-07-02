@@ -16,7 +16,7 @@ public struct WordfeudBoard: Board, Equatable {
     public let empty = Character(" ")
     public let center = 7
     public let size = 15
-    public var layout = Array(count: 15, repeatedValue: Array(count: 15, repeatedValue: Character(" ")))
+    public var layout = Array(repeating: Array(repeating: Character(" "), count: 15), count: 15)
     public var blanks = [(x: Int, y: Int)]()
     public let letterMultipliers = [
         [3,1,1,1,1,1,1,2,1,1,1,1,1,1,3],

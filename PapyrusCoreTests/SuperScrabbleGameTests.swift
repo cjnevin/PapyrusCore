@@ -15,7 +15,7 @@ class SuperScrabbleGameTests: ScrabbleGameTests {
         // Put setup code here. This method is called before the invocation of each test method in the class.
         bag = SuperScrabbleBag()
         board = SuperScrabbleBoard()
-        gameType = .SuperScrabble
+        gameType = .superScrabble
         total = SuperScrabbleBag.total
     }
 }

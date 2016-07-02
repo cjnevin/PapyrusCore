@@ -34,15 +34,15 @@ class HumanPlayerTests : XCTestCase {
         XCTAssertEqual(Game.blankLetter, "_")
     }
     
-    func sortRack(rack: [RackTile]) -> [RackTile] {
-        return rack.sort({ $0.letter < $1.letter })
+    func sortRack(_ rack: [RackTile]) -> [RackTile] {
+        return rack.sorted(isOrderedBefore: { $0.letter < $1.letter })
     }
     
-    func charactersForRack(rack: [RackTile]) -> [Character] {
+    func charactersForRack(_ rack: [RackTile]) -> [Character] {
         return rack.map({ $0.letter })
     }
     
-    func sortedCharactersForRack(rack: [RackTile]) -> [Character] {
+    func sortedCharactersForRack(_ rack: [RackTile]) -> [Character] {
         return sortRack(rack).map({ $0.letter })
     }
     

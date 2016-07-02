@@ -262,7 +262,7 @@ class ScrabbleBoardTests: XCTestCase {
     
     // MARK: - Equality
     
-    func checkEquality(expected: Bool = true) {
+    func checkEquality(_ expected: Bool = true) {
         if expected {
             XCTAssertEqual(board as? ScrabbleBoard, secondBoard as? ScrabbleBoard)
         } else {
@@ -389,7 +389,7 @@ class ScrabbleBoardTests: XCTestCase {
     func testBoardDebugString() {
         board.layout[0][0] = "A"
         XCTAssertEqual(board.debugDescription.characters.first, "A")
-        XCTAssert(board.debugDescription.containsString("_"))
-        XCTAssert(board.debugDescription.containsString("\n"))
+        XCTAssert(board.debugDescription.contains("_"))
+        XCTAssert(board.debugDescription.contains("\n"))
     }
 }

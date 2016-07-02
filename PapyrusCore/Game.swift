@@ -10,19 +10,19 @@ import Foundation
 import Lookup
 
 public enum GameEvent {
-    case Over(Player?)
-    case Move(Solution)
-    case DrewTiles([Character])
-    case SwappedTiles
-    case TurnStarted
-    case TurnEnded
+    case over(Player?)
+    case move(Solution)
+    case drewTiles([Character])
+    case swappedTiles
+    case turnStarted
+    case turnEnded
 }
 
 public enum GameType: Int {
-    case Scrabble = 0
-    case SuperScrabble
-    case Wordfeud
-    case WordsWithFriends
+    case scrabble = 0
+    case superScrabble
+    case wordfeud
+    case wordsWithFriends
 }
 
 let aiCanPlayBlanks = false
@@ -65,20 +65,20 @@ public class Game {
         self.eventHandler = eventHandler
     }
     
-    public convenience init(gameType: GameType = .Scrabble, dictionary: Lookup, players: [Player], serial: Bool = false, eventHandler: EventHandler) {
+    public convenience init(gameType: GameType = .scrabble, dictionary: Lookup, players: [Player], serial: Bool = false, eventHandler: EventHandler) {
         var board: Board!
         var bag: Bag!
         switch gameType {
-        case .Scrabble:
+        case .scrabble:
             board = ScrabbleBoard()
             bag = ScrabbleBag()
-        case .SuperScrabble:
+        case .superScrabble:
             board = SuperScrabbleBoard()
             bag = SuperScrabbleBag()
-        case .Wordfeud:
+        case .wordfeud:
             board = WordfeudBoard()
             bag = WordfeudBag()
-        case .WordsWithFriends:
+        case .wordsWithFriends:
             board = WordsWithFriendsBoard()
             bag = WordsWithFriendsBag()
         }
@@ -121,8 +121,8 @@ public class Game {
         players = newPlayers
         
         // Does not currently handle ties
-        let winner = players.sort({ $0.score > $1.score }).first
-        eventHandler(.Over(winner))
+        let winner = players.sorted(isOrderedBefore: { $0.score > $1.score }).first
+        eventHandler(.over(winner))
     }
     
     private func turn() {
@@ -130,13 +130,13 @@ public class Game {
             gameOver()
             return
         }
-        eventHandler(.TurnStarted)
+        eventHandler(.turnStarted)
         if player is Computer {
             var ai = player as! Computer
             let vowels = bag.dynamicType.vowels
             let blank = Game.blankLetter
             while aiCanPlayBlanks == false && ai.rack.filter({$0.0 == blank}).count > 0 {
-                if Set(ai.rack.map({$0.0})).intersect(vowels).count == 0 {
+                if Set(ai.rack.map({$0.0})).intersection(vowels).count == 0 {
                     // If we have no vowels lets pick a random vowel
                     ai.updateBlank(vowels[Int(arc4random()) % vowels.count])
                     print("AI set value of blank letter")
@@ -167,7 +167,7 @@ public class Game {
     }
     
     public func nextTurn() {
-        eventHandler(.TurnEnded)
+        eventHandler(.turnEnded)
         if player.rack.count == 0 {
             gameOver()
             return
@@ -177,26 +177,26 @@ public class Game {
         turn()
     }
     
-    public func play(solution: Solution) {
+    public func play(_ solution: Solution) {
         let dropped = solver.play(solution)
         assert(dropped.count > 0)
         players[playerIndex].played(solution, tiles: dropped)
         replenishRack()
-        eventHandler(.Move(solution))
+        eventHandler(.move(solution))
     }
     
     public func replenishRack() {
         let amount = min(Game.rackAmount - player.rack.count, bag.remaining.count)
         let newTiles = (0..<amount).flatMap { _ in bag.draw() }
         players[playerIndex].drew(newTiles)
-        eventHandler(.DrewTiles(newTiles))
+        eventHandler(.drewTiles(newTiles))
     }
     
     public var canSwap: Bool {
         return bag.remaining.count > Game.rackAmount
     }
     
-    public func swapTiles(oldTiles: [Character]) -> Bool {
+    public func swapTiles(_ oldTiles: [Character]) -> Bool {
         guard canSwap else { return false }
         
         oldTiles.forEach { bag.replace($0) }
@@ -204,20 +204,20 @@ public class Game {
         players[playerIndex].swapped(oldTiles, newTiles: newTiles)
         
         print("Swapped \(oldTiles) for \(newTiles)")
-        eventHandler(.SwappedTiles)
+        eventHandler(.swappedTiles)
         
         // Swap complete, next players turn
         nextTurn()
         return true
     }
     
-    public func validate(points: [(x: Int, y: Int, letter: Character)], blanks: [(x: Int, y: Int)]) -> ValidationResponse {
+    public func validate(_ points: [(x: Int, y: Int, letter: Character)], blanks: [(x: Int, y: Int)]) -> ValidationResponse {
         return solver.validate(points, blanks: blanks)
     }
     
-    public func getHint(completion: (Solution?) -> ()) {
+    public func getHint(_ completion: (Solution?) -> ()) {
         solver.solutions(player.rack, serial: false) { [weak self] solutions in
-            guard let solutions = solutions, best = self?.solver.solve(solutions, difficulty: .Hard) else {
+            guard let solutions = solutions, best = self?.solver.solve(solutions, difficulty: .hard) else {
                 completion(nil)
                 return
             }

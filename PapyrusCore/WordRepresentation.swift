@@ -10,7 +10,7 @@ import Foundation
 
 typealias WordPosition = (x: Int, y: Int)
 
-private func matches<T: WordRepresentation>(lhs: T, _ rhs: T) -> Bool {
+private func matches<T: WordRepresentation>(_ lhs: T, _ rhs: T) -> Bool {
     return (lhs.horizontal == rhs.horizontal &&
         lhs.word == rhs.word &&
         lhs.x == rhs.x &&

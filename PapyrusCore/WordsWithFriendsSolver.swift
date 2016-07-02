@@ -17,7 +17,7 @@ struct WordsWithFriendsSolver: Solver {
     var debug: Bool
     let maximumWordLength = 15
     let allTilesUsedBonus = 35
-    let operationQueue = NSOperationQueue()
+    let operationQueue = OperationQueue()
     
     init(bagType: Bag.Type, board: Board, dictionary: Lookup, debug: Bool = false) {
         self.board = board

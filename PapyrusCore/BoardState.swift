@@ -17,10 +17,10 @@ struct BoardState: CustomDebugStringConvertible, Equatable {
     private let vertical: [[Int]]
     
     var debugDescription: String {
-        func str(arr: [[Int]]) -> String {
+        func str(_ arr: [[Int]]) -> String {
             return arr.map { (line) in
-                line.map({ $0 < 10 ? "_\($0)" : "\($0)" }).joinWithSeparator(", ")
-                }.joinWithSeparator("\n")
+                line.map({ $0 < 10 ? "_\($0)" : "\($0)" }).joined(separator: ", ")
+                }.joined(separator: "\n")
         }
         return "Horizontal: \n\(str(horizontal)) \n\nVertical: \n\(str(vertical))"
     }
@@ -28,9 +28,9 @@ struct BoardState: CustomDebugStringConvertible, Equatable {
     init(board: Board) {
         let size = board.size
         let range = board.boardRange
-        var h = Array(count: size, repeatedValue: Array(count: size, repeatedValue: 0))
-        var v = Array(count: size, repeatedValue: Array(count: size, repeatedValue: 0))
-        func update(first: Int, `while`: (Int) -> Bool) -> Int {
+        var h = Array(repeating: Array(repeating: 0, count: size), count: size)
+        var v = Array(repeating: Array(repeating: 0, count: size), count: size)
+        func update(_ first: Int, while: (Int) -> Bool) -> Int {
             var start = first
             var escape = false
             while start > 0 && `while`(start) && !escape {

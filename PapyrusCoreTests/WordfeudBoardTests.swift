@@ -18,7 +18,7 @@ class WordfeudBoardTests: ScrabbleBoardTests {
         center = wordfeudBoard.center
     }
     
-    override func checkEquality(expected: Bool = true) {
+    override func checkEquality(_ expected: Bool = true) {
         if expected {
             XCTAssertEqual(board as? WordfeudBoard, secondBoard as? WordfeudBoard)
         } else {

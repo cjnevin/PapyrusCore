@@ -36,7 +36,7 @@ class ScrabbleSolverTests: XCTestCase {
     
     func testValidateWithNoPointsReturnsInvalidArrangement() {
         switch solver.validate([], blanks: []) {
-        case .InvalidArrangement:
+        case .invalidArrangement:
             XCTAssertTrue(true)
         default:
             XCTFail()
@@ -47,7 +47,7 @@ class ScrabbleSolverTests: XCTestCase {
     
     func testValidateWithOnePointOnFirstTurnReturnsInvalidArrangement() {
         switch solver.validate([(7, 7, "a")], blanks: []) {
-        case .InvalidArrangement:
+        case .invalidArrangement:
             XCTAssertTrue(true)
         default:
             XCTFail()
@@ -57,7 +57,7 @@ class ScrabbleSolverTests: XCTestCase {
     func testValidateWithOneLetterReturnsValidVerticalWord() {
         dropWords()
         switch solver.validate([(6, 6, "t")], blanks: []) {
-        case .Valid(_):
+        case .valid(_):
             XCTAssertTrue(true)
         default:
             XCTFail()
@@ -67,7 +67,7 @@ class ScrabbleSolverTests: XCTestCase {
     func testValidateWithOneLetterAndNoIntersectionsReturnsInvalidArrangement() {
         dropWords()
         switch solver.validate([(1, 1, "t")], blanks: []) {
-        case .InvalidArrangement:
+        case .invalidArrangement:
             XCTAssertTrue(true)
         default:
             XCTFail()
@@ -76,7 +76,7 @@ class ScrabbleSolverTests: XCTestCase {
     
     func testValidateWithNoCenterIntersectionReturnsInvalidArrangement() {
         switch solver.validate([(4, 6, "s"), (5, 6, "h"), (6, 6, "e")], blanks: []) {
-        case .InvalidArrangement:
+        case .invalidArrangement:
             XCTAssertTrue(true)
         default:
             XCTFail()
@@ -87,7 +87,7 @@ class ScrabbleSolverTests: XCTestCase {
         dropWords()
         solver.board.layout[6][6] = "t"
         switch solver.validate([(7, 6, "a")], blanks: []) {
-        case .Valid(_):
+        case .valid(_):
             XCTAssertTrue(true)
         default:
             XCTFail()
@@ -97,7 +97,7 @@ class ScrabbleSolverTests: XCTestCase {
     func testValidateWithOneLetterReturnsInvalidHorizontalWord() {
         dropWords()
         switch solver.validate([(5, 8, "z")], blanks: []) {
-        case .InvalidWord(_):
+        case .invalidWord(_):
             XCTAssertTrue(true)
         default:
             XCTFail()
@@ -107,7 +107,7 @@ class ScrabbleSolverTests: XCTestCase {
     func testValidateWithOneLetterReturnsInvalidVerticalWord() {
         dropWords()
         switch solver.validate([(7, 8, "t")], blanks: []) {
-        case .InvalidWord(_):
+        case .invalidWord(_):
             XCTAssertTrue(true)
         default:
             XCTFail()
@@ -119,7 +119,7 @@ class ScrabbleSolverTests: XCTestCase {
     func testValidateWithTwoLettersReturnsValidHorizontalWord() {
         dropWords()
         switch solver.validate([(9, 7, "e"), (10, 7, "d")], blanks: []) {
-        case .Valid(_):
+        case .valid(_):
             XCTAssertTrue(true)
         default:
             XCTFail()
@@ -129,7 +129,7 @@ class ScrabbleSolverTests: XCTestCase {
     func testValidateWithThreeLettersReturnsValidVerticalWord() {
         dropWords()
         switch solver.validate([(6, 4, "u"), (6, 5, "n"), (6, 6, "m")], blanks: []) {
-        case .Valid(_):
+        case .valid(_):
             XCTAssertTrue(true)
         default:
             XCTFail()
@@ -139,7 +139,7 @@ class ScrabbleSolverTests: XCTestCase {
     func testValidateWithScatteredLettersReturnsInvalidArrangement() {
         dropWords()
         switch solver.validate([(6, 4, "u"), (7, 5, "n"), (3, 2, "m")], blanks: []) {
-        case .InvalidArrangement:
+        case .invalidArrangement:
             XCTAssertTrue(true)
         default:
             XCTFail()
@@ -149,7 +149,7 @@ class ScrabbleSolverTests: XCTestCase {
     func testValidateWithScatteredLettersWithSameXReturnsInvalidArrangement() {
         dropWords()
         switch solver.validate([(6, 4, "u"), (6, 10, "n"), (6, 12, "m")], blanks: []) {
-        case .InvalidArrangement:
+        case .invalidArrangement:
             XCTAssertTrue(true)
         default:
             XCTFail()
@@ -159,7 +159,7 @@ class ScrabbleSolverTests: XCTestCase {
     func testValidateWithScatteredLettersWithSameYReturnsInvalidArrangement() {
         dropWords()
         switch solver.validate([(4, 7, "u"), (10, 7, "n"), (12, 7, "m")], blanks: []) {
-        case .InvalidArrangement:
+        case .invalidArrangement:
             XCTAssertTrue(true)
         default:
             XCTFail()
@@ -169,7 +169,7 @@ class ScrabbleSolverTests: XCTestCase {
     func testValidateWithHorizontalWordReturnsInvalidWord() {
         dropWords()
         switch solver.validate([(4, 7, "u"), (9, 7, "n"), (10, 7, "m")], blanks: []) {
-        case .InvalidWord(_):
+        case .invalidWord(_):
             XCTAssertTrue(true)
         default:
             XCTFail()
@@ -180,7 +180,7 @@ class ScrabbleSolverTests: XCTestCase {
         dropWords()
         solver.board.layout[6][6] = "t"
         switch solver.validate([(7, 6, "a"), (7, 5, "c")], blanks: []) {
-        case .Valid(_):
+        case .valid(_):
             XCTAssertTrue(true)
         default:
             XCTFail()
@@ -191,7 +191,7 @@ class ScrabbleSolverTests: XCTestCase {
         dropWords()
         solver.board.layout[6][6] = "t"
         switch solver.validate([(7, 6, "e"), (8, 6, "a")], blanks: []) {
-        case .Valid(_):
+        case .valid(_):
             XCTAssertTrue(true)
         default:
             XCTFail()
@@ -201,7 +201,7 @@ class ScrabbleSolverTests: XCTestCase {
     func testValidateWithNoIntersectionsReturnsInvalidArrangement() {
         dropWords()
         switch solver.validate([(2, 2, "b"), (2, 3, "i"), (2, 4, "t")], blanks: []) {
-        case .InvalidArrangement:
+        case .invalidArrangement:
             XCTAssertTrue(true)
         default:
             XCTFail()
@@ -211,7 +211,7 @@ class ScrabbleSolverTests: XCTestCase {
     func testValidateWithVerticalWordAndInvalidIntersectionsReturnsInvalidWord() {
         dropWords()
         switch solver.validate([(7, 8, "a"), (7, 9, "n")], blanks: []) {
-        case .InvalidWord(_):
+        case .invalidWord(_):
             XCTAssertTrue(true)
         default:
             XCTFail()
@@ -221,7 +221,7 @@ class ScrabbleSolverTests: XCTestCase {
     func testValidateWithVerticalWordReturnsInvalidWord() {
         dropWords()
         switch solver.validate([(6, 6, "u"), (6, 5, "n"), (6, 11, "m")], blanks: []) {
-        case .InvalidWord(_):
+        case .invalidWord(_):
             XCTAssertTrue(true)
         default:
             XCTFail()
@@ -326,18 +326,18 @@ class ScrabbleSolverTests: XCTestCase {
                 Word(word: "asked", x: 6, y: 7, horizontal: false)], blanks: [])
             XCTAssertEqual(hard, hardExpectation)
             
-            let medium = self.solver.solve(solutions, difficulty: .Medium)!
+            let medium = self.solver.solve(solutions, difficulty: .medium)!
             let mediumExpectation = Solution(word: "derat", x: 7, y: 10, horizontal: false, score: 28, intersections: [
                 Word(word: "ed", x: 6, y: 10, horizontal: true),
                 Word(word: "de", x: 6, y: 11, horizontal: true)], blanks: [])
             XCTAssertEqual(medium, mediumExpectation)
             
-            let easy = self.solver.solve(solutions, difficulty: .Easy)!
+            let easy = self.solver.solve(solutions, difficulty: .easy)!
             let easyExpectation = Solution(word: "tacked", x: 3, y: 9, horizontal: true, score: 19, intersections: [
                 Word(word: "asked", x: 6, y: 7, horizontal: false)], blanks: [])
             XCTAssertEqual(easy, easyExpectation)
             
-            let veryEasy = self.solver.solve(solutions, difficulty: .VeryEasy)!
+            let veryEasy = self.solver.solve(solutions, difficulty: .veryEasy)!
             let veryEasyExpectation = Solution(word: "tetrad", x: 8, y: 5, horizontal: false, score: 9, intersections: [
                 Word(word: "cart", x: 5, y: 7, horizontal: true)], blanks: [])
             XCTAssertEqual(veryEasy, veryEasyExpectation)
@@ -378,7 +378,7 @@ class ScrabbleSolverTests: XCTestCase {
             Solution(word: "ngati", x: 2, y: 5, horizontal: false, score: 20, intersections: [Word(word: "qi", x: 1, y: 9, horizontal: true)], blanks: []),
             Solution(word: "cat", x: 8, y: 5, horizontal: true, score: 16, intersections: [Word(word: "cit", x: 8, y: 5, horizontal: false), Word(word: "al", x: 9, y: 5, horizontal: false), Word(word: "grating", x: 10, y: 2, horizontal: false)], blanks: [])]
        
-        for (index, rack) in racks.enumerate() {
+        for (index, rack) in racks.enumerated() {
             let expectation = expectations[index]
             solver.solutions(rack, serial: true, completion: { (solutions) in
                 let best = self.solver.solve(solutions!)!

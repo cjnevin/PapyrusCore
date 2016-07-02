@@ -22,7 +22,7 @@ class ScrabbleGameTests: XCTestCase {
         // Put setup code here. This method is called before the invocation of each test method in the class.
         bag = ScrabbleBag()
         board = ScrabbleBoard()
-        gameType = .Scrabble
+        gameType = .scrabble
         total = ScrabbleBag.total
     }
     
@@ -33,32 +33,32 @@ class ScrabbleGameTests: XCTestCase {
         board = nil
     }
     
-    func eventHandler(event: GameEvent) {
+    func eventHandler(_ event: GameEvent) {
         
     }
     
     func testBagCount() {
-        let computer1 = Computer(difficulty: .Hard, rack: [], score: 0, solves: [], consecutiveSkips: 0)
-        let computer2 = Computer(difficulty: .Easy, rack: [], score: 0, solves: [], consecutiveSkips: 0)
+        let computer1 = Computer(difficulty: .hard, rack: [], score: 0, solves: [], consecutiveSkips: 0)
+        let computer2 = Computer(difficulty: .easy, rack: [], score: 0, solves: [], consecutiveSkips: 0)
         let human1 = Human(rack: [], score: 0, solves: [], consecutiveSkips: 0)
         let game = Game(gameType: gameType, dictionary: AnagramDictionary.singleton!, players: [computer1, computer2, human1], serial: true, eventHandler: eventHandler)
         XCTAssertEqual(game.bag.remaining.count, total - 21)
     }
     
     func testGameCompletes() {
-        let computer1 = Computer(difficulty: .Hard, rack: [], score: 0, solves: [], consecutiveSkips: 0)
-        let computer2 = Computer(difficulty: .Easy, rack: [], score: 0, solves: [], consecutiveSkips: 0)
+        let computer1 = Computer(difficulty: .hard, rack: [], score: 0, solves: [], consecutiveSkips: 0)
+        let computer2 = Computer(difficulty: .easy, rack: [], score: 0, solves: [], consecutiveSkips: 0)
         let game = Game(gameType: gameType, dictionary: AnagramDictionary.singleton!, players: [computer1, computer2], serial: true, eventHandler: eventHandler)
         game.start()
     }
     
-    func checkBoardEquality(lhs: Board, _ rhs: Board) {
+    func checkBoardEquality(_ lhs: Board, _ rhs: Board) {
         XCTAssertEqual(lhs as? ScrabbleBoard, rhs as? ScrabbleBoard)
     }
     
     func testGameRestores() {
-        let computer1 = Computer(difficulty: .Hard, rack: [], score: 0, solves: [], consecutiveSkips: 0)
-        let computer2 = Computer(difficulty: .Easy, rack: [], score: 0, solves: [], consecutiveSkips: 0)
+        let computer1 = Computer(difficulty: .hard, rack: [], score: 0, solves: [], consecutiveSkips: 0)
+        let computer2 = Computer(difficulty: .easy, rack: [], score: 0, solves: [], consecutiveSkips: 0)
         let human1 = Human(rack: [], score: 0, solves: [], consecutiveSkips: 0)
         let game = Game(gameType: gameType, dictionary: AnagramDictionary.singleton!, players: [computer1, computer2, human1], serial: true, eventHandler: eventHandler)
         game.start()

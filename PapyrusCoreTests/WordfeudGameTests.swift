@@ -15,7 +15,7 @@ class WordfeudGameTests: ScrabbleGameTests {
         // Put setup code here. This method is called before the invocation of each test method in the class.
         bag = WordfeudBag()
         board = WordfeudBoard()
-        gameType = .Wordfeud
+        gameType = .wordfeud
         total = WordfeudBag.total
     }
 }

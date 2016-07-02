@@ -8,12 +8,12 @@
 
 import Foundation
 
-func compareBoards<T: Board>(lhs: T, _ rhs: T) -> Bool {
+func compareBoards<T: Board>(_ lhs: T, _ rhs: T) -> Bool {
     for (left, right) in zip(lhs.layout, rhs.layout) where left != right { return false }
     return true
 }
 
-struct Edge: OptionSetType {
+struct Edge: OptionSet {
     let rawValue: Int
     
     static let None = Edge(rawValue: 0)
@@ -29,7 +29,7 @@ public protocol Board: CustomDebugStringConvertible {
     var empty: Character { get }
     var center: Int { get }
     var size: Int { get }
-    var boardRange: Range<Int> { get }
+    var boardRange: CountableRange<Int> { get }
     var layout: [[Character]] { get set }
     var blanks: [(x: Int, y: Int)] { get set }
     var isFirstPlay: Bool { get }
@@ -37,13 +37,13 @@ public protocol Board: CustomDebugStringConvertible {
     var wordMultipliers: [[Int]] { get }
     
     subscript(x: Int, y: Int) -> Character? { get }
-    func letterAt(x: Int, _ y: Int) -> Character?
-    func isEmptyAt(x: Int, _ y: Int) -> Bool
-    func isFilledAt(x: Int, _ y: Int) -> Bool
-    func isCenterAt(x: Int, _ y: Int) -> Bool
-    func isValidAt(x: Int, _ y: Int, length: Int, horizontal: Bool) -> Bool
+    func letterAt(_ x: Int, _ y: Int) -> Character?
+    func isEmptyAt(_ x: Int, _ y: Int) -> Bool
+    func isFilledAt(_ x: Int, _ y: Int) -> Bool
+    func isCenterAt(_ x: Int, _ y: Int) -> Bool
+    func isValidAt(_ x: Int, _ y: Int, length: Int, horizontal: Bool) -> Bool
     
-    mutating func play(solution: Solution) -> [Character]
+    mutating func play(_ solution: Solution) -> [Character]
 }
 
 extension Board {
@@ -51,38 +51,38 @@ extension Board {
         return isEmptyAt(center, center)
     }
     
-    public var boardRange: Range<Int> {
+    public var boardRange: CountableRange<Int> {
         return layout.indices
     }
     
     public var debugDescription: String {
         return layout.map { (line) in
-            line.map({ String($0 == empty ? "_" : $0) }).joinWithSeparator(",")
-            }.joinWithSeparator("\n")
+            line.map({ String($0 == empty ? "_" : $0) }).joined(separator: ",")
+            }.joined(separator: "\n")
     }
     
     public subscript(x: Int, y: Int) -> Character? {
         return letterAt(x, y)
     }
     
-    public func letterAt(x: Int, _ y: Int) -> Character? {
+    public func letterAt(_ x: Int, _ y: Int) -> Character? {
         let value = layout[y][x]
         return value == empty ? nil : value
     }
     
-    public func isEmptyAt(x: Int, _ y: Int) -> Bool {
+    public func isEmptyAt(_ x: Int, _ y: Int) -> Bool {
         return layout[y][x] == empty
     }
     
-    public func isFilledAt(x: Int, _ y: Int) -> Bool {
+    public func isFilledAt(_ x: Int, _ y: Int) -> Bool {
         return layout[y][x] != empty
     }
     
-    public func isCenterAt(x: Int, _ y: Int) -> Bool {
+    public func isCenterAt(_ x: Int, _ y: Int) -> Bool {
         return x == center && y == center
     }
     
-    public func isValidAt(x: Int, _ y: Int, length: Int, horizontal: Bool) -> Bool {
+    public func isValidAt(_ x: Int, _ y: Int, length: Int, horizontal: Bool) -> Bool {
         if isFilledAt(x, y) {
             return false
         }
@@ -124,7 +124,7 @@ extension Board {
         }
     }
     
-    func verticallyTouchesAt(x: Int, _ y: Int, length: Int, edges: Edge) -> Bool {
+    func verticallyTouchesAt(_ x: Int, _ y: Int, length: Int, edges: Edge) -> Bool {
         if y + length > size {
             return false
         }
@@ -150,7 +150,7 @@ extension Board {
         return false
     }
     
-    func horizontallyTouchesAt(x: Int, _ y: Int, length: Int, edges: Edge) -> Bool {
+    func horizontallyTouchesAt(_ x: Int, _ y: Int, length: Int, edges: Edge) -> Bool {
         if x + length > size {
             return false
         }
@@ -176,7 +176,7 @@ extension Board {
         return false
     }
     
-    func exceedsBoundaryAt(inout x: Int, inout _ y: Int, length: Int, horizontal: Bool) -> Bool {
+    func exceedsBoundaryAt(_ x: inout Int, _ y: inout Int, length: Int, horizontal: Bool) -> Bool {
         var currentLength = length
         
         while currentLength > 0 && (horizontal && x < size || !horizontal && y < size)  {
@@ -193,9 +193,9 @@ extension Board {
         return currentLength != 0
     }
     
-    mutating public func play(solution: Solution) -> [Character] {
+    mutating public func play(_ solution: Solution) -> [Character] {
         var dropped = [Character]()
-        for (i, letter) in solution.word.characters.enumerate() {
+        for (i, letter) in solution.word.characters.enumerated() {
             if solution.horizontal {
                 if isEmptyAt(solution.x + i, solution.y) {
                     layout[solution.y][solution.x + i] = letter
@@ -208,7 +208,7 @@ extension Board {
                 }
             }
         }
-        blanks.appendContentsOf(solution.blanks)
+        blanks.append(contentsOf: solution.blanks)
         return dropped
     }
 }

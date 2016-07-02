@@ -17,17 +17,17 @@ extension Array {
     
     /// - returns: Shuffled array using elements in array.
     public func shuffled() -> Array {
-        return sort({_, _ in arc4random() % 2 == 0})
+        return sorted(isOrderedBefore: {_, _ in arc4random() % 2 == 0})
     }
     
     // This method is simpler but it is also several magnitudes slower than the indexed approach below.
     // I actually tried to simplify this using flatMap but the performance was even worse.
     // measured [Time, seconds] average: 0.200, relative standard deviation: 3.684%, values: [0.213552, 0.200878, 0.198138, 0.201444, 0.200035, 0.196813, 0.204596, 0.182647, 0.196244, 0.202394]
-    func combos(length : Int) -> [[Element]] {
+    func combos(_ length : Int) -> [[Element]] {
         if length <= 0 { return [[]] }
         
         var buffer = [[Element]]()
-        enumerate().forEach { (index, head) in
+        enumerated().forEach { (index, head) in
             Array(self[index + 1..<self.count]).combinations(length - 1).forEach { tail in
                 buffer += [[head] + tail]
             }
@@ -40,7 +40,7 @@ extension Array {
     // https://stackoverflow.com/questions/127704/algorithm-to-return-all-combinations-of-k-elements-from-n
     // measured [Time, seconds] average: 0.062, relative standard deviation: 17.142%, values: [0.083717, 0.078753, 0.045193, 0.064347, 0.056260, 0.058302, 0.056251, 0.058372, 0.059811, 0.061267]
     // This method is the faster of the two.
-    func combinations(length: Int) -> [[Element]] {
+    func combinations(_ length: Int) -> [[Element]] {
         if length <= 0 || length > count { return [] }
         var buffer = [[Element]]()
         var indexes = (0..<length).map{ $0 }
