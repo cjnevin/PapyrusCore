@@ -138,7 +138,7 @@ public class Game {
             while aiCanPlayBlanks == false && ai.rack.filter({$0.0 == blank}).count > 0 {
                 if Set(ai.rack.map({$0.0})).intersect(vowels).count == 0 {
                     // If we have no vowels lets pick a random vowel
-                    ai.updateBlank(vowels[Int(rand()) % vowels.count])
+                    ai.updateBlank(vowels[Int(arc4random()) % vowels.count])
                     print("AI set value of blank letter")
                 } else {
                     // We have vowels, lets choose 's'
