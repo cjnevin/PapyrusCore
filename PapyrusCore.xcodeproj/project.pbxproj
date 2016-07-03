@@ -409,6 +409,7 @@
 					9960AD691BA589D800765614 = {
 						CreatedOnToolsVersion = 7.1;
 						LastSwiftMigration = 0800;
+						ProvisioningStyle = Manual;
 					};
 					9960AD731BA589D800765614 = {
 						CreatedOnToolsVersion = 7.1;
