@@ -53,11 +53,6 @@ struct BoardState: CustomDebugStringConvertible, Equatable {
     }
     
     func state(atX x: Int, y: Int, horizontal h: Bool) -> Int {
-        if h {
-            return horizontal[y][x]
-        } else {
-            return vertical[y][x]
-        }
         return (h ? horizontal : vertical)[y][x]
     }
 }
