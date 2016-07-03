@@ -104,7 +104,7 @@ public class Game {
         playerIndex = 0
     }
     
-    public convenience init?(fromFile file: URL, dictionary: Lookup, eventHandler: EventHandler) {
+    public convenience init?(from file: URL, dictionary: Lookup, eventHandler: EventHandler) {
         guard let
             json = readJSON(from: file),
             gameTypeInt = json["gameType"] as? Int,
@@ -124,7 +124,7 @@ public class Game {
         _lastMove = Solution.object(from: lastMoveJson)
     }
     
-    public func save(toFile file: URL) -> Bool {
+    public func save(to file: URL) -> Bool {
         var gameType: GameType!
         if board is SuperScrabbleBoard {
             gameType = .superScrabble
@@ -256,7 +256,7 @@ public class Game {
         eventHandler(.move(self, solution))
     }
     
-    public func replenishRack() {
+    private func replenishRack() {
         let amount = min(Game.rackAmount - player.rack.count, bag.remaining.count)
         let newTiles = (0..<amount).flatMap { _ in bag.draw() }
         players[playerIndex].drew(tiles: newTiles)
