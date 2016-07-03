@@ -67,6 +67,10 @@ public class Game {
     public var board: Board {
         return solver.board
     }
+    var _lastMove: Solution? = nil
+    public var lastMove: Solution? {
+        return _lastMove
+    }
     private let maximumConsecutiveSkips = 3
     
     public init(bag: Bag,
@@ -82,7 +86,7 @@ public class Game {
         } else {
             solver = ScrabbleSolver(bagType: bag.dynamicType, board: board, dictionary: dictionary)
         }
-        players.forEach({ $0.solves.forEach({ let _ = solver.play(solution: $0) }) })
+        players.forEach({ $0.solves.forEach({ _ = solver.play(solution: $0) }) })
         self.solver = solver
         self.bag = bag
         self.serial = serial
@@ -114,6 +118,10 @@ public class Game {
         var bag = gameType.bag()
         bag.remaining = Array(bagRemaining.characters)
         self.init(bag: bag, board: gameType.board(), dictionary: dictionary, players: makePlayers(using: playersJson), playerIndex: playerIndex, serial: serial, eventHandler: eventHandler)
+        guard let lastMoveJson = json["lastMove"] as? JSON else {
+            return
+        }
+        _lastMove = Solution.object(from: lastMoveJson)
     }
     
     public func save(toFile file: URL) -> Bool {
@@ -127,7 +135,8 @@ public class Game {
         } else {
             gameType = .scrabble
         }
-        let json: JSON = ["gameType": gameType.rawValue, "bag": String(bag.remaining), "players": players.map({ $0.toJSON() }), "playerIndex": playerIndex, "serial": serial]
+        let lastMoveJson = _lastMove?.toJSON() ?? NSNull()
+        let json: JSON = ["lastMove": lastMoveJson, "gameType": gameType.rawValue, "bag": String(bag.remaining), "players": players.map({ $0.toJSON() }), "playerIndex": playerIndex, "serial": serial]
         return writeJSON(json, to: file)
     }
     
@@ -151,6 +160,7 @@ public class Game {
             return
         }
         print("Skipped")
+        _lastMove = nil
         players[playerIndex].consecutiveSkips += 1
         guard player.consecutiveSkips < maximumConsecutiveSkips else {
             gameOver()
@@ -164,6 +174,7 @@ public class Game {
             return
         }
         ended = true
+        _lastMove = nil
         var newPlayers = players
         for i in 0..<newPlayers.count {
             newPlayers[i].score -= newPlayers[i].rack
@@ -237,6 +248,7 @@ public class Game {
         if ended {
             return
         }
+        _lastMove = solution
         let dropped = solver.play(solution: solution)
         assert(dropped.count > 0)
         players[playerIndex].played(solution: solution, tiles: dropped)

@@ -22,8 +22,8 @@ class ScrabbleSolverTests: XCTestCase {
     func dropWords() {
         // Setup default state
         let intersection = Word(word: "cart", x: 6, y: 7, horizontal: false)
-        let _ = solver.play(solution: Solution(word: "cart", x: 5, y: 7, horizontal: true, score: 0, intersections: [], blanks: []))
-        let _ = solver.play(solution: Solution(word: "asked", x: 6, y: 7, horizontal: false, score: 0, intersections: [intersection], blanks: []))
+        _ = solver.play(solution: Solution(word: "cart", x: 5, y: 7, horizontal: true, score: 0, intersections: [], blanks: []))
+        _ = solver.play(solution: Solution(word: "asked", x: 6, y: 7, horizontal: false, score: 0, intersections: [intersection], blanks: []))
     }
     
     override func tearDown() {
@@ -382,7 +382,7 @@ class ScrabbleSolverTests: XCTestCase {
             solver.solutions(forLetters: rack, serial: true, completion: { (solutions) in
                 let best = self.solver.solve(with: solutions!)!
                 XCTAssertEqual(best, expectation)
-                let _ = self.solver.play(solution: best)
+                _ = self.solver.play(solution: best)
             })
         }
     }

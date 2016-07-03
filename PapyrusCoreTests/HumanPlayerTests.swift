@@ -21,7 +21,7 @@ class HumanPlayerTests : XCTestCase {
     override func setUp() {
         super.setUp()
         player = Human(rackTiles: rackTiles())
-        let _ = Human(rack: [], score: 0, solves: [], consecutiveSkips: 0)
+        _ = Human(rack: [], score: 0, solves: [], consecutiveSkips: 0)
     }
     
     override func tearDown() {

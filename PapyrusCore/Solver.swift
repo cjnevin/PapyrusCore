@@ -68,7 +68,7 @@ extension Solver {
         }
         
         while addCharacter(true, alwaysIncrement: false) { }
-        for _ in 0..<length { let _ = addCharacter(false, alwaysIncrement: true) }
+        for _ in 0..<length { _ = addCharacter(false, alwaysIncrement: true) }
         while addCharacter(true, alwaysIncrement: false) { }
         
         return length != index ? nil : fixedLetters
