@@ -25,7 +25,7 @@ let players = [human, hardAI, easyAI]
 // Now we have everything configured, we can create a Game object
 let game = Game(dictionary: dictionary, players: players) { event in 
   // Switch to main thread before updating UI...
-  NSOperationQueue.mainQueue().addOperationWithBlock {
+  Dispatch.main.async() {
     switch event {
       case let .Over(winner):
         print("Winner: \(winner)")
