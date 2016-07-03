@@ -52,11 +52,12 @@ struct BoardState: CustomDebugStringConvertible, Equatable {
         vertical = v
     }
     
-    subscript(isHorizontal: Bool, y: Int, x: Int) -> Int {
-        return self[isHorizontal][y][x]
-    }
-    
-    subscript(isHorizontal: Bool) -> [[Int]] {
-        return isHorizontal ? horizontal : vertical
+    func state(atX x: Int, y: Int, horizontal h: Bool) -> Int {
+        if h {
+            return horizontal[y][x]
+        } else {
+            return vertical[y][x]
+        }
+        return (h ? horizontal : vertical)[y][x]
     }
 }

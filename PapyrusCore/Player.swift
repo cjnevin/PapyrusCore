@@ -17,7 +17,7 @@ public enum Difficulty: Double {
 
 public typealias RackTile = (letter: Character, isBlank: Bool)
 
-public protocol Player {
+public protocol Player: JSONSerializable {
     /// Unique identifier for player.
     var id: String { get }
     /// Current tiles in rack.
@@ -83,6 +83,33 @@ public extension Player {
     }
 }
 
+private func makePlayers(using values: [JSON], f: (from: JSON) -> Player?) -> [Player] {
+    return values.flatMap({ f(from: $0) })
+}
+
+func makePlayers(using JSONSerializables: [JSON]) -> [Player] {
+    return makePlayers(using: JSONSerializables.filter({ $0["difficulty"] != nil }), f: Computer.object) +
+        makePlayers(using: JSONSerializables.filter({ $0["difficulty"] == nil }), f: Human.object)
+}
+
+private func json<T: Player>(forPlayer player: T) -> JSON {
+    let rackJson: [JSON] = player.rack.map({ ["letter": String($0.letter), "blank": $0.isBlank] })
+    let solvesJson = player.solves.map({ $0.toJSON() })
+    return ["score": player.score, "rack": rackJson, "solves": solvesJson]
+}
+
+private func parameters(from json: JSON) -> (rack: [Character], solves: [Solution], score: Int)? {
+    guard let
+        rackJson = json["rack"] as? [JSON],
+        solvesJson = json["solves"] as? [JSON],
+        score = json["score"] as? Int else {
+        return nil
+    }
+    let solves = solvesJson.flatMap({ Solution.object(from: $0) })
+    let rack = rackJson.map({ $0["blank"] as! Bool ? Game.blankLetter : Character($0["letter"] as! String) })
+    return (rack, solves, score)
+}
+
 public struct Human: Player {
     public let id = UUID().uuidString
     public var rack: [RackTile] = []
@@ -101,6 +128,17 @@ public struct Human: Player {
         self.consecutiveSkips = 0
         self.rack = rackTiles
     }
+    
+    public func toJSON() -> JSON {
+        return json(forPlayer: self)
+    }
+    
+    public static func object(from json: JSON) -> Human? {
+        guard let (rack, solves, score) = parameters(from: json) else {
+            return nil
+        }
+        return Human(rack: rack, score: score, solves: solves, consecutiveSkips: 0)
+    }
 }
 
 public struct Computer: Player {
@@ -116,5 +154,18 @@ public struct Computer: Player {
         self.solves = solves
         self.consecutiveSkips = consecutiveSkips
         self.drew(tiles: rack)
+    }
+    
+    public func toJSON() -> JSON {
+        var buffer = json(forPlayer: self)
+        buffer["difficulty"] = difficulty.rawValue
+        return buffer
+    }
+    
+    public static func object(from json: JSON) -> Computer? {
+        guard let diff = json["difficulty"] as? Double, difficulty = Difficulty(rawValue: diff), (rack, solves, score) = parameters(from: json) else {
+            return nil
+        }
+        return Computer(difficulty: difficulty, rack: rack, score: score, solves: solves, consecutiveSkips: 0)
     }
 }

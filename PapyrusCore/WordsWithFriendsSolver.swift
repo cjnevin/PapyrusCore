@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Lookup
 
 struct WordsWithFriendsSolver: Solver {
     var bagType: Bag.Type

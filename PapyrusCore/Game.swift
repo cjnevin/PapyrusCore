@@ -7,15 +7,14 @@
 //
 
 import Foundation
-import Lookup
 
 public enum GameEvent {
-    case over(Player?)
-    case move(Solution)
-    case drewTiles([Character])
-    case swappedTiles
-    case turnStarted
-    case turnEnded
+    case over(Game, Player?)
+    case move(Game, Solution)
+    case drewTiles(Game, [Character])
+    case swappedTiles(Game)
+    case turnBegan(Game)
+    case turnEnded(Game)
 }
 
 public enum GameType: Int {
@@ -23,6 +22,32 @@ public enum GameType: Int {
     case superScrabble
     case wordfeud
     case wordsWithFriends
+    
+    func bag() -> Bag {
+        switch self {
+        case .superScrabble:
+            return SuperScrabbleBag()
+        case .wordfeud:
+            return WordfeudBag()
+        case .wordsWithFriends:
+            return WordsWithFriendsBag()
+        default:
+            return ScrabbleBag()
+        }
+    }
+    
+    func board() -> Board {
+        switch self {
+        case .superScrabble:
+            return SuperScrabbleBoard()
+        case .wordfeud:
+            return WordfeudBoard()
+        case .wordsWithFriends:
+            return WordsWithFriendsBoard()
+        default:
+            return ScrabbleBoard()
+        }
+    }
 }
 
 let aiCanPlayBlanks = false
@@ -33,6 +58,7 @@ public class Game {
     public static let rackAmount = 7
     var solver: Solver
     var serial: Bool = false
+    var ended: Bool = true
     public var bag: Bag
     public private(set) var players: [Player]
     var playerIndex: Int
@@ -66,28 +92,43 @@ public class Game {
     }
     
     public convenience init(gameType: GameType = .scrabble, dictionary: Lookup, players: [Player], serial: Bool = false, eventHandler: EventHandler) {
-        var board: Board!
-        var bag: Bag!
-        switch gameType {
-        case .scrabble:
-            board = ScrabbleBoard()
-            bag = ScrabbleBag()
-        case .superScrabble:
-            board = SuperScrabbleBoard()
-            bag = SuperScrabbleBag()
-        case .wordfeud:
-            board = WordfeudBoard()
-            bag = WordfeudBag()
-        case .wordsWithFriends:
-            board = WordsWithFriendsBoard()
-            bag = WordsWithFriendsBag()
-        }
-        self.init(bag: bag, board: board, dictionary: dictionary, players: players, playerIndex: 0, serial: serial, eventHandler: eventHandler)
+        self.init(bag: gameType.bag(), board: gameType.board(), dictionary: dictionary, players: players, playerIndex: 0, serial: serial, eventHandler: eventHandler)
         for _ in players {
             replenishRack()
             playerIndex += 1
         }
         playerIndex = 0
+    }
+    
+    public convenience init?(fromFile file: URL, dictionary: Lookup, eventHandler: EventHandler) {
+        guard let
+            json = readJSON(from: file),
+            gameTypeInt = json["gameType"] as? Int,
+            gameType = GameType(rawValue: gameTypeInt),
+            bagRemaining = json["bag"] as? String,
+            playersJson = json["players"] as? [JSON],
+            playerIndex = json["playerIndex"] as? Int,
+            serial = json["serial"] as? Bool else {
+                return nil
+        }
+        var bag = gameType.bag()
+        bag.remaining = Array(bagRemaining.characters)
+        self.init(bag: bag, board: gameType.board(), dictionary: dictionary, players: makePlayers(using: playersJson), playerIndex: playerIndex, serial: serial, eventHandler: eventHandler)
+    }
+    
+    public func save(toFile file: URL) -> Bool {
+        var gameType: GameType!
+        if board is SuperScrabbleBoard {
+            gameType = .superScrabble
+        } else if board is WordsWithFriendsBoard {
+            gameType = .wordsWithFriends
+        } else if board is WordfeudBoard {
+            gameType = .wordfeud
+        } else {
+            gameType = .scrabble
+        }
+        let json: JSON = ["gameType": gameType.rawValue, "bag": String(bag.remaining), "players": players.map({ $0.toJSON() }), "playerIndex": playerIndex, "serial": serial]
+        return writeJSON(json, to: file)
     }
     
     public func shuffleRack() {
@@ -97,10 +138,18 @@ public class Game {
     }
     
     public func start() {
+        ended = false
         turn()
     }
     
+    public func stop() {
+        gameOver()
+    }
+    
     public func skip() {
+        if ended {
+            return
+        }
         print("Skipped")
         players[playerIndex].consecutiveSkips += 1
         guard player.consecutiveSkips < maximumConsecutiveSkips else {
@@ -111,6 +160,10 @@ public class Game {
     }
     
     private func gameOver() {
+        if ended {
+            return
+        }
+        ended = true
         var newPlayers = players
         for i in 0..<newPlayers.count {
             newPlayers[i].score -= newPlayers[i].rack
@@ -122,15 +175,18 @@ public class Game {
         
         // Does not currently handle ties
         let winner = players.sorted(isOrderedBefore: { $0.score > $1.score }).first
-        eventHandler(.over(winner))
+        eventHandler(.over(self, winner))
     }
     
     private func turn() {
+        if ended {
+            return
+        }
         if player.rack.count == 0 {
             gameOver()
             return
         }
-        eventHandler(.turnStarted)
+        eventHandler(.turnBegan(self))
         if player is Computer {
             var ai = player as! Computer
             let vowels = bag.dynamicType.vowels
@@ -150,7 +206,7 @@ public class Game {
                 guard let solutions = solutions, solution = self.solver.solve(with: solutions, difficulty: ai.difficulty) else {
                     // Can't find any solutions, attempt to swap tiles
                     let tiles = Array(ai.rack[0..<min(self.bag.remaining.count, ai.rack.count)])
-                    guard self.swapTiles(tiles.map({ $0.letter })) else {
+                    guard self.swap(tiles: tiles.map({ $0.letter })) else {
                         // We're stuck with these tiles, nothing AI can do, lets skip
                         self.skip()
                         return
@@ -158,45 +214,48 @@ public class Game {
                     return
                 }
                 // Play solution
-                print(ai.rack)
-                self.play(solution)
-                print(self.solver.board)
+                self.play(solution: solution)
                 self.nextTurn()
             })
         }
     }
     
     public func nextTurn() {
-        eventHandler(.turnEnded)
+        if ended {
+            return
+        }
+        eventHandler(.turnEnded(self))
         if player.rack.count == 0 {
             gameOver()
             return
         }
         playerIndex = (playerIndex + 1) % players.count
-        print("Next Turn")
         turn()
     }
     
-    public func play(_ solution: Solution) {
+    public func play(solution: Solution) {
+        if ended {
+            return
+        }
         let dropped = solver.play(solution: solution)
         assert(dropped.count > 0)
         players[playerIndex].played(solution: solution, tiles: dropped)
         replenishRack()
-        eventHandler(.move(solution))
+        eventHandler(.move(self, solution))
     }
     
     public func replenishRack() {
         let amount = min(Game.rackAmount - player.rack.count, bag.remaining.count)
         let newTiles = (0..<amount).flatMap { _ in bag.draw() }
         players[playerIndex].drew(tiles: newTiles)
-        eventHandler(.drewTiles(newTiles))
+        eventHandler(.drewTiles(self, newTiles))
     }
     
     public var canSwap: Bool {
         return bag.remaining.count > Game.rackAmount
     }
     
-    public func swapTiles(_ oldTiles: [Character]) -> Bool {
+    public func swap(tiles oldTiles: [Character]) -> Bool {
         guard canSwap else { return false }
         
         oldTiles.forEach { bag.replace($0) }
@@ -204,14 +263,14 @@ public class Game {
         players[playerIndex].swapped(tiles: oldTiles, with: newTiles)
         
         print("Swapped \(oldTiles) for \(newTiles)")
-        eventHandler(.swappedTiles)
+        eventHandler(.swappedTiles(self))
         
         // Swap complete, next players turn
         nextTurn()
         return true
     }
     
-    public func validate(_ points: [(x: Int, y: Int, letter: Character)], blanks: [(x: Int, y: Int)]) -> ValidationResponse {
+    public func validate(points: [(x: Int, y: Int, letter: Character)], blanks: [(x: Int, y: Int)]) -> ValidationResponse {
         return solver.validate(points: points, blanks: blanks)
     }
     

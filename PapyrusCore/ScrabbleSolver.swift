@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Lookup
 
 struct ScrabbleSolver: Solver {
     var bagType: Bag.Type

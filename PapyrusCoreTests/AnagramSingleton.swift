@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import AnagramDictionary
 
 extension AnagramDictionary {
     static let singleton = AnagramDictionary.deserialize(

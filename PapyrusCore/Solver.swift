@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Lookup
 
 public enum ValidationResponse {
     case invalidArrangement
@@ -51,7 +50,7 @@ extension Solver {
         let size = board.size
         var fixedLetters = [Int: Character]()
         var index = 0
-        var offset = boardState[horizontal, y, x]
+        var offset = boardState.state(atX: x, y: y, horizontal: horizontal)
         
         func addCharacter(_ mustExist: Bool, alwaysIncrement: Bool) -> Bool {
             if offset >= size { return false }
@@ -255,7 +254,7 @@ extension Solver {
         }
         
         let size = board.size
-        let start: Int = boardState[horizontal, y, x]
+        let start: Int = boardState.state(atX: x, y: y, horizontal: horizontal)
         var offset: Int = start
         var characters = [Character]()
         var remainingPoints = points
@@ -310,7 +309,7 @@ extension Solver {
         guard board.isValid(atX: x, y: y, length: length, horizontal: horizontal) else { return nil }
         
         // Is valid spot should filter these...
-        let offset = boardState[horizontal][y][x]
+        let offset = boardState.state(atX: x, y: y, horizontal: horizontal)
         assert(offset == x && horizontal || offset == y && !horizontal)
         
         // Collect characters that are filled, must have at least one character to branch off of

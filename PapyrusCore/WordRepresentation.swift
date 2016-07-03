@@ -54,23 +54,38 @@ extension WordRepresentation {
     }
 }
 
-public struct Word: WordRepresentation, Equatable {
+public struct Word: WordRepresentation, Equatable, JSONSerializable {
     let word: String
     let x: Int
     let y: Int
     let horizontal: Bool
+    
+    public func toJSON() -> JSON {
+        return ["word": word, "x": x, "y": y, "horizontal": horizontal]
+    }
+    
+    public static func object(from json: JSON) -> Word? {
+        guard let
+            word = json["word"] as? String,
+            x = json["x"] as? Int,
+            y = json["y"] as? Int,
+            horizontal = json["horizontal"] as? Bool else {
+            return nil
+        }
+        return Word(word: word, x: x, y: y, horizontal: horizontal)
+    }
 }
 
-public struct Solution: WordRepresentation, Equatable {
+public struct Solution: WordRepresentation, Equatable, JSONSerializable {
     public let word: String
     public let x: Int
     public let y: Int
     public let horizontal: Bool
     public let score: Int
     let intersections: [Word]
-    let blanks: [(x: Int, y: Int)]
+    let blanks: [WordPosition]
     
-    init(word: String, x: Int, y: Int, horizontal: Bool, score: Int, intersections: [Word], blanks: [(x: Int, y: Int)]) {
+    init(word: String, x: Int, y: Int, horizontal: Bool, score: Int, intersections: [Word], blanks: [WordPosition]) {
         self.word = word
         self.x = x
         self.y = y
@@ -81,7 +96,7 @@ public struct Solution: WordRepresentation, Equatable {
         self.blanks = blanks
     }
     
-    init(word: Word, score: Int, intersections: [Word], blanks: [(x: Int, y: Int)]) {
+    init(word: Word, score: Int, intersections: [Word], blanks: [WordPosition]) {
         self.word = word.word
         self.x = word.x
         self.y = word.y
@@ -102,5 +117,29 @@ public struct Solution: WordRepresentation, Equatable {
             })
         })
         return points
+    }
+    
+    public func toJSON() -> JSON {
+        return ["word": word, "x": x, "y": y,
+                "horizontal": horizontal,
+                "score": score,
+                "blanks": blanks.map({ ["x": $0.x, "y": $0.y] }),
+                "intersections": intersections.map({ $0.toJSON() })]
+    }
+    
+    public static func object(from json: JSON) -> Solution? {
+        guard let
+            word = json["word"] as? String,
+            x = json["x"] as? Int,
+            y = json["y"] as? Int,
+            horizontal = json["horizontal"] as? Bool,
+            score = json["score"] as? Int,
+            blanksJson = json["blanks"] as? [JSON],
+            intersectionsJson = json["intersections"] as? [JSON] else {
+                return nil
+        }
+        let intersections = intersectionsJson.flatMap({ Word.object(from: $0) })
+        let blanks: [WordPosition] = blanksJson.map({ ($0["x"] as! Int, $0["y"] as! Int) })
+        return Solution(word: word, x: x, y: y, horizontal: horizontal, score: score, intersections: intersections, blanks: blanks)
     }
 }
