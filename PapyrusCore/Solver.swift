@@ -336,7 +336,7 @@ extension Solver {
         let range = board.boardRange
         let size = board.size
         
-        func collect(_ array: inout [Solution], effectiveRange: Range<Int>, length: Int) {
+        func collect(_ array: inout [Solution], effectiveRange: CountableClosedRange<Int>, length: Int) {
             for x in range {
                 for y in range {
                     if effectiveRange.contains(x) {
