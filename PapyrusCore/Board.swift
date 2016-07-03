@@ -37,18 +37,18 @@ public protocol Board: CustomDebugStringConvertible {
     var wordMultipliers: [[Int]] { get }
     
     subscript(x: Int, y: Int) -> Character? { get }
-    func letterAt(_ x: Int, _ y: Int) -> Character?
-    func isEmptyAt(_ x: Int, _ y: Int) -> Bool
-    func isFilledAt(_ x: Int, _ y: Int) -> Bool
-    func isCenterAt(_ x: Int, _ y: Int) -> Bool
-    func isValidAt(_ x: Int, _ y: Int, length: Int, horizontal: Bool) -> Bool
+    func letter(atX x: Int, y: Int) -> Character?
+    func isEmpty(atX x: Int, y: Int) -> Bool
+    func isFilled(atX x: Int, y: Int) -> Bool
+    func isCenter(atX x: Int, y: Int) -> Bool
+    func isValid(atX x: Int, y: Int, length: Int, horizontal: Bool) -> Bool
     
-    mutating func play(_ solution: Solution) -> [Character]
+    mutating func play(solution: Solution) -> [Character]
 }
 
 extension Board {
     public var isFirstPlay: Bool {
-        return isEmptyAt(center, center)
+        return isEmpty(atX: center, y: center)
     }
     
     public var boardRange: CountableRange<Int> {
@@ -62,61 +62,61 @@ extension Board {
     }
     
     public subscript(x: Int, y: Int) -> Character? {
-        return letterAt(x, y)
+        return letter(atX: x, y: y)
     }
     
-    public func letterAt(_ x: Int, _ y: Int) -> Character? {
+    public func letter(atX x: Int, y: Int) -> Character? {
         let value = layout[y][x]
         return value == empty ? nil : value
     }
     
-    public func isEmptyAt(_ x: Int, _ y: Int) -> Bool {
+    public func isEmpty(atX x: Int, y: Int) -> Bool {
         return layout[y][x] == empty
     }
     
-    public func isFilledAt(_ x: Int, _ y: Int) -> Bool {
+    public func isFilled(atX x: Int, y: Int) -> Bool {
         return layout[y][x] != empty
     }
     
-    public func isCenterAt(_ x: Int, _ y: Int) -> Bool {
+    public func isCenter(atX x: Int, y: Int) -> Bool {
         return x == center && y == center
     }
     
-    public func isValidAt(_ x: Int, _ y: Int, length: Int, horizontal: Bool) -> Bool {
-        if isFilledAt(x, y) {
+    public func isValid(atX x: Int, y: Int, length: Int, horizontal: Bool) -> Bool {
+        if isFilled(atX: x, y: y) {
             return false
         }
         
         // Too long?
         var currentX = x
         var currentY = y
-        if exceedsBoundaryAt(&currentX, &currentY, length: length, horizontal: horizontal) {
+        if isBoundaryExceeded(atX: &currentX, y: &currentY, length: length, horizontal: horizontal) {
             return false
         }
         
-        if isCenterAt(x, y) && isFirstPlay {
+        if isCenter(atX: x, y: y) && isFirstPlay {
             return true
         }
         
         // Horizontal?
         if horizontal {
             // Touches on left or right (cannot accept prefixed or suffixed spots)
-            if horizontallyTouchesAt(x, y, length: length, edges: .LeftAndRight) {
+            if touchesHorizontally(atX: x, y: y, length: length, edges: .LeftAndRight) {
                 return false
             }
             // Touches on top or bottom (allowed)
-            if horizontallyTouchesAt(x, y, length: length, edges: .TopAndBottom) {
+            if touchesHorizontally(atX: x, y: y, length: length, edges: .TopAndBottom) {
                 return true
             }
             // Intersects other letters?
             return currentX > x + length
         } else {
             // Touches on bottom or top (cannot accept prefixed or suffixed spots)
-            if verticallyTouchesAt(x, y, length: length, edges: .TopAndBottom) {
+            if touchesVertically(atX: x, y: y, length: length, edges: .TopAndBottom) {
                 return false
             }
             // Touches on left or right (allowed)
-            if verticallyTouchesAt(x, y, length: length, edges: .LeftAndRight) {
+            if touchesVertically(atX: x, y: y, length: length, edges: .LeftAndRight) {
                 return true
             }
             // Intersects other letters?
@@ -124,25 +124,25 @@ extension Board {
         }
     }
     
-    func verticallyTouchesAt(_ x: Int, _ y: Int, length: Int, edges: Edge) -> Bool {
+    func touchesVertically(atX x: Int, y: Int, length: Int, edges: Edge) -> Bool {
         if y + length > size {
             return false
         }
         
-        if edges.contains(.Top) && y > 0 && isFilledAt(x, y - 1) {
+        if edges.contains(.Top) && y > 0 && isFilled(atX: x, y: y - 1) {
             return true
         }
-        else if edges.contains(.Bottom) && y + length < size && isFilledAt(x, y + length) {
+        else if edges.contains(.Bottom) && y + length < size && isFilled(atX: x, y: y + length) {
             return true
         }
         
         let (left, right) = (edges.contains(.Left), edges.contains(.Right))
         if left || right {
             for i in y..<(y + length) {
-                if left && x > 0 && isFilledAt(x - 1, i) {
+                if left && x > 0 && isFilled(atX: x - 1, y: i) {
                     return true
                 }
-                if right && x < (size - 1) && isFilledAt(x + 1, i) {
+                if right && x < (size - 1) && isFilled(atX: x + 1, y: i) {
                     return true
                 }
             }
@@ -150,25 +150,25 @@ extension Board {
         return false
     }
     
-    func horizontallyTouchesAt(_ x: Int, _ y: Int, length: Int, edges: Edge) -> Bool {
+    func touchesHorizontally(atX x: Int, y: Int, length: Int, edges: Edge) -> Bool {
         if x + length > size {
             return false
         }
         
-        if edges.contains(.Left) && x > 0 && isFilledAt(x - 1, y) {
+        if edges.contains(.Left) && x > 0 && isFilled(atX: x - 1, y: y) {
             return true
         }
-        else if edges.contains(.Right) && x + length < size && isFilledAt(x + length, y) {
+        else if edges.contains(.Right) && x + length < size && isFilled(atX: x + length, y: y) {
             return true
         }
         
         let (top, bottom) = (edges.contains(.Top), edges.contains(.Bottom))
         if top || bottom {
             for i in x..<(x + length) {
-                if top && y > 0 && isFilledAt(i, y - 1) {
+                if top && y > 0 && isFilled(atX: i, y: y - 1) {
                     return true
                 }
-                else if bottom && y < (size - 1) && isFilledAt(i, y + 1) {
+                else if bottom && y < (size - 1) && isFilled(atX: i, y: y + 1) {
                     return true
                 }
             }
@@ -176,11 +176,11 @@ extension Board {
         return false
     }
     
-    func exceedsBoundaryAt(_ x: inout Int, _ y: inout Int, length: Int, horizontal: Bool) -> Bool {
+    func isBoundaryExceeded(atX x: inout Int, y: inout Int, length: Int, horizontal: Bool) -> Bool {
         var currentLength = length
         
         while currentLength > 0 && (horizontal && x < size || !horizontal && y < size)  {
-            if isEmptyAt(x, y) {
+            if isEmpty(atX: x, y: y) {
                 currentLength -= 1
             }
             if horizontal {
@@ -193,16 +193,16 @@ extension Board {
         return currentLength != 0
     }
     
-    mutating public func play(_ solution: Solution) -> [Character] {
+    mutating public func play(solution: Solution) -> [Character] {
         var dropped = [Character]()
         for (i, letter) in solution.word.characters.enumerated() {
             if solution.horizontal {
-                if isEmptyAt(solution.x + i, solution.y) {
+                if isEmpty(atX: solution.x + i, y: solution.y) {
                     layout[solution.y][solution.x + i] = letter
                     dropped.append(letter)
                 }
             } else {
-                if isEmptyAt(solution.x, solution.y + i) {
+                if isEmpty(atX: solution.x, y: solution.y + i) {
                     layout[solution.y + i][solution.x] = letter
                     dropped.append(letter)
                 }

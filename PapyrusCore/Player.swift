@@ -29,17 +29,17 @@ public protocol Player {
     /// Times skipped in a row.
     var consecutiveSkips: Int { get set }
     /// Add tiles to rack.
-    mutating func drew(_ tiles: [Character])
+    mutating func drew(tiles: [Character])
     /// Add solution to list of `solves`, removing `tiles` from `rack`.
-    mutating func played(_ solution: Solution, tiles: [Character])
+    mutating func played(solution: Solution, tiles: [Character])
     /// Swap out `tiles` in `rack` with `newTiles`.
-    mutating func swapped(_ tiles: [Character], newTiles: [Character])
+    mutating func swapped(tiles: [Character], with newTiles: [Character])
     /// Shuffle rack tile order.
     mutating func shuffle()
 }
 
 public extension Player {
-    mutating func removeLetter(_ letter: Character) -> (removed: Bool, wasBlank: Bool) {
+    mutating func remove(letter: Character) -> (removed: Bool, wasBlank: Bool) {
         for n in 0..<rack.count where rack[n].0 == letter {
             let isBlank = rack[n].isBlank
             rack.remove(at: n)
@@ -47,7 +47,7 @@ public extension Player {
         }
         // Tile must be a blank? Lets check...
         if rack.map({$0.0}).contains(Game.blankLetter) {
-            return removeLetter(Game.blankLetter)
+            return remove(letter: Game.blankLetter)
         }
         return (false, false)
     }
@@ -56,26 +56,26 @@ public extension Player {
         rack.shuffle()
     }
     
-    mutating func played(_ solution: Solution, tiles: [Character]) {
+    mutating func played(solution: Solution, tiles: [Character]) {
         score += solution.score
         solves.append(solution)
-        tiles.forEach({ assert(removeLetter($0).removed) })
+        tiles.forEach({ assert(remove(letter: $0).removed) })
         consecutiveSkips = 0
     }
     
-    mutating func swapped(_ tiles: [Character], newTiles: [Character]) {
-        tiles.forEach({ assert(removeLetter($0).removed) })
-        drew(newTiles)
+    mutating func swapped(tiles: [Character], with newTiles: [Character]) {
+        tiles.forEach({ assert(remove(letter: $0).removed) })
+        drew(tiles: newTiles)
         consecutiveSkips = 0
     }
     
-    mutating func drew(_ tiles: [Character]) {
+    mutating func drew(tiles: [Character]) {
         for tile in tiles {
             rack.append((tile, tile == Game.blankLetter))
         }
     }
     
-    mutating func updateBlank(_ newValue: Character) {
+    mutating func updateBlank(to newValue: Character) {
         for n in 0..<rack.count where rack[n].letter == Game.blankLetter && rack[n].isBlank == true {
             rack[n] = (newValue, true)
             break
@@ -93,7 +93,7 @@ public struct Human: Player {
         self.score = score
         self.solves = solves
         self.consecutiveSkips = consecutiveSkips
-        self.drew(rack)
+        self.drew(tiles: rack)
     }
     public init(rackTiles: [RackTile]) {
         self.score = 0
@@ -115,6 +115,6 @@ public struct Computer: Player {
         self.score = score
         self.solves = solves
         self.consecutiveSkips = consecutiveSkips
-        self.drew(rack)
+        self.drew(tiles: rack)
     }
 }

@@ -27,16 +27,16 @@ protocol Solver {
     
     init(bagType: Bag.Type, board: Board, dictionary: Lookup, debug: Bool)
     
-    func charactersAt(_ x: Int, y: Int, length: Int, horizontal: Bool) -> [Int: Character]?
-    func wordAt(_ x: Int, _ y: Int, points: [(x: Int, y: Int, letter: Character)], horizontal: Bool) -> (word: Word, valid: Bool)?
-    func validate(_ points: [(x: Int, y: Int, letter: Character)], blanks: [(x: Int, y: Int)]) -> ValidationResponse
+    func characters(atX x: Int, y: Int, length: Int, horizontal: Bool) -> [Int: Character]?
+    func getWord(atX x: Int, y: Int, points: [(x: Int, y: Int, letter: Character)], horizontal: Bool) -> (word: Word, valid: Bool)?
+    func validate(points: [(x: Int, y: Int, letter: Character)], blanks: [(x: Int, y: Int)]) -> ValidationResponse
     func lexicographicalString(withLetters letters: [Character]) -> String
     func unvalidatedWords(forLetters letters: [Character], fixedLetters: [Int: Character], length: Int) -> Anagrams?
     func intersections<T: WordRepresentation>(forWord word: T) -> (valid: Bool, words: [Word])
     func solution(forWord word: Word, rackLetters: [RackTile]) -> Solution?
-    func solve(_ solutions: [Solution], difficulty: Difficulty) -> Solution?
-    func solutions(_ letters: [RackTile], serial: Bool, completion: ([Solution]?) -> ())
-    mutating func play(_ solution: Solution) -> [Character]
+    func solve(with solutions: [Solution], difficulty: Difficulty) -> Solution?
+    func solutions(forLetters letters: [RackTile], serial: Bool, completion: ([Solution]?) -> ())
+    mutating func play(solution: Solution) -> [Character]
 }
 
 
@@ -47,7 +47,7 @@ extension Solver {
         return String(letters.sorted())
     }
     
-    func charactersAt(_ x: Int, y: Int, length: Int, horizontal: Bool) -> [Int: Character]? {
+    func characters(atX x: Int, y: Int, length: Int, horizontal: Bool) -> [Int: Character]? {
         let size = board.size
         var fixedLetters = [Int: Character]()
         var index = 0
@@ -69,13 +69,13 @@ extension Solver {
         }
         
         while addCharacter(true, alwaysIncrement: false) { }
-        for _ in 0..<length { addCharacter(false, alwaysIncrement: true) }
+        for _ in 0..<length { let _ = addCharacter(false, alwaysIncrement: true) }
         while addCharacter(true, alwaysIncrement: false) { }
         
         return length != index ? nil : fixedLetters
     }
     
-    func validate(_ points: [(x: Int, y: Int, letter: Character)], blanks: [(x: Int, y: Int)]) -> ValidationResponse {
+    func validate(points: [(x: Int, y: Int, letter: Character)], blanks: [(x: Int, y: Int)]) -> ValidationResponse {
         if points.count == 0 || (points.count == 1 && board.isFirstPlay) {
             return .invalidArrangement
         }
@@ -85,11 +85,11 @@ extension Solver {
         if points.count == 1 {
             let x = points.first!.x
             let y = points.first!.y
-            let horizontalWord = wordAt(x, y, points: points, horizontal: true)
+            let horizontalWord = getWord(atX: x, y: y, points: points, horizontal: true)
             if let word = horizontalWord where word.valid == false {
                 return .invalidWord(word.word)
             }
-            let verticalWord = wordAt(x, y, points: points, horizontal: false)
+            let verticalWord = getWord(atX: x, y: y, points: points, horizontal: false)
             if let word = verticalWord where word.valid == false {
                 return .invalidWord(word.word)
             }
@@ -119,7 +119,7 @@ extension Solver {
             return .invalidArrangement
         }
         
-        guard let (word, valid) = wordAt(horizontalFirst.x, verticalFirst.y, points: isHorizontal ? horizontalSort : verticalSort, horizontal: isHorizontal) else {
+        guard let (word, valid) = getWord(atX: horizontalFirst.x, y: verticalFirst.y, points: isHorizontal ? horizontalSort : verticalSort, horizontal: isHorizontal) else {
             return .invalidArrangement
         }
         guard valid else {
@@ -137,7 +137,7 @@ extension Solver {
         if !board.isFirstPlay && intersectedWords.count == 0 {
             return .invalidArrangement
         }
-        else if board.isFirstPlay && !word.toPositions().contains({ board.isCenterAt($0.x, $0.y) }) {
+        else if board.isFirstPlay && !word.toPositions().contains({ board.isCenter(atX: $0.x, y: $0.y) }) {
             return .invalidArrangement
         }
         
@@ -154,7 +154,7 @@ extension Solver {
     func blanks(forWord word: Word, rackLetters: [RackTile]) -> [(x: Int, y: Int)] {
         var tempPlayer = Human(rackTiles: rackLetters)
         return word.word.characters.enumerated().flatMap({ (index, letter) in
-            tempPlayer.removeLetter(letter).wasBlank ? word.position(forIndex: index) : nil
+            tempPlayer.remove(letter: letter).wasBlank ? word.position(forIndex: index) : nil
         })
     }
     // TODO: Possible Improvement
@@ -188,7 +188,7 @@ extension Solver {
         
         func scoreLetter(_ letter: Character, x: Int, y: Int) {
             let value = letterPoints(letter, atX: x, y: y)
-            if board.isFilledAt(x, y) {
+            if board.isFilled(atX: x, y: y) {
                 score += value
                 return
             }
@@ -219,7 +219,7 @@ extension Solver {
         var words = [Word]()
         for (index, letter) in word.word.characters.enumerated() {
             let pos = word.position(forIndex: index)
-            if let intersectedWord = wordAt(pos.x, pos.y, points: [(x: pos.x, y: pos.y, letter: letter)], horizontal: !word.horizontal) {
+            if let intersectedWord = getWord(atX: pos.x, y: pos.y, points: [(x: pos.x, y: pos.y, letter: letter)], horizontal: !word.horizontal) {
                 guard intersectedWord.valid else {
                     return (false, [intersectedWord.word])
                 }
@@ -247,11 +247,11 @@ extension Solver {
         return anagrams.count > 0 ? anagrams : nil
     }
     
-    func wordAt(_ x: Int, _ y: Int, points: [(x: Int, y: Int, letter: Character)], horizontal: Bool) -> (word: Word, valid: Bool)? {
-        if horizontal && x > 0 && board.isFilledAt(x - 1, y) {
-            return wordAt(x - 1, y, points: points, horizontal: horizontal)
-        } else if !horizontal && y > 0 && board.isFilledAt(x, y - 1) {
-            return wordAt(x, y - 1, points: points, horizontal: horizontal)
+    func getWord(atX x: Int, y: Int, points: [(x: Int, y: Int, letter: Character)], horizontal: Bool) -> (word: Word, valid: Bool)? {
+        if horizontal && x > 0 && board.isFilled(atX: x - 1, y: y) {
+            return getWord(atX: x - 1, y: y, points: points, horizontal: horizontal)
+        } else if !horizontal && y > 0 && board.isFilled(atX: x, y: y - 1) {
+            return getWord(atX: x, y: y - 1, points: points, horizontal: horizontal)
         }
         
         let size = board.size
@@ -283,15 +283,15 @@ extension Solver {
                         x: horizontal ? start : x,
                         y: horizontal ? y : start,
                         horizontal: horizontal)
-        return (word, dictionary.lookup(word.word))
+        return (word, dictionary.lookup(word: word.word))
     }
     
 }
 
 // Solution
 extension Solver {
-    mutating func play(_ solution: Solution) -> [Character] {
-        let dropped = board.play(solution)
+    mutating func play(solution: Solution) -> [Character] {
+        let dropped = board.play(solution: solution)
         boardState = BoardState(board: board)
         return dropped
     }
@@ -304,10 +304,10 @@ extension Solver {
         return Solution(word: word, score: score, intersections: intersectedWords, blanks: blankSpots)
     }
     
-    private func solutionsAt(x: Int, y: Int, letters: [Character], rackLetters: [RackTile], length: Int, horizontal: Bool) -> [Solution]? {
+    private func solutions(atX x: Int, y: Int, letters: [Character], rackLetters: [RackTile], length: Int, horizontal: Bool) -> [Solution]? {
         assert((horizontal ? x : y) + length - 1 < board.size)
         
-        guard board.isValidAt(x, y, length: length, horizontal: horizontal) else { return nil }
+        guard board.isValid(atX: x, y: y, length: length, horizontal: horizontal) else { return nil }
         
         // Is valid spot should filter these...
         let offset = boardState[horizontal][y][x]
@@ -316,7 +316,7 @@ extension Solver {
         // Collect characters that are filled, must have at least one character to branch off of
         // Get possible words for given set of letters for this length
         guard let
-            fixedLetters = charactersAt(x, y: y, length: length, horizontal: horizontal),
+            fixedLetters = characters(atX: x, y: y, length: length, horizontal: horizontal),
             words = unvalidatedWords(forLetters: letters, fixedLetters: fixedLetters, length: length) else {
                 return nil
         }
@@ -324,28 +324,28 @@ extension Solver {
         return words.flatMap({ solution(forWord: Word(word: $0, x: x, y: y, horizontal: horizontal), rackLetters: rackLetters) })
     }
     
-    func solutions(_ letters: [RackTile], serial: Bool = false, completion: ([Solution]?) -> ()) {
+    func solutions(forLetters letters: [RackTile], serial: Bool = false, completion: ([Solution]?) -> ()) {
         if letters.count == 0 {
             completion(nil)
             return
         }
         
         let solutionLetters = letters.map({ $0.letter })
-        var solutions = [Solution]()
+        var possibilities = [Solution]()
         var count = 0
         let range = board.boardRange
         let size = board.size
         
-        func collect(_ array: inout [Solution], effectiveRange: CountableClosedRange<Int>, length: Int) {
+        func collect(into array: inout [Solution], effectiveRange: CountableClosedRange<Int>, length: Int) {
             for x in range {
                 for y in range {
                     if effectiveRange.contains(x) {
-                        if let solves = solutionsAt(x: x, y: y, letters: solutionLetters, rackLetters: letters, length: length, horizontal: true) {
+                        if let solves = solutions(atX: x, y: y, letters: solutionLetters, rackLetters: letters, length: length, horizontal: true) {
                             array += solves
                         }
                     }
                     if effectiveRange.contains(y) {
-                        if let solves = solutionsAt(x: x, y: y, letters: solutionLetters, rackLetters: letters, length: length, horizontal: false) {
+                        if let solves = solutions(atX: x, y: y, letters: solutionLetters, rackLetters: letters, length: length, horizontal: false) {
                             array += solves
                         }
                     }
@@ -357,17 +357,17 @@ extension Solver {
             count += 1
             let effectiveRange = (0...(size - length))
             if serial {
-                collect(&solutions, effectiveRange: effectiveRange, length: length)
+                collect(into: &possibilities, effectiveRange: effectiveRange, length: length)
             } else {
                 let currentQueue = OperationQueue.current()
                 operationQueue.addOperation({
                     var innerSolutions = [Solution]()
-                    collect(&innerSolutions, effectiveRange: effectiveRange, length: length)
+                    collect(into: &innerSolutions, effectiveRange: effectiveRange, length: length)
                     currentQueue?.addOperation({
-                        solutions += innerSolutions
+                        possibilities += innerSolutions
                         count -= 1
                         if count == 0 {
-                            completion(solutions)
+                            completion(possibilities)
                         }
                     })
                 })
@@ -375,11 +375,11 @@ extension Solver {
         }
         
         if serial {
-            completion(solutions.count > 0 ? solutions : nil)
+            completion(possibilities.count > 0 ? possibilities.sorted(isOrderedBefore: { $0.word > $1.word }) : nil)
         }
     }
     
-    func solve(_ solutions: [Solution], difficulty: Difficulty = .hard) -> Solution? {
+    func solve(with solutions: [Solution], difficulty: Difficulty = .hard) -> Solution? {
         if solutions.count == 0 {
             return nil
         }

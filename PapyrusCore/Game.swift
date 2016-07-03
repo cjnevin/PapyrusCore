@@ -56,7 +56,7 @@ public class Game {
         } else {
             solver = ScrabbleSolver(bagType: bag.dynamicType, board: board, dictionary: dictionary)
         }
-        players.forEach({ $0.solves.forEach({ solver.play($0) }) })
+        players.forEach({ $0.solves.forEach({ let _ = solver.play(solution: $0) }) })
         self.solver = solver
         self.bag = bag
         self.serial = serial
@@ -138,16 +138,16 @@ public class Game {
             while aiCanPlayBlanks == false && ai.rack.filter({$0.0 == blank}).count > 0 {
                 if Set(ai.rack.map({$0.0})).intersection(vowels).count == 0 {
                     // If we have no vowels lets pick a random vowel
-                    ai.updateBlank(vowels[Int(arc4random()) % vowels.count])
+                    ai.updateBlank(to: vowels[Int(arc4random()) % vowels.count])
                     print("AI set value of blank letter")
                 } else {
                     // We have vowels, lets choose 's'
-                    ai.updateBlank("s")
+                    ai.updateBlank(to: "s")
                     print("AI set value of blank letter")
                 }
             }
-            solver.solutions(ai.rack, completion: { solutions in
-                guard let solutions = solutions, solution = self.solver.solve(solutions, difficulty: ai.difficulty) else {
+            solver.solutions(forLetters: ai.rack, completion: { solutions in
+                guard let solutions = solutions, solution = self.solver.solve(with: solutions, difficulty: ai.difficulty) else {
                     // Can't find any solutions, attempt to swap tiles
                     let tiles = Array(ai.rack[0..<min(self.bag.remaining.count, ai.rack.count)])
                     guard self.swapTiles(tiles.map({ $0.letter })) else {
@@ -178,9 +178,9 @@ public class Game {
     }
     
     public func play(_ solution: Solution) {
-        let dropped = solver.play(solution)
+        let dropped = solver.play(solution: solution)
         assert(dropped.count > 0)
-        players[playerIndex].played(solution, tiles: dropped)
+        players[playerIndex].played(solution: solution, tiles: dropped)
         replenishRack()
         eventHandler(.move(solution))
     }
@@ -188,7 +188,7 @@ public class Game {
     public func replenishRack() {
         let amount = min(Game.rackAmount - player.rack.count, bag.remaining.count)
         let newTiles = (0..<amount).flatMap { _ in bag.draw() }
-        players[playerIndex].drew(newTiles)
+        players[playerIndex].drew(tiles: newTiles)
         eventHandler(.drewTiles(newTiles))
     }
     
@@ -201,7 +201,7 @@ public class Game {
         
         oldTiles.forEach { bag.replace($0) }
         let newTiles = oldTiles.flatMap { _ in bag.draw() }
-        players[playerIndex].swapped(oldTiles, newTiles: newTiles)
+        players[playerIndex].swapped(tiles: oldTiles, with: newTiles)
         
         print("Swapped \(oldTiles) for \(newTiles)")
         eventHandler(.swappedTiles)
@@ -212,12 +212,12 @@ public class Game {
     }
     
     public func validate(_ points: [(x: Int, y: Int, letter: Character)], blanks: [(x: Int, y: Int)]) -> ValidationResponse {
-        return solver.validate(points, blanks: blanks)
+        return solver.validate(points: points, blanks: blanks)
     }
     
     public func getHint(_ completion: (Solution?) -> ()) {
-        solver.solutions(player.rack, serial: false) { [weak self] solutions in
-            guard let solutions = solutions, best = self?.solver.solve(solutions, difficulty: .hard) else {
+        solver.solutions(forLetters: player.rack, serial: false) { [weak self] solutions in
+            guard let solutions = solutions, best = self?.solver.solve(with: solutions, difficulty: .hard) else {
                 completion(nil)
                 return
             }

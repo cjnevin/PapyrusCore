@@ -71,30 +71,34 @@ class HumanPlayerTests : XCTestCase {
     }
     
     func testSwapped() {
-        player.swapped(["A"], newTiles: ["G"])
+        player.swapped(tiles: ["A"], with: ["G"])
         XCTAssertEqual(sortedCharactersForRack(player.rack)[5], "G")
     }
     
     func testUpdateBlank() {
-        player.updateBlank("Z")
+        player.updateBlank(to: "Z")
         XCTAssertEqual(sortedCharactersForRack(player.rack)[6], "Z")
     }
     
     func testRemoveLetter() {
-        player.removeLetter("F")
+        let (removed, blank) = player.remove(letter: "F")
+        XCTAssert(removed)
+        XCTAssertFalse(blank)
         XCTAssertEqual(player.rack.count, 6)
         XCTAssertEqual(sortedCharactersForRack(player.rack)[4], "E")
     }
     
     func testRemoveBlank() {
-        player.removeLetter("Z")
+        let (removed, blank) = player.remove(letter: "Z")
+        XCTAssert(removed)
+        XCTAssert(blank)
         XCTAssertEqual(player.rack.count, 6)
         XCTAssertEqual(sortedCharactersForRack(player.rack).last, "F")
     }
     
     func testPlayed() {
         let solution = Solution(word: "BEAT", x: board.center, y: board.center, horizontal: true, score: 6, intersections: [], blanks: [])
-        player.played(solution, tiles: ["B", "E", "A"])
+        player.played(solution: solution, tiles: ["B", "E", "A"])
         XCTAssertEqual(player.rack.count, 4)
         XCTAssertEqual(player.score, 6)
     }

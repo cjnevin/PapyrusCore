@@ -14,7 +14,7 @@ class CombosTests: XCTestCase {
         measure {
             for _ in 0..<100 {
                 for n in 2..<8 {
-                    ["a", "b", "c", "d", "e", "f", "g"].combos(n)
+                    let _ = ["a", "b", "c", "d", "e", "f", "g"].combos(n)
                 }
             }
         }
@@ -24,7 +24,7 @@ class CombosTests: XCTestCase {
         measure {
             for _ in 0..<100 {
                 for n in 2..<8 {
-                    ["a", "b", "c", "d", "e", "f", "g"].combinations(n)
+                    let _ = ["a", "b", "c", "d", "e", "f", "g"].combinations(n)
                 }
             }
         }

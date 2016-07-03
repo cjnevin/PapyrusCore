@@ -21,7 +21,7 @@ class ScrabbleBagTests : XCTestCase {
     
     func testBag() {
         XCTAssertEqual(bag.remaining.count, total)
-        bag.draw()
+        XCTAssertNotNil(bag.draw())
         XCTAssertEqual(bag.remaining.count, total - 1)
     }
     

@@ -44,8 +44,8 @@ struct BoardState: CustomDebugStringConvertible, Equatable {
         }
         for x in range {
             for y in range {
-                h[y][x] = update(x){ board.isFilledAt($0, y) }
-                v[y][x] = update(y){ board.isFilledAt(x, $0) }
+                h[y][x] = update(x){ board.isFilled(atX: $0, y: y) }
+                v[y][x] = update(y){ board.isFilled(atX: x, y: $0) }
             }
         }
         horizontal = h

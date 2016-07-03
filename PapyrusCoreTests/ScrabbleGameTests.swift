@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import AnagramDictionary
+import AnagramDictionary
 @testable import PapyrusCore
 
 class ScrabbleGameTests: XCTestCase {
