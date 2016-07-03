@@ -33,8 +33,8 @@
 		9938B4041D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9938B4031D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift */; };
 		99417A621CF96F4800553AE0 /* AnagramSingleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99417A611CF96F4800553AE0 /* AnagramSingleton.swift */; };
 		99417A641CF96F6400553AE0 /* sowpods_anagrams.bin in Resources */ = {isa = PBXBuildFile; fileRef = 99417A631CF96F6400553AE0 /* sowpods_anagrams.bin */; };
-		9951B5731D2923E7007FD0EC /* Lookup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9951B5721D2923E7007FD0EC /* Lookup.swift */; };
 		9951B5941D295AD8007FD0EC /* AnagramDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9951B5931D295AD8007FD0EC /* AnagramDictionary.swift */; };
+		9951B5981D296A32007FD0EC /* Lookup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9951B5971D296A32007FD0EC /* Lookup.swift */; };
 		995CBC061CCCB19000DF06B8 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC051CCCB19000DF06B8 /* Game.swift */; };
 		995CBC081CCCB1A000DF06B8 /* Solver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC071CCCB1A000DF06B8 /* Solver.swift */; };
 		995CBC0A1CCCB1C400DF06B8 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC091CCCB1C400DF06B8 /* Player.swift */; };
@@ -91,8 +91,8 @@
 		99417A611CF96F4800553AE0 /* AnagramSingleton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnagramSingleton.swift; sourceTree = "<group>"; };
 		99417A631CF96F6400553AE0 /* sowpods_anagrams.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = sowpods_anagrams.bin; sourceTree = "<group>"; };
 		9951B56A1D2922A4007FD0EC /* Lookup.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lookup.framework; path = "../AnagramDictionary/Lookup/build/Debug-iphoneos/Lookup.framework"; sourceTree = "<group>"; };
-		9951B5721D2923E7007FD0EC /* Lookup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Lookup.swift; path = Lookup/Lookup.swift; sourceTree = SOURCE_ROOT; };
 		9951B5931D295AD8007FD0EC /* AnagramDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnagramDictionary.swift; sourceTree = "<group>"; };
+		9951B5971D296A32007FD0EC /* Lookup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lookup.swift; sourceTree = "<group>"; };
 		995CBC051CCCB19000DF06B8 /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		995CBC071CCCB1A000DF06B8 /* Solver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Solver.swift; sourceTree = "<group>"; };
 		995CBC091CCCB1C400DF06B8 /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
@@ -192,7 +192,7 @@
 		991AE46E1D1FC296001C98E4 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				9951B5721D2923E7007FD0EC /* Lookup.swift */,
+				9951B5971D296A32007FD0EC /* Lookup.swift */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -414,8 +414,8 @@
 				995CBC0A1CCCB1C400DF06B8 /* Player.swift in Sources */,
 				99139C031D1EFB7B0033E114 /* WordsWithFriendsBag.swift in Sources */,
 				99DC69741D2902C200FFC5F6 /* JSONSerializable.swift in Sources */,
+				9951B5981D296A32007FD0EC /* Lookup.swift in Sources */,
 				995CBC181CCCB5FC00DF06B8 /* BoardState.swift in Sources */,
-				9951B5731D2923E7007FD0EC /* Lookup.swift in Sources */,
 				995CBC161CCCB58A00DF06B8 /* Board.swift in Sources */,
 				995CBC0C1CCCB1E000DF06B8 /* Bag.swift in Sources */,
 				99139C191D1F1B080033E114 /* WordfeudSolver.swift in Sources */,
