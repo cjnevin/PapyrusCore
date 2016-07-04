@@ -58,7 +58,7 @@ public class Game {
     public static let rackAmount = 7
     var solver: Solver
     var serial: Bool = false
-    var ended: Bool = true
+    private(set) public var ended: Bool = true
     public var bag: Bag
     public private(set) var players: [Player]
     var playerIndex: Int
