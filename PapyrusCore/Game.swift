@@ -124,6 +124,10 @@ public class Game {
         _lastMove = Solution.object(from: lastMoveJson)
     }
     
+    public func index(of player: Player) -> Int? {
+        return players.enumerated().filter({ $1.id == player.id }).first?.offset
+    }
+    
     public func save(to file: URL) -> Bool {
         var gameType: GameType!
         if board is SuperScrabbleBoard {
