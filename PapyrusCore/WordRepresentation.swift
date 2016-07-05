@@ -55,10 +55,10 @@ extension WordRepresentation {
 }
 
 public struct Word: WordRepresentation, Equatable, JSONSerializable {
-    let word: String
-    let x: Int
-    let y: Int
-    let horizontal: Bool
+    public let word: String
+    public let x: Int
+    public let y: Int
+    public let horizontal: Bool
     
     public func toJSON() -> JSON {
         return ["word": word, "x": x, "y": y, "horizontal": horizontal]
@@ -82,7 +82,7 @@ public struct Solution: WordRepresentation, Equatable, JSONSerializable {
     public let y: Int
     public let horizontal: Bool
     public let score: Int
-    let intersections: [Word]
+    public let intersections: [Word]
     let blanks: [WordPosition]
     
     init(word: String, x: Int, y: Int, horizontal: Bool, score: Int, intersections: [Word], blanks: [WordPosition]) {
