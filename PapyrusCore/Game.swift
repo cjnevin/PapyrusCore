@@ -23,7 +23,7 @@ public enum GameType: Int {
     case wordfeud
     case wordsWithFriends
     
-    func bag() -> Bag {
+    public func bag() -> Bag {
         switch self {
         case .superScrabble:
             return SuperScrabbleBag()
@@ -36,7 +36,7 @@ public enum GameType: Int {
         }
     }
     
-    func board() -> Board {
+    public func board() -> Board {
         switch self {
         case .superScrabble:
             return SuperScrabbleBoard()
