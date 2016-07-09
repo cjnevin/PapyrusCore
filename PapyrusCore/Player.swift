@@ -15,7 +15,21 @@ public enum Difficulty: Double {
     case hard = 1.0
 }
 
-public typealias RackTile = (letter: Character, isBlank: Bool)
+public func == (lhs: RackTile, rhs: RackTile) -> Bool {
+    return lhs.id == rhs.id
+}
+
+public struct RackTile: Equatable {
+    private let id = UUID().uuidString
+    public let letter: Character
+    public let isBlank: Bool
+    public init(letter: Character, isBlank: Bool) {
+        self.letter = letter
+        self.isBlank = isBlank
+    }
+}
+
+//public typealias RackTile = (letter: Character, isBlank: Bool)
 
 public protocol Player: JSONSerializable {
     /// Unique identifier for player.
@@ -36,17 +50,19 @@ public protocol Player: JSONSerializable {
     mutating func swapped(tiles: [Character], with newTiles: [Character])
     /// Shuffle rack tile order.
     mutating func shuffle()
+    /// Move a tile in your rack.
+    mutating func moveTile(from index: Int, to newIndex: Int)
 }
 
 public extension Player {
     mutating func remove(letter: Character) -> (removed: Bool, wasBlank: Bool) {
-        for n in 0..<rack.count where rack[n].0 == letter {
+        for n in 0..<rack.count where rack[n].letter == letter {
             let isBlank = rack[n].isBlank
             rack.remove(at: n)
             return (true, isBlank)
         }
         // Tile must be a blank? Lets check...
-        if rack.map({$0.0}).contains(Game.blankLetter) {
+        if rack.map({$0.letter}).contains(Game.blankLetter) {
             return remove(letter: Game.blankLetter)
         }
         return (false, false)
@@ -71,15 +87,24 @@ public extension Player {
     
     mutating func drew(tiles: [Character]) {
         for tile in tiles {
-            rack.append((tile, tile == Game.blankLetter))
+            rack.append(RackTile(letter: tile, isBlank: tile == Game.blankLetter))
         }
     }
     
     mutating func updateBlank(to newValue: Character) {
         for n in 0..<rack.count where rack[n].letter == Game.blankLetter && rack[n].isBlank == true {
-            rack[n] = (newValue, true)
+            rack[n] = RackTile(letter: newValue, isBlank: true)
             break
         }
+    }
+    
+    mutating func moveTile(from currentIndex: Int, to newIndex: Int) {
+        guard rack.indices.contains(currentIndex) && rack.indices.contains(newIndex) && currentIndex != newIndex else {
+            return
+        }
+        let obj = rack[currentIndex]
+        rack.remove(at: currentIndex)
+        rack.insert(obj, at: newIndex)
     }
 }
 

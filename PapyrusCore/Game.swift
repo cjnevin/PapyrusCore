@@ -144,6 +144,12 @@ public class Game {
         return writeJSON(json, to: file)
     }
     
+    public func moveRackTile(from currentIndex: Int, to newIndex: Int) {
+        if player is Human {
+            players[playerIndex].moveTile(from: currentIndex, to: newIndex)
+        }
+    }
+    
     public func shuffleRack() {
         if player is Human {
             players[playerIndex].shuffle()
@@ -206,8 +212,8 @@ public class Game {
             var ai = player as! Computer
             let vowels = bag.dynamicType.vowels
             let blank = Game.blankLetter
-            while aiCanPlayBlanks == false && ai.rack.filter({$0.0 == blank}).count > 0 {
-                if Set(ai.rack.map({$0.0})).intersection(vowels).count == 0 {
+            while aiCanPlayBlanks == false && ai.rack.filter({$0.letter == blank}).count > 0 {
+                if Set(ai.rack.map({$0.letter})).intersection(vowels).count == 0 {
                     // If we have no vowels lets pick a random vowel
                     ai.updateBlank(to: vowels[Int(arc4random()) % vowels.count])
                     print("AI set value of blank letter")
