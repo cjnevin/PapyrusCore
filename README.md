@@ -54,19 +54,6 @@ let game = Game(dictionary: dictionary, players: players) { event in
 game.start()
 ```
 
-There is also support for saving and restoring games from file:
-
-```swift
-// Save current state...
-game.save(to: path)
-
-// New game loading previous state
-let restoredGame = Game(from: path, dictionary: dictionary) { event in
-   ...
-}
-
-```
-
 ### Object Types
 
 #### Bag
@@ -76,13 +63,9 @@ The tile bag, provides methods for drawing and replacing tiles in a distribution
 The current board representation, can be configured based on different game types.
 
 #### Game
-Initialising a game of scrabble can be done using this class, simply call the newGame or restoreGame.
+Main class responsible for gameplay, handles saving and restoring game state (via `save(to:)` and `Game(from:)` methods).
 
-Once you've created a Game object you have access to various methods for 'Human' play (i.e. swapping tiles, skipping your turn, validation of play, shuffling your rack, submitting plays).
-
-AI play will be handled automatically once 'nextTurn' is called.
-
-Solver state will be restored using player information, however developer is responsible for restoring bag state.
+Exposes various actions that a Human player may want to take including: move validation, shuffling and rearranging your rack, skipping, submitting moves, suggested moves, and swapping tiles. AI play will be handled automatically once `nextTurn` is called.
 
 #### Player
 A player can be either a Human or a Computer, Computer's have a difficulty associated with them and are automated. Both have the solutions they have played, the tiles they have in their rack and their score.
