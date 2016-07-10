@@ -19,7 +19,7 @@ let dictionary = AnagramDictionary(filename: "DICTIONARY")!
 // Create players that will be challenging eachother
 let human = Human()
 let hardAI = Computer()
-let easyAI = Computer(difficulty: .Easy)
+let easyAI = Computer(difficulty: .easy)
 let players = [human, hardAI, easyAI]
 
 // Now we have everything configured, we can create a Game object
@@ -27,24 +27,24 @@ let game = Game(dictionary: dictionary, players: players) { event in
   // Switch to main thread before updating UI...
   Dispatch.main.async() {
     switch event {
-      case let .Over(winner):
+      case let .over(winner):
         print("Winner: \(winner)")
       
-      case .TurnStarted:
+      case .turnStarted:
         // UI should be enabled if game.player is 'Human'
         print("Turn Started")
       
-      case .TurnEnded:
+      case .turnEnded:
         // UI should be disabled if game.player is 'Human'
         print("Turn Ended")
     
-      case let .Move(solution):
+      case let .move(solution):
         print("Word Played \(solution.word)")
       
-      case let .DrewTiles(letters):
+      case let .drewTiles(letters):
         print("Drew Tiles \(letters)")
       
-      case .SwappedTiles:
+      case .swappedTiles:
         print("Swapped Tiles")
     }
   }
