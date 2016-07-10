@@ -27,24 +27,24 @@ let game = Game(dictionary: dictionary, players: players) { event in
   // Switch to main thread before updating UI...
   Dispatch.main.async() {
     switch event {
-      case let .over(winner):
+      case let .over(game, winner):
         print("Winner: \(winner)")
       
-      case .turnStarted:
+      case let .turnStarted(game):
         // UI should be enabled if game.player is 'Human'
         print("Turn Started")
       
-      case .turnEnded:
+      case let .turnEnded(game):
         // UI should be disabled if game.player is 'Human'
         print("Turn Ended")
     
-      case let .move(solution):
+      case let .move(game, solution):
         print("Word Played \(solution.word)")
       
-      case let .drewTiles(letters):
+      case let .drewTiles(game, letters):
         print("Drew Tiles \(letters)")
       
-      case .swappedTiles:
+      case let .swappedTiles(game):
         print("Swapped Tiles")
     }
   }
