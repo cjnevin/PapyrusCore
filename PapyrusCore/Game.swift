@@ -54,25 +54,32 @@ let aiCanPlayBlanks = false
 
 public typealias EventHandler = (GameEvent) -> ()
 public class Game {
+    /// Character used for blank/wildcard tiles.
     public static let blankLetter = Character("_")
+    /// Amount of tiles that should be in a players rack when possible.
     public static let rackAmount = 7
     var solver: Solver
     var serial: Bool = false
     private(set) public var ended: Bool = true
+    /// Bag where tiles are drawn from.
     public var bag: Bag
+    /// All players.
     public private(set) var players: [Player]
     var playerIndex: Int
+    /// Player that is having their turn.
     public var player: Player { return players[playerIndex] }
     private var eventHandler: EventHandler
     public var board: Board {
         return solver.board
     }
     var _lastMove: Solution? = nil
+    /// Last solution played.
     public var lastMove: Solution? {
         return _lastMove
     }
     private let maximumConsecutiveSkips = 3
     
+    /// Create a new game.
     public init(bag: Bag,
          board: Board,
          dictionary: Lookup,
@@ -95,6 +102,7 @@ public class Game {
         self.eventHandler = eventHandler
     }
     
+    /// Create a new game with the default configurations for the given `gameType` (Recommended).
     public convenience init(gameType: GameType = .scrabble, dictionary: Lookup, players: [Player], serial: Bool = false, eventHandler: EventHandler) {
         self.init(bag: gameType.bag(), board: gameType.board(), dictionary: dictionary, players: players, playerIndex: 0, serial: serial, eventHandler: eventHandler)
         for _ in players {
@@ -104,6 +112,7 @@ public class Game {
         playerIndex = 0
     }
     
+    /// Restore a game from file.
     public convenience init?(from file: URL, dictionary: Lookup, eventHandler: EventHandler) {
         guard let
             json = readJSON(from: file),
@@ -124,10 +133,12 @@ public class Game {
         _lastMove = Solution.object(from: lastMoveJson)
     }
     
+    /// Returns: Index of given player in players array.
     public func index(of player: Player) -> Int? {
         return players.enumerated().filter({ $1.id == player.id }).first?.offset
     }
     
+    /// Save the current state of the game to disk. Can be restored using `Game(from:)`.
     public func save(to file: URL) -> Bool {
         var gameType: GameType!
         if board is SuperScrabbleBoard {
@@ -144,27 +155,32 @@ public class Game {
         return writeJSON(json, to: file)
     }
     
+    /// Rearrange a tile in your rack.
     public func moveRackTile(from currentIndex: Int, to newIndex: Int) {
         if player is Human {
             players[playerIndex].moveTile(from: currentIndex, to: newIndex)
         }
     }
     
+    /// Shuffle the tiles in your rack.
     public func shuffleRack() {
         if player is Human {
             players[playerIndex].shuffle()
         }
     }
     
+    /// Start gameplay.
     public func start() {
         ended = false
         turn()
     }
     
+    /// End current game prematurely.
     public func stop() {
         gameOver()
     }
     
+    /// Skip current players turn.
     public func skip() {
         if ended {
             return
@@ -241,6 +257,7 @@ public class Game {
         }
     }
     
+    /// Call when the player has finished their turn.
     public func nextTurn() {
         if ended {
             return
@@ -254,6 +271,7 @@ public class Game {
         turn()
     }
     
+    /// Submit a move. Developer is responsible for calling `nextTurn` when ready to progress game.
     public func play(solution: Solution) {
         if ended {
             return
@@ -273,10 +291,23 @@ public class Game {
         eventHandler(.drewTiles(self, newTiles))
     }
     
+    /// Request a suggested solution given the users current tiles and the state of the board.
+    public func suggestion(completion: (solution: Solution?) -> ()) {
+        solver.solutions(forLetters: player.rack, serial: false) { [weak self] solutions in
+            guard let solutions = solutions, best = self?.solver.solve(with: solutions, difficulty: .hard) else {
+                completion(solution: nil)
+                return
+            }
+            completion(solution: best)
+        }
+    }
+    
+    /// Player can only swap tiles if there is a sufficient amount left in the bag.
     public var canSwap: Bool {
         return bag.remaining.count > Game.rackAmount
     }
     
+    /// Swap given tiles with new ones from the bag.
     public func swap(tiles oldTiles: [Character]) -> Bool {
         guard canSwap else { return false }
         
@@ -292,17 +323,11 @@ public class Game {
         return true
     }
     
+    /// Validate a move by providing the offsets of the letters that were dropped and the blanks that were included in that move.
+    /// If successful you will receive a solution you can pass to the `play` method. 
+    /// Solution contains useful information such as the score and the intersected words.
     public func validate(points: [(x: Int, y: Int, letter: Character)], blanks: [(x: Int, y: Int)]) -> ValidationResponse {
         return solver.validate(points: points, blanks: blanks)
     }
     
-    public func suggestion(completion: (solution: Solution?) -> ()) {
-        solver.solutions(forLetters: player.rack, serial: false) { [weak self] solutions in
-            guard let solutions = solutions, best = self?.solver.solve(with: solutions, difficulty: .hard) else {
-                completion(solution: nil)
-                return
-            }
-            completion(solution: best)
-        }
-    }
 }
