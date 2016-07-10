@@ -296,13 +296,13 @@ public class Game {
         return solver.validate(points: points, blanks: blanks)
     }
     
-    public func getHint(_ completion: (Solution?) -> ()) {
+    public func suggestion(completion: (solution: Solution?) -> ()) {
         solver.solutions(forLetters: player.rack, serial: false) { [weak self] solutions in
             guard let solutions = solutions, best = self?.solver.solve(with: solutions, difficulty: .hard) else {
-                completion(nil)
+                completion(solution: nil)
                 return
             }
-            completion(best)
+            completion(solution: best)
         }
     }
 }
