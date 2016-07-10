@@ -9,7 +9,7 @@ Reusable library for playing Scrabble games.
 
 ```swift
 
-// NOTE: Rather than block the main thread, the 'Lookup' object should be created on a background thread
+// NOTE: Rather than block the main thread, your 'Dictionary' object should be created on a background thread
 // this has been omitted to reduce complexity
 
 // Create a dictionary object for determining and validating moves
@@ -52,6 +52,19 @@ let game = Game(dictionary: dictionary, players: players) { event in
 
 // Finally, when you're ready to start the game you can call
 game.start()
+```
+
+There is also support for saving and restoring games from file:
+
+```swift
+// Save current state...
+game.save(to: path)
+
+// New game loading previous state
+let restoredGame = Game(from: path, dictionary: dictionary) { event in
+   ...
+}
+
 ```
 
 ### Object Types
