@@ -9,7 +9,7 @@
 import Foundation
 
 public enum GameEvent {
-    case over(Game, Player?)
+    case over(Game, [Player]?)
     case move(Game, Solution)
     case drewTiles(Game, [Character])
     case swappedTiles(Game)
@@ -211,8 +211,9 @@ public class Game {
         players = newPlayers
         
         // Does not currently handle ties
-        let winner = players.sorted(isOrderedBefore: { $0.score > $1.score }).first
-        eventHandler(.over(self, winner))
+        let bestScore = players.sorted(isOrderedBefore: { $0.score > $1.score }).first
+        let winners = players.filter({ $0.score == bestScore?.score })
+        eventHandler(.over(self, winners))
     }
     
     private func turn() {
