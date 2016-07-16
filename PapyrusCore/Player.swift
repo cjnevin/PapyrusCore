@@ -113,25 +113,30 @@ private func makePlayers(using values: [JSON], f: (from: JSON) -> Player?) -> [P
 }
 
 func makePlayers(using JSONSerializables: [JSON]) -> [Player] {
-    return makePlayers(using: JSONSerializables.filter({ $0["difficulty"] != nil }), f: Computer.object) +
-        makePlayers(using: JSONSerializables.filter({ $0["difficulty"] == nil }), f: Human.object)
+    return makePlayers(using: JSONSerializables.filter({ $0[JSONKey.difficulty.rawValue] != nil }), f: Computer.object) +
+        makePlayers(using: JSONSerializables.filter({ $0[JSONKey.difficulty.rawValue] == nil }), f: Human.object)
 }
 
 private func json<T: Player>(forPlayer player: T) -> JSON {
-    let rackJson: [JSON] = player.rack.map({ ["letter": String($0.letter), "blank": $0.isBlank] })
+    let rackJson: [JSON] = player.rack.map({ json(from: [.letter: String($0.letter), .blank: $0.isBlank]) })
     let solvesJson = player.solves.map({ $0.toJSON() })
-    return ["score": player.score, "rack": rackJson, "solves": solvesJson]
+    return json(from: [.score: player.score, .rack: rackJson, .solves: solvesJson])
 }
 
 private func parameters(from json: JSON) -> (rack: [Character], solves: [Solution], score: Int)? {
     guard let
-        rackJson = json["rack"] as? [JSON],
-        solvesJson = json["solves"] as? [JSON],
-        score = json["score"] as? Int else {
+        rackJson: [JSON] = JSONKey.rack.in(json),
+        solvesJson: [JSON] = JSONKey.solves.in(json),
+        score: Int = JSONKey.score.in(json) else {
         return nil
     }
+    func letter(from json: JSON) -> Character {
+        let blank: Bool = JSONKey.blank.in(json)!
+        let char: String = JSONKey.letter.in(json)!
+        return blank ? Game.blankLetter : Character(char)
+    }
     let solves = solvesJson.flatMap({ Solution.object(from: $0) })
-    let rack = rackJson.map({ $0["blank"] as! Bool ? Game.blankLetter : Character($0["letter"] as! String) })
+    let rack = rackJson.map(letter)
     return (rack, solves, score)
 }
 
@@ -183,12 +188,15 @@ public struct Computer: Player {
     
     public func toJSON() -> JSON {
         var buffer = json(forPlayer: self)
-        buffer["difficulty"] = difficulty.rawValue
+        buffer[JSONKey.difficulty.rawValue] = difficulty.rawValue
         return buffer
     }
     
     public static func object(from json: JSON) -> Computer? {
-        guard let diff = json["difficulty"] as? Double, difficulty = Difficulty(rawValue: diff), (rack, solves, score) = parameters(from: json) else {
+        guard let
+            diff: Double = JSONKey.difficulty.in(json),
+            difficulty = Difficulty(rawValue: diff),
+            (rack, solves, score) = parameters(from: json) else {
             return nil
         }
         return Computer(difficulty: difficulty, rack: rack, score: score, solves: solves, consecutiveSkips: 0)

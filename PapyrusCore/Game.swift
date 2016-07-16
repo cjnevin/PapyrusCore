@@ -116,18 +116,18 @@ public class Game {
     public convenience init?(from file: URL, dictionary: Lookup, eventHandler: EventHandler) {
         guard let
             json = readJSON(from: file),
-            gameTypeInt = json["gameType"] as? Int,
+            gameTypeInt: Int = JSONKey.gameType.in(json),
             gameType = GameType(rawValue: gameTypeInt),
-            bagRemaining = json["bag"] as? String,
-            playersJson = json["players"] as? [JSON],
-            playerIndex = json["playerIndex"] as? Int,
-            serial = json["serial"] as? Bool else {
+            bagRemaining: String = JSONKey.bag.in(json),
+            playersJson: [JSON] = JSONKey.players.in(json),
+            playerIndex: Int = JSONKey.playerIndex.in(json),
+            serial: Bool = JSONKey.serial.in(json) else {
                 return nil
         }
         var bag = gameType.bag()
         bag.remaining = Array(bagRemaining.characters)
         self.init(bag: bag, board: gameType.board(), dictionary: dictionary, players: makePlayers(using: playersJson), playerIndex: playerIndex, serial: serial, eventHandler: eventHandler)
-        guard let lastMoveJson = json["lastMove"] as? JSON else {
+        guard let lastMoveJson: JSON = JSONKey.lastMove.in(json) else {
             return
         }
         _lastMove = Solution.object(from: lastMoveJson)
@@ -151,8 +151,13 @@ public class Game {
             gameType = .scrabble
         }
         let lastMoveJson = _lastMove?.toJSON() ?? NSNull()
-        let json: JSON = ["lastMove": lastMoveJson, "gameType": gameType.rawValue, "bag": String(bag.remaining), "players": players.map({ $0.toJSON() }), "playerIndex": playerIndex, "serial": serial]
-        return writeJSON(json, to: file)
+        let output = json(from: [.lastMove: lastMoveJson,
+                                 .gameType: gameType.rawValue,
+                                 .bag: String(bag.remaining),
+                                 .players: players.map({ $0.toJSON() }),
+                                 .playerIndex: playerIndex,
+                                 .serial: serial])
+        return writeJSON(output, to: file)
     }
     
     /// Rearrange a tile in your rack.
