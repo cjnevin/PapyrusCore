@@ -94,12 +94,12 @@ extension Solver {
             }
             if let word = horizontalWord?.word {
                 let intersections = verticalWord != nil ? [verticalWord!.word] : []
-                let score = calculateScore(word, intersectedWords: intersections, blanks: allBlanks)
+                let score = totalScore(for: word, with: intersections, blanks: allBlanks)
                 let solution = Solution(word: word, score: score, intersections: intersections, blanks: blanks)
                 return .valid(solution:solution)
             }
             else if let word = verticalWord?.word {
-                let score = calculateScore(word, intersectedWords: [], blanks: allBlanks)
+                let score = totalScore(for: word, with: [], blanks: allBlanks)
                 let solution = Solution(word: word, score: score, intersections: [], blanks: blanks)
                 return .valid(solution: solution)
             }
@@ -141,7 +141,7 @@ extension Solver {
         }
         
         // Calculate score and return solution
-        let score = calculateScore(word, intersectedWords: intersectedWords, blanks: allBlanks)
+        let score = totalScore(for: word, with: intersectedWords, blanks: allBlanks)
         let solution = Solution(word: word, score: score, intersections: intersectedWords, blanks: blanks)
         return .valid(solution: solution)
     }
@@ -164,55 +164,47 @@ extension Solver {
     //
     // This would make it more difficult for human players to compete against AI
     // while also emptying the bag/rack faster (to achieve victory sooner)
-    private func calculateScore<T: WordRepresentation>(_ word: T, intersectedWords: [Word], blanks: [(x: Int, y: Int)]) -> Int {
-        var tilesUsed = 0
-        var score = 0
-        var scoreMultiplier = 1
-        var intersectionsScore = 0
-        
-        func isBlankAt(_ x: Int, y: Int) -> Bool {
-            return blanks.contains({ $0.x == x && $0.y == y})
+    
+    
+    func points(for letterPosition: LetterPosition, with blanks: [WordPosition]) -> Int {
+        guard !blanks.contains({ $0.x == letterPosition.x && $0.y == letterPosition.y }) else {
+            return 0
         }
-        
-        func letterPoints(_ letter: Character, atX x: Int, y: Int) -> Int {
-            return isBlankAt(x, y: y) ? 0 : bagType.letterPoints[letter]!
-        }
-        
-        func scoreWord(_ word: Word) -> Int {
-            let chars = Array(word.word.characters)
-            return word.toPositions().enumerated()
-                .flatMap({ letterPoints(chars[$0], atX: $1.x, y: $1.y) })
-                .reduce(0, combine: +)
-        }
-        
-        func scoreLetter(_ letter: Character, x: Int, y: Int) {
-            let value = letterPoints(letter, atX: x, y: y)
-            if board.isFilled(atX: x, y: y) {
-                score += value
-                return
-            }
-            let letterMultiplier = board.letterMultipliers[y][x]
-            let wordMultiplier = board.wordMultipliers[y][x]
-            tilesUsed += 1
-            score += value * letterMultiplier
-            scoreMultiplier *= wordMultiplier
-            
-            if let intersectingWord = intersectedWords.filter({ word.horizontal ? $0.x == x : $0.y == y }).first {
-                // scoreWord method will score this letter once, so lets just add the remaining amount if placed on a premium square.
-                let wordScore = scoreWord(intersectingWord) + (value * (letterMultiplier - 1))
-                intersectionsScore += wordScore * wordMultiplier
-            }
-        }
-        
-        for (i, letter) in word.word.characters.enumerated() {
-            scoreLetter(letter,
-                        x: word.x + (word.horizontal ? i : 0),
-                        y: word.y + (word.horizontal ? 0 : i))
-        }
-        
-        return (score * scoreMultiplier) + intersectionsScore + (tilesUsed == 7 ? allTilesUsedBonus : 0)
+        return bagType.letterPoints[letterPosition.letter]!
     }
     
+    func intersectingScore(for word: Word, blanks: [WordPosition]) -> Int {
+        return word.toLetterPositions()
+            .flatMap({ points(for: $0, with: blanks) })
+            .reduce(0, combine: +)
+    }
+    
+    func totalScore<T: WordRepresentation>(for word: T, with intersections: [Word], blanks: [WordPosition]) -> Int {
+        var tilesUsed: Int = 0
+        var intersectionTotal: Int = 0
+        var total: Int = 0
+        var multiplier: Int = 1
+        word.toLetterPositions().forEach { position in
+            let letterScore = points(for: position, with: blanks)
+            guard board.isEmpty(atX: position.x, y: position.y) else {
+                total += letterScore
+                return
+            }
+            
+            let letterMultiplier = board.letterMultipliers[position.y][position.x]
+            let wordMultiplier = board.wordMultipliers[position.y][position.x]
+            
+            if let intersection = intersections.filter({ word.horizontal ? $0.x == position.x : $0.y == position.y }).first {
+                intersectionTotal += wordMultiplier * intersectingScore(for: intersection, blanks: blanks) + (letterScore * (letterMultiplier - 1))
+            }
+            
+            tilesUsed += 1
+            total += letterScore * letterMultiplier
+            multiplier *= wordMultiplier
+        }
+        return total * multiplier + intersectionTotal + (tilesUsed == Game.rackAmount ? allTilesUsedBonus : 0)
+    }
+        
     /// - returns: `words` will contain the first invalid intersection if `valid` is `false` or the array of intersections if `valid` is `true`. `valid` should be handled appropriately.
     func intersections<T: WordRepresentation>(forWord word: T) -> (valid: Bool, words: [Word]) {
         var words = [Word]()
@@ -299,7 +291,7 @@ extension Solver {
         let (valid, intersectedWords) = intersections(forWord: word)
         guard valid else { return nil }
         let blankSpots = blanks(forWord: word, rackLetters: rackLetters)
-        let score = calculateScore(word, intersectedWords: intersectedWords, blanks: blankSpots)
+        let score = totalScore(for: word, with: intersectedWords, blanks: blankSpots)
         return Solution(word: word, score: score, intersections: intersectedWords, blanks: blankSpots)
     }
     
@@ -358,7 +350,7 @@ extension Solver {
             if serial {
                 collect(into: &possibilities, effectiveRange: effectiveRange, length: length)
             } else {
-                let currentQueue = OperationQueue.current()
+                let currentQueue = OperationQueue.current
                 operationQueue.addOperation({
                     var innerSolutions = [Solution]()
                     collect(into: &innerSolutions, effectiveRange: effectiveRange, length: length)

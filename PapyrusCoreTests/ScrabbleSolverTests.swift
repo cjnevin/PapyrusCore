@@ -7,7 +7,6 @@
 //
 
 import XCTest
-import AnagramDictionary
 @testable import PapyrusCore
 
 class ScrabbleSolverTests: XCTestCase {
@@ -301,7 +300,12 @@ class ScrabbleSolverTests: XCTestCase {
     // MARK: - Blanks
     
     func testBlanks() {
-        let rackTiles: [RackTile] = [("a", false), ("c", true), ("r", false), ("o", true), ("n", false), ("h", false)]
+        let rackTiles: [RackTile] = [RackTile(letter: "a", isBlank: false),
+                                     RackTile(letter: "c", isBlank: true),
+                                     RackTile(letter: "r", isBlank: false),
+                                     RackTile(letter: "o", isBlank: true),
+                                     RackTile(letter: "n", isBlank: false),
+                                     RackTile(letter: "h", isBlank: false)]
         let word = Word(word: "archon", x: 7, y: 7, horizontal: true)
         XCTAssertEqual(solver.blanks(forWord: word, rackLetters: rackTiles).map({ $0.x }), [9, 11])
     }
@@ -314,7 +318,7 @@ class ScrabbleSolverTests: XCTestCase {
     
     func testScaling() {
         dropWords()
-        let rack: [RackTile] = ["c", "a", "r", "t", "e", "d"].map({ ($0, false) })
+        let rack: [RackTile] = toRackTiles(arr: ["c", "a", "r", "t", "e", "d"].map({ ($0, false) }))
         self.solver.solutions(forLetters: rack, serial: true) { (solutions) in
             guard let solutions = solutions else {
                 XCTAssert(false)
@@ -354,16 +358,16 @@ class ScrabbleSolverTests: XCTestCase {
     func testBestSolution() {
         dropWords()
         var racks = [[RackTile]]()
-        racks.append([("a", false), ("r", false), ("t", false), ("i", false), ("s", false), ("t", false)])
-        racks.append([("b", false), ("a", false), ("t", false), ("h", false), ("e", false), ("r", false)])
-        racks.append([("c", false), ("e", false), ("l", false), ("i", false), ("a", false), ("c", false)])
-        racks.append([("z", false), ("e", false), ("b", false), ("r", false), ("a", false), ("s", false)])
-        racks.append([("q", false), ("u", false), ("e", false), ("e", false), ("n", false), ("y", false)])
-        racks.append([("s", false), ("t", false), ("a", false), ("g", false), ("e", false), ("d", false)])
-        racks.append([("r", false), ("a", false), ("t", false), ("i", false), ("n", false), ("g", false)])
-        racks.append([(Game.blankLetter, true), ("a", false), ("t", false), (Game.blankLetter, true), ("n", false), ("g", false)])    // Double wildcard is very slow, CPU should not get two wildcards, if it does lets randomize one of them to a specific value
-        racks.append([(Game.blankLetter, true), ("a", false), ("t", false), ("i", false), ("n", false), ("g", false)])    // Single wildcard is also slow, just not as bad
-        racks.append([("c", false), ("a", false), ("t", false)])
+        racks.append(toRackTiles(arr: [("a", false), ("r", false), ("t", false), ("i", false), ("s", false), ("t", false)]))
+        racks.append(toRackTiles(arr: [("b", false), ("a", false), ("t", false), ("h", false), ("e", false), ("r", false)]))
+        racks.append(toRackTiles(arr: [("c", false), ("e", false), ("l", false), ("i", false), ("a", false), ("c", false)]))
+        racks.append(toRackTiles(arr: [("z", false), ("e", false), ("b", false), ("r", false), ("a", false), ("s", false)]))
+        racks.append(toRackTiles(arr: [("q", false), ("u", false), ("e", false), ("e", false), ("n", false), ("y", false)]))
+        racks.append(toRackTiles(arr: [("s", false), ("t", false), ("a", false), ("g", false), ("e", false), ("d", false)]))
+        racks.append(toRackTiles(arr: [("r", false), ("a", false), ("t", false), ("i", false), ("n", false), ("g", false)]))
+        racks.append(toRackTiles(arr: [(Game.blankLetter, true), ("a", false), ("t", false), (Game.blankLetter, true), ("n", false), ("g", false)]))    // Double wildcard is very slow, CPU should not get two wildcards, if it does lets randomize one of them to a specific value
+        racks.append(toRackTiles(arr: [(Game.blankLetter, true), ("a", false), ("t", false), ("i", false), ("n", false), ("g", false)]))    // Single wildcard is also slow, just not as bad
+        racks.append(toRackTiles(arr: [("c", false), ("a", false), ("t", false)]))
     
         let expectations = [
             Solution(word: "tiars", x: 7, y: 10, horizontal: false, score: 24, intersections: [Word(word: "et", x: 6, y: 10, horizontal: true), Word(word: "di", x: 6, y: 11, horizontal: true)], blanks: []),

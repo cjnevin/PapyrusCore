@@ -9,6 +9,7 @@
 import Foundation
 
 typealias WordPosition = (x: Int, y: Int)
+typealias LetterPosition = (x: Int, y: Int, letter: Character)
 
 private func matches<T: WordRepresentation>(_ lhs: T, _ rhs: T) -> Bool {
     return (lhs.horizontal == rhs.horizontal &&
@@ -42,6 +43,13 @@ protocol WordRepresentation {
 extension WordRepresentation {
     func length() -> Int {
         return word.characters.count
+    }
+    
+    func toLetterPositions() -> [LetterPosition] {
+        return word.characters.enumerated().flatMap { (offset, element) in
+            let pos = position(forIndex: offset)
+            return LetterPosition(x: pos.x, y: pos.y, letter: element)
+        }
     }
     
     func toPositions() -> [WordPosition] {

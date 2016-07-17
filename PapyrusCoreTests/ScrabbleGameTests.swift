@@ -7,7 +7,6 @@
 //
 
 import XCTest
-import AnagramDictionary
 @testable import PapyrusCore
 
 class ScrabbleGameTests: XCTestCase {
@@ -101,9 +100,9 @@ class ScrabbleGameTests: XCTestCase {
         waitForExpectations(withTimeout: 60, handler: nil)
         
         let url = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true).first! + "/game.json")
-        XCTAssert(game.save(toFile: url))
+        XCTAssert(game.save(to: url))
         
-        guard let loadedGame = Game(fromFile: url, dictionary: dictionary, eventHandler: eventHandler) else {
+        guard let loadedGame = Game(from: url, dictionary: dictionary, eventHandler: eventHandler) else {
             XCTFail()
             return
         }

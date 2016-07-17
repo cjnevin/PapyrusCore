@@ -9,13 +9,17 @@
 import XCTest
 @testable import PapyrusCore
 
+func toRackTiles(arr: [(letter: Character, isBlank: Bool)]) -> [RackTile] {
+    return arr.map { RackTile(letter: $0, isBlank: $1) }
+}
+
 class HumanPlayerTests : XCTestCase {
     
     var player: Player!
     let board = ScrabbleBoard()
 
     func rackTiles() -> [RackTile] {
-        return [(Game.blankLetter, true), ("A", false), ("B", false), ("C", false), ("D", false), ("E", false), ("F", false)]
+        return toRackTiles(arr: [(Game.blankLetter, true), ("A", false), ("B", false), ("C", false), ("D", false), ("E", false), ("F", false)])
     }
     
     override func setUp() {
