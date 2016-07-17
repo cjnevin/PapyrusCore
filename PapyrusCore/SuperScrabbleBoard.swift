@@ -17,7 +17,7 @@ public struct SuperScrabbleBoard: Board, Equatable {
     public let center = 10
     public let size = 21
     public var layout = Array(repeating: Array(repeating: Character(" "), count: 21), count: 21)
-    public var blanks = [(x: Int, y: Int)]()
+    public var blanks = Positions()
     public let letterMultipliers = [
         [1,1,1,2,1,1,1,1,1,1,2,1,1,1,1,1,1,2,1,1,1],
         [1,1,1,1,3,1,1,1,1,1,1,1,1,1,1,1,3,1,1,1,1],

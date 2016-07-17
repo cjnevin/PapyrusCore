@@ -52,6 +52,10 @@ struct BoardState: CustomDebugStringConvertible, Equatable {
         vertical = v
     }
     
+    func state(at position: Position, horizontal h: Bool) -> Int {
+        return (h ? horizontal : vertical)[position.y][position.x]
+    }
+
     func state(atX x: Int, y: Int, horizontal h: Bool) -> Int {
         return (h ? horizontal : vertical)[y][x]
     }

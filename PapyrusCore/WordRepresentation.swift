@@ -8,9 +8,6 @@
 
 import Foundation
 
-typealias WordPosition = (x: Int, y: Int)
-typealias LetterPosition = (x: Int, y: Int, letter: Character)
-
 private func matches<T: WordRepresentation>(_ lhs: T, _ rhs: T) -> Bool {
     return (lhs.horizontal == rhs.horizontal &&
         lhs.word == rhs.word &&
@@ -36,8 +33,8 @@ protocol WordRepresentation {
     var horizontal: Bool { get }
     
     func length() -> Int
-    func toPositions() -> [WordPosition]
-    func position(forIndex index: Int) -> WordPosition
+    func toPositions() -> [Position]
+    func position(forIndex index: Int) -> Position
 }
 
 extension WordRepresentation {
@@ -52,13 +49,13 @@ extension WordRepresentation {
         }
     }
     
-    func toPositions() -> [WordPosition] {
+    func toPositions() -> [Position] {
         return (0..<word.characters.count).flatMap{ position(forIndex: $0) }
     }
     
-    func position(forIndex index: Int) -> WordPosition {
-        return (x + (horizontal ? index : 0),
-                y + (horizontal ? 0 : index))
+    func position(forIndex index: Int) -> Position {
+        return Position(x: x + (horizontal ? index : 0),
+                        y: y + (horizontal ? 0 : index))
     }
 }
 
@@ -95,9 +92,9 @@ public struct Solution: WordRepresentation, Equatable, JSONSerializable {
     public let horizontal: Bool
     public let score: Int
     public let intersections: [Word]
-    let blanks: [WordPosition]
+    let blanks: [Position]
     
-    init(word: String, x: Int, y: Int, horizontal: Bool, score: Int, intersections: [Word], blanks: [WordPosition]) {
+    init(word: String, x: Int, y: Int, horizontal: Bool, score: Int, intersections: [Word], blanks: [Position]) {
         self.word = word
         self.x = x
         self.y = y
@@ -108,7 +105,7 @@ public struct Solution: WordRepresentation, Equatable, JSONSerializable {
         self.blanks = blanks
     }
     
-    init(word: Word, score: Int, intersections: [Word], blanks: [WordPosition]) {
+    init(word: Word, score: Int, intersections: [Word], blanks: [Position]) {
         self.word = word.word
         self.x = word.x
         self.y = word.y
@@ -119,7 +116,7 @@ public struct Solution: WordRepresentation, Equatable, JSONSerializable {
         self.blanks = blanks
     }
     
-    public func getPositions() -> [(x: Int, y: Int)] {
+    public func getPositions() -> Positions {
         var points = toPositions()
         intersections.map({ $0.toPositions() }).forEach({ intersectedPoints in
             intersectedPoints.forEach({ intersectedPoint in
@@ -142,10 +139,6 @@ public struct Solution: WordRepresentation, Equatable, JSONSerializable {
             .blank: blanks.map({ json(from: [.x: $0.x, .y: $0.y]) })])
     }
     
-    private static func wordPosition(from json: JSON) -> WordPosition {
-        return (JSONKey.x.in(json)!, JSONKey.y.in(json)!)
-    }
-    
     public static func object(from json: JSON) -> Solution? {
         guard let
             word: String = JSONKey.word.in(json),
@@ -158,7 +151,7 @@ public struct Solution: WordRepresentation, Equatable, JSONSerializable {
                 return nil
         }
         let intersections = intersectionsJson.flatMap({ Word.object(from: $0) })
-        let blanks: [WordPosition] = blanksJson.map(wordPosition)
+        let blanks: [Position] = blanksJson.flatMap(Position.init)
         return Solution(word: word, x: x, y: y, horizontal: horizontal, score: score, intersections: intersections, blanks: blanks)
     }
 }

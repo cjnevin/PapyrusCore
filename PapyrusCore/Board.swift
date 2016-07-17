@@ -31,7 +31,7 @@ public protocol Board: CustomDebugStringConvertible {
     var size: Int { get }
     var boardRange: CountableRange<Int> { get }
     var layout: [[Character]] { get set }
-    var blanks: [(x: Int, y: Int)] { get set }
+    var blanks: Positions { get set }
     var isFirstPlay: Bool { get }
     var letterMultipliers: [[Int]] { get }
     var wordMultipliers: [[Int]] { get }
@@ -70,6 +70,14 @@ extension Board {
         return value == empty ? nil : value
     }
     
+    public func isEmpty(at position: Position) -> Bool {
+        return layout[position.y][position.x] == empty
+    }
+    
+    public func isFilled(at position: Position) -> Bool {
+        return layout[position.y][position.x] != empty
+    }
+
     public func isEmpty(atX x: Int, y: Int) -> Bool {
         return layout[y][x] == empty
     }
@@ -80,6 +88,10 @@ extension Board {
     
     public func isCenter(atX x: Int, y: Int) -> Bool {
         return x == center && y == center
+    }
+    
+    public func isValid(at position: Position, length: Int, horizontal: Bool) -> Bool {
+        return isValid(atX: position.x, y: position.y, length: length, horizontal: horizontal)
     }
     
     public func isValid(atX x: Int, y: Int, length: Int, horizontal: Bool) -> Bool {

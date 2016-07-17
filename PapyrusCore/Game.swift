@@ -332,8 +332,8 @@ public class Game {
     /// Validate a move by providing the offsets of the letters that were dropped and the blanks that were included in that move.
     /// If successful you will receive a solution you can pass to the `play` method. 
     /// Solution contains useful information such as the score and the intersected words.
-    public func validate(points: [(x: Int, y: Int, letter: Character)], blanks: [(x: Int, y: Int)]) -> ValidationResponse {
-        return solver.validate(points: points, blanks: blanks)
+    public func validate(positions: LetterPositions, blanks: Positions) -> ValidationResponse {
+        return solver.validate(positions: positions, blanks: blanks)
     }
     
 }

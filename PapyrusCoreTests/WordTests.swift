@@ -54,7 +54,7 @@ class WordTests : XCTestCase {
     }
     
     func testToPositions() {
-        let positions: [WordPosition] = [(4, 6), (5, 6), (6, 6), (7, 6)]
+        let positions: [Position] = [(4, 6), (5, 6), (6, 6), (7, 6)].map { Position(x: $0, y: $1) }
         XCTAssertEqual(word.toPositions().map({ $0.x }), positions.map({ $0.x }))
         XCTAssertEqual(word.toPositions().map({ $0.y }), positions.map({ $0.y }))
     }

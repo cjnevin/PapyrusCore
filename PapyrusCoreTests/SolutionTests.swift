@@ -32,11 +32,11 @@ class SolutionTests : WordTests {
         XCTAssertNotEqual(comparison, (word as! Solution))
     }
     
-    func getXs(_ positions: [WordPosition]) -> [Int] {
+    func getXs(_ positions: [Position]) -> [Int] {
         return Array(Set(positions.map({ $0.x }))).sorted()
     }
     
-    func getYs(_ positions: [WordPosition]) -> [Int] {
+    func getYs(_ positions: [Position]) -> [Int] {
         return Array(Set(positions.map({ $0.y }))).sorted()
     }
     

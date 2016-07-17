@@ -33,6 +33,7 @@
 		9938B4041D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9938B4031D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift */; };
 		99417A621CF96F4800553AE0 /* AnagramSingleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99417A611CF96F4800553AE0 /* AnagramSingleton.swift */; };
 		99417A641CF96F6400553AE0 /* sowpods_anagrams.bin in Resources */ = {isa = PBXBuildFile; fileRef = 99417A631CF96F6400553AE0 /* sowpods_anagrams.bin */; };
+		9948DF471D3BAF230091A333 /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9948DF461D3BAF230091A333 /* Position.swift */; };
 		9951B5941D295AD8007FD0EC /* AnagramDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9951B5931D295AD8007FD0EC /* AnagramDictionary.swift */; };
 		9951B5981D296A32007FD0EC /* Lookup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9951B5971D296A32007FD0EC /* Lookup.swift */; };
 		995CBC061CCCB19000DF06B8 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC051CCCB19000DF06B8 /* Game.swift */; };
@@ -90,6 +91,7 @@
 		9938B4031D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuperScrabbleBoardTests.swift; sourceTree = "<group>"; };
 		99417A611CF96F4800553AE0 /* AnagramSingleton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnagramSingleton.swift; sourceTree = "<group>"; };
 		99417A631CF96F6400553AE0 /* sowpods_anagrams.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = sowpods_anagrams.bin; sourceTree = "<group>"; };
+		9948DF461D3BAF230091A333 /* Position.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Position.swift; sourceTree = "<group>"; };
 		9951B56A1D2922A4007FD0EC /* Lookup.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lookup.framework; path = "../AnagramDictionary/Lookup/build/Debug-iphoneos/Lookup.framework"; sourceTree = "<group>"; };
 		9951B5931D295AD8007FD0EC /* AnagramDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnagramDictionary.swift; sourceTree = "<group>"; };
 		9951B5971D296A32007FD0EC /* Lookup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lookup.swift; sourceTree = "<group>"; };
@@ -235,6 +237,7 @@
 				99DC69731D2902C200FFC5F6 /* JSONSerializable.swift */,
 				991AE46E1D1FC296001C98E4 /* Libraries */,
 				995CBC091CCCB1C400DF06B8 /* Player.swift */,
+				9948DF461D3BAF230091A333 /* Position.swift */,
 				99139BF91D1EF7090033E114 /* Solver */,
 				990E2E4E1D0B5BE000E2748F /* WordRepresentation.swift */,
 				9960AD6F1BA589D800765614 /* Info.plist */,
@@ -403,6 +406,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9948DF471D3BAF230091A333 /* Position.swift in Sources */,
 				99139C011D1EFB590033E114 /* SuperScrabbleBag.swift in Sources */,
 				99139BF31D1EF2D60033E114 /* ScrabbleBoard.swift in Sources */,
 				99139BFB1D1EF91F0033E114 /* WordsWithFriendsBoard.swift in Sources */,
