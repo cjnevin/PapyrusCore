@@ -73,6 +73,7 @@ extension Array where Element: PositionType {
 }
 
 public struct Position: PositionType {
+    public static let zero = Position(x: 0, y: 0)
     public let x: Int
     public let y: Int
     public init(x: Int, y: Int) {
@@ -89,16 +90,24 @@ public struct Position: PositionType {
     }
     
     var bottom: Position {
-        return Position(x: x, y: y + 1)
-    }
-    var top: Position {
-        return Position(x: x, y: y - 1)
-    }
-    var left: Position {
-        return Position(x: x - 1, y: y)
+        return moveY(amount: 1)
     }
     var right: Position {
-        return Position(x: x + 1, y: y)
+        return moveX(amount: 1)
+    }
+    var top: Position {
+        return moveY(amount: -1)
+    }
+    var left: Position {
+        return moveX(amount: -1)
+    }
+    
+    func moveX(amount: Int) -> Position {
+        return Position(x: x + amount, y: y)
+    }
+    
+    func moveY(amount: Int) -> Position {
+        return Position(x: x, y: y + amount)
     }
 }
 

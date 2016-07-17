@@ -44,8 +44,8 @@ struct BoardState: CustomDebugStringConvertible, Equatable {
         }
         for x in range {
             for y in range {
-                h[y][x] = update(x){ board.isFilled(atX: $0, y: y) }
-                v[y][x] = update(y){ board.isFilled(atX: x, y: $0) }
+                h[y][x] = update(x){ board.isFilled(at: Position(x: $0, y: y)) }
+                v[y][x] = update(y){ board.isFilled(at: Position(x: x, y: $0)) }
             }
         }
         horizontal = h
@@ -54,9 +54,5 @@ struct BoardState: CustomDebugStringConvertible, Equatable {
     
     func state(at position: Position, horizontal h: Bool) -> Int {
         return (h ? horizontal : vertical)[position.y][position.x]
-    }
-
-    func state(atX x: Int, y: Int, horizontal h: Bool) -> Int {
-        return (h ? horizontal : vertical)[y][x]
     }
 }

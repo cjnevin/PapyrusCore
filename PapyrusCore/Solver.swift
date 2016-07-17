@@ -50,7 +50,7 @@ extension Solver {
         let size = board.size
         var fixedLetters = [Int: Character]()
         var index = 0
-        var offset = boardState.state(atX: position.x, y: position.y, horizontal: horizontal)
+        var offset = boardState.state(at: position, horizontal: horizontal)
         
         func addCharacter(_ mustExist: Bool, alwaysIncrement: Bool) -> Bool {
             if offset >= size { return false }
@@ -131,7 +131,7 @@ extension Solver {
             if !board.isFirstPlay && intersectedWords.count == 0 {
                 return .invalidArrangement
             }
-            else if board.isFirstPlay && !word.toPositions().contains({ board.isCenter(atX: $0.x, y: $0.y) }) {
+            else if board.isFirstPlay && !word.toPositions().contains({ board.isCenter(at: $0) }) {
                 return .invalidArrangement
             }
             
@@ -182,7 +182,7 @@ extension Solver {
         var multiplier: Int = 1
         word.toLetterPositions().forEach { position in
             let letterScore = points(for: position, with: blanks)
-            guard board.isEmpty(atX: position.x, y: position.y) else {
+            guard board.isEmpty(at: position) else {
                 total += letterScore
                 return
             }

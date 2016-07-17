@@ -38,17 +38,21 @@ public protocol Board: CustomDebugStringConvertible {
     
     subscript(x: Int, y: Int) -> Character? { get }
     func letter(atX x: Int, y: Int) -> Character?
-    func isEmpty(atX x: Int, y: Int) -> Bool
-    func isFilled(atX x: Int, y: Int) -> Bool
-    func isCenter(atX x: Int, y: Int) -> Bool
-    func isValid(atX x: Int, y: Int, length: Int, horizontal: Bool) -> Bool
+    func isEmpty<T: PositionType>(at position: T) -> Bool
+    func isFilled<T: PositionType>(at position: T) -> Bool
+    func isCenter<T: PositionType>(at position: T) -> Bool
+    func isValid(at position: Position, length: Int, horizontal: Bool) -> Bool
     
     mutating func play(solution: Solution) -> [Character]
 }
 
 extension Board {
+    var centerPosition: Position {
+        return Position(x: center, y: center)
+    }
+    
     public var isFirstPlay: Bool {
-        return isEmpty(atX: center, y: center)
+        return isEmpty(at: centerPosition)
     }
     
     public var boardRange: CountableRange<Int> {
@@ -74,115 +78,103 @@ extension Board {
         return layout[position.y][position.x] == empty
     }
     
-    public func isFilled(at position: Position) -> Bool {
+    public func isFilled<T: PositionType>(at position: T) -> Bool {
         return layout[position.y][position.x] != empty
     }
-
-    public func isEmpty(atX x: Int, y: Int) -> Bool {
-        return layout[y][x] == empty
-    }
     
-    public func isFilled(atX x: Int, y: Int) -> Bool {
-        return layout[y][x] != empty
-    }
-    
-    public func isCenter(atX x: Int, y: Int) -> Bool {
-        return x == center && y == center
+    public func isCenter<T: PositionType>(at position: T) -> Bool {
+        return position == centerPosition
     }
     
     public func isValid(at position: Position, length: Int, horizontal: Bool) -> Bool {
-        return isValid(atX: position.x, y: position.y, length: length, horizontal: horizontal)
-    }
-    
-    public func isValid(atX x: Int, y: Int, length: Int, horizontal: Bool) -> Bool {
-        if isFilled(atX: x, y: y) {
+        guard isEmpty(at: position) else {
             return false
         }
         
         // Too long?
-        var currentX = x
-        var currentY = y
+        var currentX = position.x
+        var currentY = position.y
         if isBoundaryExceeded(atX: &currentX, y: &currentY, length: length, horizontal: horizontal) {
             return false
         }
         
-        if isCenter(atX: x, y: y) && isFirstPlay {
+        if isCenter(at: position) && isFirstPlay {
             return true
         }
         
         // Horizontal?
         if horizontal {
             // Touches on left or right (cannot accept prefixed or suffixed spots)
-            if touchesHorizontally(atX: x, y: y, length: length, edges: .LeftAndRight) {
+            if touchesHorizontally(at: position, length: length, edges: .LeftAndRight) {
                 return false
             }
             // Touches on top or bottom (allowed)
-            if touchesHorizontally(atX: x, y: y, length: length, edges: .TopAndBottom) {
+            if touchesHorizontally(at: position, length: length, edges: .TopAndBottom) {
                 return true
             }
             // Intersects other letters?
-            return currentX > x + length
+            return currentX > position.x + length
         } else {
             // Touches on bottom or top (cannot accept prefixed or suffixed spots)
-            if touchesVertically(atX: x, y: y, length: length, edges: .TopAndBottom) {
+            if touchesVertically(at: position, length: length, edges: .TopAndBottom) {
                 return false
             }
             // Touches on left or right (allowed)
-            if touchesVertically(atX: x, y: y, length: length, edges: .LeftAndRight) {
+            if touchesVertically(at: position, length: length, edges: .LeftAndRight) {
                 return true
             }
             // Intersects other letters?
-            return currentY > y + length
+            return currentY > position.y + length
         }
     }
     
-    func touchesVertically(atX x: Int, y: Int, length: Int, edges: Edge) -> Bool {
-        if y + length > size {
+    func touchesVertically(at position: Position, length: Int, edges: Edge) -> Bool {
+        if position.y + length > size {
             return false
         }
         
-        if edges.contains(.Top) && y > 0 && isFilled(atX: x, y: y - 1) {
+        if edges.contains(.Top) && position.y > 0 && isFilled(at: position.top) {
             return true
         }
-        else if edges.contains(.Bottom) && y + length < size && isFilled(atX: x, y: y + length) {
+        else if edges.contains(.Bottom) && position.y + length < size && isFilled(at: position.moveY(amount: length)) {
             return true
         }
         
         let (left, right) = (edges.contains(.Left), edges.contains(.Right))
-        if left || right {
-            for i in y..<(y + length) {
-                if left && x > 0 && isFilled(atX: x - 1, y: i) {
-                    return true
-                }
-                if right && x < (size - 1) && isFilled(atX: x + 1, y: i) {
-                    return true
-                }
+        guard left || right else {
+            return false
+        }
+        for offset in (0..<length).map({ Position(x: position.x, y: position.y + $0) }) {
+            if left && offset.x > 0 && isFilled(at: offset.left) {
+                return true
+            } else if right && offset.x < (size - 1) && isFilled(at: offset.right) {
+                return true
             }
         }
         return false
     }
     
-    func touchesHorizontally(atX x: Int, y: Int, length: Int, edges: Edge) -> Bool {
-        if x + length > size {
+    func touchesHorizontally(at position: Position, length: Int, edges: Edge) -> Bool {
+        if position.x + length > size {
             return false
         }
         
-        if edges.contains(.Left) && x > 0 && isFilled(atX: x - 1, y: y) {
+        if edges.contains(.Left) && position.x > 0 && isFilled(at: position.left) {
             return true
         }
-        else if edges.contains(.Right) && x + length < size && isFilled(atX: x + length, y: y) {
+        else if edges.contains(.Right) && position.x + length < size && isFilled(at: position.moveX(amount: length)) {
             return true
         }
         
         let (top, bottom) = (edges.contains(.Top), edges.contains(.Bottom))
-        if top || bottom {
-            for i in x..<(x + length) {
-                if top && y > 0 && isFilled(atX: i, y: y - 1) {
-                    return true
-                }
-                else if bottom && y < (size - 1) && isFilled(atX: i, y: y + 1) {
-                    return true
-                }
+        guard top || bottom else {
+            return false
+        }
+        for offset in (0..<length).map({ Position(x: position.x + $0, y: position.y) }) {
+            if top && offset.y > 0 && isFilled(at: offset.top) {
+                return true
+            } else if bottom && offset.y < (size - 1) && isFilled(at: offset.bottom) {
+                return true
             }
         }
         return false
@@ -192,7 +184,7 @@ extension Board {
         var currentLength = length
         
         while currentLength > 0 && (horizontal && x < size || !horizontal && y < size)  {
-            if isEmpty(atX: x, y: y) {
+            if isEmpty(at: Position(x: x, y: y)) {
                 currentLength -= 1
             }
             if horizontal {

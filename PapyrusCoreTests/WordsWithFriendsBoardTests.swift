@@ -16,6 +16,7 @@ class WordsWithFriendsBoardTests: ScrabbleBoardTests {
         board = wordsWithFriendsBoard
         secondBoard = WordsWithFriendsBoard()
         center = wordsWithFriendsBoard.center
+        centerPosition = Position(x: center, y: center)
     }
     
     override func checkEquality(_ expected: Bool = true) {

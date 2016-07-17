@@ -16,6 +16,7 @@ class SuperScrabbleBoardTests: ScrabbleBoardTests {
         board = superScrabbleBoard
         secondBoard = SuperScrabbleBoard()
         center = superScrabbleBoard.center
+        centerPosition = Position(x: center, y: center)
     }
     
     override func checkEquality(_ expected: Bool = true) {
