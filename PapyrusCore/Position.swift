@@ -25,6 +25,53 @@ public protocol PositionType: Equatable {
     init(x: Int, y: Int)
 }
 
+enum Direction {
+    case vertical
+    case horizontal
+    case both       // will be true if only 1 element
+    case none
+    case scattered
+}
+
+extension Array where Element: PositionType {
+    mutating func sortByX() {
+        self = sortedByX()
+    }
+    
+    mutating func sortByY() {
+        self = sortedByY()
+    }
+    
+    func sortedByX() -> [Element] {
+        return self.sorted(isOrderedBefore: { $0.x < $1.x })
+    }
+    
+    func sortedByY() -> [Element] {
+        return self.sorted(isOrderedBefore: { $0.y < $1.y })
+    }
+    
+    var direction: Direction {
+        if count == 1 { return .both }
+        if count < 1 { return .none }
+        if hasIdenticalXValues {
+            return .vertical
+        } else if hasIdenticalYValues {
+            return .horizontal
+        }
+        return .scattered
+    }
+    
+    var hasIdenticalXValues: Bool {
+        let sorted = sortedByX()
+        return sorted.count > 0 && sorted.first?.x == sorted.last?.x
+    }
+    
+    var hasIdenticalYValues: Bool {
+        let sorted = sortedByY()
+        return sorted.count > 0 && sorted.first?.y == sorted.last?.y
+    }
+}
+
 public struct Position: PositionType {
     public let x: Int
     public let y: Int

@@ -32,9 +32,9 @@ protocol Solver {
     func lexicographicalString(withLetters letters: [Character]) -> String
     func unvalidatedWords(forLetters letters: [Character], fixedLetters: [Int: Character], length: Int) -> Anagrams?
     func intersections<T: WordRepresentation>(forWord word: T) -> (valid: Bool, words: [Word])
-    func solution(forWord word: Word, rackLetters: [RackTile]) -> Solution?
+    func solution(for word: Word, rackLetters: [RackTile]) -> Solution?
     func solve(with solutions: [Solution], difficulty: Difficulty) -> Solution?
-    func solutions(forLetters letters: [RackTile], serial: Bool, completion: ([Solution]?) -> ())
+    func solutions(for letters: [RackTile], serial: Bool, completion: ([Solution]?) -> ())
     mutating func play(solution: Solution) -> [Character]
 }
 
@@ -75,13 +75,19 @@ extension Solver {
     }
     
     func validate(positions: LetterPositions, blanks: Positions) -> ValidationResponse {
-        if positions.count == 0 || (positions.count == 1 && board.isFirstPlay) {
-            return .invalidArrangement
-        }
-        
         let allBlanks = board.blanks + blanks
         
-        if positions.count == 1 {
+        let direction = positions.direction
+        
+        print(direction)
+        switch direction {
+        case .none, .scattered:
+            return .invalidArrangement
+            
+        case .both:
+            guard !board.isFirstPlay else {
+                return .invalidArrangement
+            }
             let horizontalWord = word(startingAt: positions.first!, horizontal: true, with: positions)
             if let word = horizontalWord where word.valid == false {
                 return .invalidWord(word.word)
@@ -102,46 +108,40 @@ extension Solver {
                 return .valid(solution: solution)
             }
             return .invalidArrangement
+            
+        case .horizontal, .vertical:
+            let xSorted = positions.sortedByX()
+            let ySorted = positions.sortedByY()
+            let start = Position(x: xSorted.first!.x, y: ySorted.first!.y)
+            let sortedPositions = direction == .horizontal ? xSorted : ySorted
+            
+            guard let (word, valid) = word(startingAt: start, horizontal: direction == .horizontal, with: sortedPositions) else {
+                return .invalidArrangement
+            }
+            guard valid else {
+                return .invalidWord(word)
+            }
+            
+            // Collect intersections for this word, if any are invalid lets return
+            let (intersectionsValid, intersectedWords) = intersections(forWord: word)
+            guard intersectionsValid else {
+                // If we get here we will have an intersected word (it will be the invalid one).
+                return .invalidWord(intersectedWords.first!)
+            }
+            
+            // First turn is only one that cannot intersect a word other plays must intersect
+            if !board.isFirstPlay && intersectedWords.count == 0 {
+                return .invalidArrangement
+            }
+            else if board.isFirstPlay && !word.toPositions().contains({ board.isCenter(atX: $0.x, y: $0.y) }) {
+                return .invalidArrangement
+            }
+            
+            // Calculate score and return solution
+            let score = totalScore(for: word, with: intersectedWords, blanks: allBlanks)
+            let solution = Solution(word: word, score: score, intersections: intersectedWords, blanks: blanks)
+            return .valid(solution: solution)
         }
-        
-        // Determine direction of word
-        let horizontalSort = positions.sorted(isOrderedBefore: { $0.x < $1.x })
-        let verticalSort = positions.sorted(isOrderedBefore: { $0.y < $1.y })
-        
-        let horizontalFirst = horizontalSort.first!
-        let verticalFirst = verticalSort.first!
-        let isHorizontal = horizontalFirst.y == horizontalSort.last!.y
-        let isVertical = verticalFirst.x == verticalSort.last!.x
-        if !isHorizontal && !isVertical {
-            return .invalidArrangement
-        }
-        
-        guard let (word, valid) = word(startingAt: Position(x: horizontalFirst.x, y: verticalFirst.y), horizontal: isHorizontal, with: isHorizontal ? horizontalSort : verticalSort) else {
-            return .invalidArrangement
-        }
-        guard valid else {
-            return .invalidWord(word)
-        }
-        
-        // Collect intersections for this word, if any are invalid lets return
-        let (intersectionsValid, intersectedWords) = intersections(forWord: word)
-        guard intersectionsValid else {
-            // If we get here we will have an intersected word (it will be the invalid one).
-            return .invalidWord(intersectedWords.first!)
-        }
-        
-        // First turn is only one that cannot intersect a word other plays must intersect
-        if !board.isFirstPlay && intersectedWords.count == 0 {
-            return .invalidArrangement
-        }
-        else if board.isFirstPlay && !word.toPositions().contains({ board.isCenter(atX: $0.x, y: $0.y) }) {
-            return .invalidArrangement
-        }
-        
-        // Calculate score and return solution
-        let score = totalScore(for: word, with: intersectedWords, blanks: allBlanks)
-        let solution = Solution(word: word, score: score, intersections: intersectedWords, blanks: blanks)
-        return .valid(solution: solution)
     }
 }
 
@@ -289,7 +289,7 @@ extension Solver {
         return dropped
     }
     
-    func solution(forWord word: Word, rackLetters: [RackTile]) -> Solution? {
+    func solution(for word: Word, rackLetters: [RackTile]) -> Solution? {
         let (valid, intersectedWords) = intersections(forWord: word)
         guard valid else { return nil }
         let blankSpots = blanks(forWord: word, rackLetters: rackLetters)
@@ -316,10 +316,10 @@ extension Solver {
                 return nil
         }
         
-        return words.flatMap({ solution(forWord: Word(word: $0, x: position.x, y: position.y, horizontal: horizontal), rackLetters: rackLetters) })
+        return words.flatMap({ solution(for: Word(word: $0, x: position.x, y: position.y, horizontal: horizontal), rackLetters: rackLetters) })
     }
     
-    func solutions(forLetters letters: [RackTile], serial: Bool = false, completion: ([Solution]?) -> ()) {
+    func solutions(for letters: [RackTile], serial: Bool = false, completion: ([Solution]?) -> ()) {
         if letters.count == 0 {
             completion(nil)
             return

@@ -245,7 +245,7 @@ public class Game {
                     print("AI set value of blank letter")
                 }
             }
-            solver.solutions(forLetters: ai.rack, completion: { solutions in
+            solver.solutions(for: ai.rack, completion: { solutions in
                 guard let solutions = solutions, solution = self.solver.solve(with: solutions, difficulty: ai.difficulty) else {
                     // Can't find any solutions, attempt to swap tiles
                     let tiles = Array(ai.rack[0..<min(self.bag.remaining.count, ai.rack.count)])
@@ -299,7 +299,7 @@ public class Game {
     
     /// Request a suggested solution given the users current tiles and the state of the board.
     public func suggestion(completion: (solution: Solution?) -> ()) {
-        solver.solutions(forLetters: player.rack, serial: false) { [weak self] solutions in
+        solver.solutions(for: player.rack, serial: false) { [weak self] solutions in
             guard let solutions = solutions, best = self?.solver.solve(with: solutions, difficulty: .hard) else {
                 completion(solution: nil)
                 return

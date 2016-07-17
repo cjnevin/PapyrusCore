@@ -260,7 +260,7 @@ class ScrabbleSolverTests: XCTestCase {
     func testSolutionForWord() {
         dropWords()
         let word = solver.word(startingAt: Position(x: 5, y: 7), horizontal: true, with: [])!
-        let solution = solver.solution(forWord: word.word, rackLetters: [])!
+        let solution = solver.solution(for: word.word, rackLetters: [])!
         let intersections = solver.intersections(forWord: word.word)
         XCTAssertEqual(solution.horizontal, word.word.horizontal)
         XCTAssertEqual(solution.x, word.word.x)
@@ -272,7 +272,7 @@ class ScrabbleSolverTests: XCTestCase {
         dropWords()
         solver.board.layout[6][6] = "z"
         let word = solver.word(startingAt: Position(x: 5, y: 7), horizontal: true, with: [])!
-        let solution = solver.solution(forWord: word.word, rackLetters: [])
+        let solution = solver.solution(for: word.word, rackLetters: [])
         XCTAssertNil(solution)
     }
     
@@ -319,7 +319,7 @@ class ScrabbleSolverTests: XCTestCase {
     func testScaling() {
         dropWords()
         let rack: [RackTile] = toRackTiles(arr: ["c", "a", "r", "t", "e", "d"].map({ ($0, false) }))
-        self.solver.solutions(forLetters: rack, serial: true) { (solutions) in
+        self.solver.solutions(for: rack, serial: true) { (solutions) in
             guard let solutions = solutions else {
                 XCTAssert(false)
                 return
@@ -350,7 +350,7 @@ class ScrabbleSolverTests: XCTestCase {
     // MARK: - Solutions
     
     func testZeroTilesSolution() {
-        solver.solutions(forLetters: [], serial: true, completion: { (solutions) in
+        solver.solutions(for: [], serial: true, completion: { (solutions) in
             XCTAssertNil(solutions)
         })
     }
@@ -383,7 +383,7 @@ class ScrabbleSolverTests: XCTestCase {
        
         for (index, rack) in racks.enumerated() {
             let expectation = expectations[index]
-            solver.solutions(forLetters: rack, serial: true, completion: { (solutions) in
+            solver.solutions(for: rack, serial: true, completion: { (solutions) in
                 let best = self.solver.solve(with: solutions!)!
                 XCTAssertEqual(best, expectation)
                 _ = self.solver.play(solution: best)
