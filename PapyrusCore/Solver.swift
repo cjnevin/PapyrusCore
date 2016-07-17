@@ -78,8 +78,6 @@ extension Solver {
         let allBlanks = board.blanks + blanks
         
         let direction = positions.direction
-        
-        print(direction)
         switch direction {
         case .none, .scattered:
             return .invalidArrangement

@@ -116,4 +116,8 @@ public struct LetterPosition: PositionType {
         self.y = y
         self.letter = letter
     }
+    
+    public var position: Position {
+        return Position(x: x, y: y)
+    }
 }

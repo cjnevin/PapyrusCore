@@ -70,7 +70,7 @@ extension Board {
         return value == empty ? nil : value
     }
     
-    public func isEmpty(at position: Position) -> Bool {
+    public func isEmpty<T: PositionType>(at position: T) -> Bool {
         return layout[position.y][position.x] == empty
     }
     
@@ -206,21 +206,13 @@ extension Board {
     }
     
     mutating public func play(solution: Solution) -> [Character] {
-        var dropped = [Character]()
-        for (i, letter) in solution.word.characters.enumerated() {
-            if solution.horizontal {
-                if isEmpty(atX: solution.x + i, y: solution.y) {
-                    layout[solution.y][solution.x + i] = letter
-                    dropped.append(letter)
-                }
-            } else {
-                if isEmpty(atX: solution.x, y: solution.y + i) {
-                    layout[solution.y + i][solution.x] = letter
-                    dropped.append(letter)
-                }
-            }
-        }
         blanks.append(contentsOf: solution.blanks)
-        return dropped
+        return solution.toLetterPositions().flatMap { position -> Character? in
+            guard isEmpty(at: position) else {
+                return nil
+            }
+            layout[position.y][position.x] = position.letter
+            return position.letter
+        }
     }
 }
