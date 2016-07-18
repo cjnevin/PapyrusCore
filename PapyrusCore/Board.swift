@@ -35,6 +35,7 @@ public protocol Board: CustomDebugStringConvertible {
     var isFirstPlay: Bool { get }
     var letterMultipliers: [[Int]] { get }
     var wordMultipliers: [[Int]] { get }
+    var emptyPositions: Positions { get }
     
     mutating func set<T: PositionType>(letter: Character, at position: T)
     func letter<T: PositionType>(at position: T) -> Character?
@@ -42,6 +43,9 @@ public protocol Board: CustomDebugStringConvertible {
     func isFilled<T: PositionType>(at position: T) -> Bool
     func isCenter<T: PositionType>(at position: T) -> Bool
     func isValid(at position: Position, length: Int, horizontal: Bool) -> Bool
+    
+    func letterMultiplier<T: PositionType>(at position: T) -> Int
+    func wordMultiplier<T: PositionType>(at position: T) -> Int
     
     mutating func play(solution: Solution) -> [Character]
 }
@@ -59,10 +63,26 @@ extension Board {
         return layout.indices
     }
     
+    public var emptyPositions: Positions {
+        return layout.enumerated().flatMap({ y, column in
+            column.enumerated().flatMap({ x, square in
+                square == empty ? Position(x: x, y: y) : nil
+            })
+        })
+    }
+    
     public var debugDescription: String {
         return layout.map { (line) in
             line.map({ String($0 == empty ? "_" : $0) }).joined(separator: ",")
             }.joined(separator: "\n")
+    }
+    
+    public func letterMultiplier<T: PositionType>(at position: T) -> Int {
+        return letterMultipliers[position.y][position.x]
+    }
+    
+    public func wordMultiplier<T: PositionType>(at position: T) -> Int {
+        return wordMultipliers[position.y][position.x]
     }
     
     public mutating func set<T: PositionType>(letter: Character, at position: T) {

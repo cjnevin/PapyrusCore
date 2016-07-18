@@ -187,8 +187,8 @@ extension Solver {
                 return
             }
             
-            let letterMultiplier = board.letterMultipliers[position.y][position.x]
-            let wordMultiplier = board.wordMultipliers[position.y][position.x]
+            let letterMultiplier = board.letterMultiplier(at: position)
+            let wordMultiplier = board.wordMultiplier(at: position)
             
             if let intersection = intersections.filter({ word.horizontal ? $0.x == position.x : $0.y == position.y }).first {
                 intersectionTotal += wordMultiplier * intersectingScore(for: intersection, blanks: blanks) + (letterScore * (letterMultiplier - 1))
