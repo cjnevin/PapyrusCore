@@ -36,8 +36,8 @@ public protocol Board: CustomDebugStringConvertible {
     var letterMultipliers: [[Int]] { get }
     var wordMultipliers: [[Int]] { get }
     
-    subscript(x: Int, y: Int) -> Character? { get }
-    func letter(atX x: Int, y: Int) -> Character?
+    mutating func set<T: PositionType>(letter: Character, at position: T)
+    func letter<T: PositionType>(at position: T) -> Character?
     func isEmpty<T: PositionType>(at position: T) -> Bool
     func isFilled<T: PositionType>(at position: T) -> Bool
     func isCenter<T: PositionType>(at position: T) -> Bool
@@ -65,21 +65,21 @@ extension Board {
             }.joined(separator: "\n")
     }
     
-    public subscript(x: Int, y: Int) -> Character? {
-        return letter(atX: x, y: y)
+    public mutating func set<T: PositionType>(letter: Character, at position: T) {
+        layout[position.y][position.x] = letter
     }
     
-    public func letter(atX x: Int, y: Int) -> Character? {
-        let value = layout[y][x]
+    public func letter<T: PositionType>(at position: T) -> Character? {
+        let value = layout[position.y][position.x]
         return value == empty ? nil : value
     }
     
     public func isEmpty<T: PositionType>(at position: T) -> Bool {
-        return layout[position.y][position.x] == empty
+        return letter(at: position) == nil
     }
     
     public func isFilled<T: PositionType>(at position: T) -> Bool {
-        return layout[position.y][position.x] != empty
+        return letter(at: position) != nil
     }
     
     public func isCenter<T: PositionType>(at position: T) -> Bool {
@@ -91,10 +91,9 @@ extension Board {
             return false
         }
         
+
         // Too long?
-        var currentX = position.x
-        var currentY = position.y
-        if isBoundaryExceeded(atX: &currentX, y: &currentY, length: length, horizontal: horizontal) {
+        guard let clampedPosition = restrict(position: position, to: length, horizontal: horizontal) else {
             return false
         }
         
@@ -113,7 +112,7 @@ extension Board {
                 return true
             }
             // Intersects other letters?
-            return currentX > position.x + length
+            return clampedPosition.x > position.x + length
         } else {
             // Touches on bottom or top (cannot accept prefixed or suffixed spots)
             if touchesVertically(at: position, length: length, edges: .TopAndBottom) {
@@ -124,7 +123,7 @@ extension Board {
                 return true
             }
             // Intersects other letters?
-            return currentY > position.y + length
+            return clampedPosition.y > position.y + length
         }
     }
     
@@ -179,22 +178,22 @@ extension Board {
         }
         return false
     }
-    
-    func isBoundaryExceeded(atX x: inout Int, y: inout Int, length: Int, horizontal: Bool) -> Bool {
-        var currentLength = length
-        
-        while currentLength > 0 && (horizontal && x < size || !horizontal && y < size)  {
-            if isEmpty(at: Position(x: x, y: y)) {
-                currentLength -= 1
+
+    /// - returns: Nil if position exceeds boundary after adding length, or the new Position after skipping empty spots.
+    /// - parameter position: Starting position.
+    /// - parameter length: Number of empty spots needed.
+    /// - parameter horizontal: Direction to move position.
+    func restrict(position: Position, to length: Int, horizontal: Bool) -> Position? {
+        var length = length
+        var position = position
+        // TODO: The position returned actually sits outside of the boundary? (size - 1)
+        while length > 0 && ((horizontal && position.x < size) || (!horizontal && position.y < size)) {
+            if isEmpty(at: position) {
+                length -= 1
             }
-            if horizontal {
-                x += 1
-            } else {
-                y += 1
-            }
+            position = horizontal ? position.right : position.bottom
         }
-        
-        return currentLength != 0
+        return length != 0 ? nil : position
     }
     
     mutating public func play(solution: Solution) -> [Character] {

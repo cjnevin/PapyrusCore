@@ -84,7 +84,7 @@ class ScrabbleSolverTests: XCTestCase {
     
     func testValidateWithOneLetterReturnsValidWords() {
         dropWords()
-        solver.board.layout[6][6] = "t"
+        solver.board.set(letter: "t", at: Position(x: 6, y: 6))
         switch solver.validate(positions: [LetterPosition(x: 7, y: 6, letter: "a")], blanks: []) {
         case .valid(_):
             XCTAssertTrue(true)
@@ -177,7 +177,7 @@ class ScrabbleSolverTests: XCTestCase {
     
     func testValidateWithVerticalWordReturnsValidWords() {
         dropWords()
-        solver.board.layout[6][6] = "t"
+        solver.board.set(letter: "t", at: Position(x: 6, y: 6))
         switch solver.validate(positions: [LetterPosition(x: 7, y: 6, letter: "a"), LetterPosition(x: 7, y: 5, letter: "c")], blanks: []) {
         case .valid(_):
             XCTAssertTrue(true)
@@ -188,7 +188,7 @@ class ScrabbleSolverTests: XCTestCase {
     
     func testValidateWithHorizontalWordReturnsValidWords() {
         dropWords()
-        solver.board.layout[6][6] = "t"
+        solver.board.set(letter: "t", at: Position(x: 6, y: 6))
         switch solver.validate(positions: [LetterPosition(x: 7, y: 6, letter: "e"), LetterPosition(x: 8, y: 6, letter: "a")], blanks: []) {
         case .valid(_):
             XCTAssertTrue(true)
@@ -270,7 +270,7 @@ class ScrabbleSolverTests: XCTestCase {
     
     func testSolutionForWordInvalidIntersection() {
         dropWords()
-        solver.board.layout[6][6] = "z"
+        solver.board.set(letter: "z", at: Position(x: 6, y: 6))
         let word = solver.word(startingAt: Position(x: 5, y: 7), horizontal: true, with: [])!
         let solution = solver.solution(for: word.word, rackLetters: [])
         XCTAssertNil(solution)

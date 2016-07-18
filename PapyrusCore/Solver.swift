@@ -55,7 +55,7 @@ extension Solver {
         func addCharacter(_ mustExist: Bool, alwaysIncrement: Bool) -> Bool {
             if offset >= size { return false }
             var didExist = false
-            if let value = board[horizontal ? offset : position.x, horizontal ? position.y : offset] {
+            if let value = board.letter(at: Position(x: horizontal ? offset : position.x, y: horizontal ? position.y : offset)) {
                 fixedLetters[index] = value
                 didExist = true
             }
@@ -259,7 +259,7 @@ extension Solver {
                 fixedLetter = remaining[index].letter
                 remaining.remove(at: index)
             }
-            guard let letter = fixedLetter ?? board[_x, _y] else {
+            guard let letter = fixedLetter ?? board.letter(at: Position(x: _x, y: _y)) else {
                 break
             }
             characters.append(letter)
