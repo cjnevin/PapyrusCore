@@ -13,6 +13,10 @@ func compareBoards<T: Board>(_ lhs: T, _ rhs: T) -> Bool {
     return true
 }
 
+func makePositions(indices: CountableRange<Int>) -> Positions {
+    return indices.flatMap({ x in indices.flatMap({ y in Position(x: x, y: y) }) })
+}
+
 struct Edge: OptionSet {
     let rawValue: Int
     
@@ -36,6 +40,7 @@ public protocol Board: CustomDebugStringConvertible {
     var letterMultipliers: [[Int]] { get }
     var wordMultipliers: [[Int]] { get }
     var emptyPositions: Positions { get }
+    var allPositions: Positions { get }
     
     mutating func set<T: PositionType>(letter: Character, at position: T)
     func letter<T: PositionType>(at position: T) -> Character?
@@ -64,11 +69,7 @@ extension Board {
     }
     
     public var emptyPositions: Positions {
-        return layout.enumerated().flatMap({ y, column in
-            column.enumerated().flatMap({ x, square in
-                square == empty ? Position(x: x, y: y) : nil
-            })
-        })
+        return allPositions.filter({ isEmpty(at: $0) })
     }
     
     public var debugDescription: String {
@@ -222,7 +223,7 @@ extension Board {
             guard isEmpty(at: position) else {
                 return nil
             }
-            layout[position.y][position.x] = position.letter
+            set(letter: position.letter, at: position)
             return position.letter
         }
     }

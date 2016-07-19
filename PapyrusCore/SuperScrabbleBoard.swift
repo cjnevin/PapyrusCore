@@ -62,4 +62,9 @@ public struct SuperScrabbleBoard: Board, Equatable {
         [1,1,2,1,1,1,1,1,1,2,1,2,1,1,1,1,1,1,2,1,1],
         [1,2,1,1,1,1,1,1,2,1,1,1,2,1,1,1,1,1,1,2,1],
         [4,1,1,1,1,1,1,3,1,1,1,1,1,3,1,1,1,1,1,1,4]]
+    
+    public let allPositions: Positions
+    public init() {
+        allPositions = makePositions(indices: layout.indices)
+    }
 }

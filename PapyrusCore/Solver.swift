@@ -152,15 +152,6 @@ extension Solver {
             tempPlayer.remove(letter: letter).wasBlank ? word.position(forIndex: index) : nil
         })
     }
-    // TODO: Possible Improvement
-    // Scores could be weighted under the following circumstances:
-    // - Triple/Quadruple squares should get higher weighting (opportunistic instead of highest score)
-    // - All Tile Bonus could get higher weighting
-    // - If bag is empty using highest number of letters possible might be better (to end game sooner)
-    //
-    // This would make it more difficult for human players to compete against AI
-    // while also emptying the bag/rack faster (to achieve victory sooner)
-    
     
     func points(for letterPosition: LetterPosition, with blanks: [Position]) -> Int {
         guard !blanks.contains({ $0.x == letterPosition.x && $0.y == letterPosition.y }) else {
@@ -175,6 +166,14 @@ extension Solver {
             .reduce(0, combine: +)
     }
     
+    // TODO: Possible Improvement
+    // Scores could be weighted under the following circumstances:
+    // - Triple/Quadruple squares should get higher weighting (opportunistic instead of highest score)
+    // - All Tile Bonus could get higher weighting
+    // - If bag is empty using highest number of letters possible might be better (to end game sooner)
+    //
+    // This would make it more difficult for human players to compete against AI
+    // while also emptying the bag/rack faster (to achieve victory sooner)
     func totalScore<T: WordRepresentation>(for word: T, with intersections: [Word], blanks: [Position]) -> Int {
         var tilesUsed: Int = 0
         var intersectionTotal: Int = 0
@@ -326,22 +325,18 @@ extension Solver {
         let solutionLetters = letters.map({ $0.letter })
         var possibilities = [Solution]()
         var count = 0
-        let range = board.boardRange
         let size = board.size
         
         func collect(into array: inout [Solution], effectiveRange: CountableClosedRange<Int>, length: Int) {
-            for x in range {
-                for y in range {
-                    let position = Position(x: x, y: y)
-                    if effectiveRange.contains(x) {
-                        if let solves = solutions(at: position, letters: solutionLetters, rackLetters: letters, length: length, horizontal: true) {
-                            array += solves
-                        }
+            for position in board.allPositions {
+                if effectiveRange.contains(position.x) {
+                    if let solves = solutions(at: position, letters: solutionLetters, rackLetters: letters, length: length, horizontal: true) {
+                        array += solves
                     }
-                    if effectiveRange.contains(y) {
-                        if let solves = solutions(at: position, letters: solutionLetters, rackLetters: letters, length: length, horizontal: false) {
-                            array += solves
-                        }
+                }
+                if effectiveRange.contains(position.y) {
+                    if let solves = solutions(at: position, letters: solutionLetters, rackLetters: letters, length: length, horizontal: false) {
+                        array += solves
                     }
                 }
             }

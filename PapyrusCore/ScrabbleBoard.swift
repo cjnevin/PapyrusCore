@@ -50,4 +50,9 @@ public struct ScrabbleBoard: Board, Equatable {
         [1,1,2,1,1,1,1,1,1,1,1,1,2,1,1],
         [1,2,1,1,1,1,1,1,1,1,1,1,1,2,1],
         [3,1,1,1,1,1,1,3,1,1,1,1,1,1,3]]
+    
+    public let allPositions: Positions
+    public init() {
+        allPositions = makePositions(indices: layout.indices)
+    }
 }

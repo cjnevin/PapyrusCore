@@ -50,4 +50,9 @@ public struct WordfeudBoard: Board, Equatable {
         [1,1,2,1,1,1,1,1,1,1,1,1,2,1,1],
         [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
         [1,1,1,1,3,1,1,1,1,1,3,1,1,1,1]]
+    
+    public let allPositions: Positions
+    public init() {
+        allPositions = makePositions(indices: layout.indices)
+    }
 }
