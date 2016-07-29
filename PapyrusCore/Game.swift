@@ -8,6 +8,11 @@
 
 import Foundation
 
+public enum GameError: ErrorProtocol {
+    case initializationError
+}
+
+
 public enum GameEvent {
     case over(Game, [Player]?)
     case move(Game, Solution)
@@ -17,43 +22,11 @@ public enum GameEvent {
     case turnEnded(Game)
 }
 
-public enum GameType: Int {
-    case scrabble = 0
-    case superScrabble
-    case wordfeud
-    case wordsWithFriends
-    
-    public func bag() -> Bag {
-        switch self {
-        case .superScrabble:
-            return SuperScrabbleBag()
-        case .wordfeud:
-            return WordfeudBag()
-        case .wordsWithFriends:
-            return WordsWithFriendsBag()
-        default:
-            return ScrabbleBag()
-        }
-    }
-    
-    public func board() -> Board {
-        switch self {
-        case .superScrabble:
-            return SuperScrabbleBoard()
-        case .wordfeud:
-            return WordfeudBoard()
-        case .wordsWithFriends:
-            return WordsWithFriendsBoard()
-        default:
-            return ScrabbleBoard()
-        }
-    }
-}
-
 let aiCanPlayBlanks = false
 
 public typealias EventHandler = (GameEvent) -> ()
 public class Game {
+    let blank: Character
     /// Character used for blank/wildcard tiles.
     public static let blankLetter = Character("_")
     /// Amount of tiles that should be in a players rack when possible.
@@ -80,7 +53,7 @@ public class Game {
     private let maximumConsecutiveSkips = 3
     
     /// Create a new game.
-    public init(bag: Bag,
+    /*public init(bag: Bag,
          board: Board,
          dictionary: Lookup,
          players: [Player],
@@ -100,10 +73,10 @@ public class Game {
         self.players = players
         self.playerIndex = playerIndex
         self.eventHandler = eventHandler
-    }
+    }*/
     
     /// Create a new game with the default configurations for the given `gameType` (Recommended).
-    public convenience init(gameType: GameType = .scrabble, dictionary: Lookup, players: [Player], serial: Bool = false, eventHandler: EventHandler) {
+    /*public convenience init(gameType: GameType = .scrabble, dictionary: Lookup, players: [Player], serial: Bool = false, eventHandler: EventHandler) {
         self.init(bag: gameType.bag(), board: gameType.board(), dictionary: dictionary, players: players, playerIndex: 0, serial: serial, eventHandler: eventHandler)
         for _ in players {
             replenishRack()
@@ -111,9 +84,54 @@ public class Game {
         }
         playerIndex = 0
     }
+    */
+    
+    /// Create a new game.
+    public init(config file: URL, dictionary: Lookup, players: [Player], playerIndex: Int = 0, serial: Bool = false, eventHandler: EventHandler) throws {
+        guard let
+            json = readJSON(from: file),
+            allTilesUsedBonus: Int = JSONConfigKey.allTilesUsedBonus.in(json),
+            maximumWordLength: Int = JSONConfigKey.maximumWordLength.in(json),
+            blankString: String = JSONConfigKey.blank.in(json),
+            blank: Character = blankString.characters.first,
+            lettersStrings: [String: Int] = JSONConfigKey.letters.in(json),
+            letterPointsStrings: [String: Int] = JSONConfigKey.letterPoints.in(json),
+            letterMultipliers: [[Int]] = JSONConfigKey.letterMultipliers.in(json),
+            wordMultipliers: [[Int]] = JSONConfigKey.wordMultipliers.in(json),
+            vowelsStrings: [String] = JSONConfigKey.vowels.in(json) else {
+                throw GameError.initializationError
+        }
+        var letters = [Character: Int]()
+        for (key, value) in lettersStrings {
+            letters[Character(key)] = value
+        }
+        var letterPoints = [Character: Int]()
+        for (key, value) in letterPointsStrings {
+            letterPoints[Character(key)] = value
+        }
+        let vowels: [Character] = vowelsStrings.map({ Character($0) })
+        
+        self.serial = serial
+        self.eventHandler = eventHandler
+        self.bag = Bag(vowels: vowels, letters: letters, letterPoints: letterPoints)
+        self.players = players
+        self.playerIndex = playerIndex
+        self.blank = blank
+        
+        let board = Board(letterMultipliers: letterMultipliers, wordMultipliers: wordMultipliers)
+        self.solver = Solver(allTilesUsedBonus: allTilesUsedBonus, maximumWordLength: maximumWordLength,
+                             letterPoints: letters, board: board, dictionary: dictionary)
+        for _ in players {
+            replenishRack()
+            self.playerIndex += 1
+        }
+        self.playerIndex = 0
+        
+        //self.players.forEach({ $0.solves.forEach({ _ = solver.play(solution: $0) }) })
+    }
     
     /// Restore a game from file.
-    public convenience init?(from file: URL, dictionary: Lookup, eventHandler: EventHandler) {
+    /*public convenience init?(from file: URL, dictionary: Lookup, eventHandler: EventHandler) {
         guard let
             json = readJSON(from: file),
             gameTypeInt: Int = JSONKey.gameType.in(json),
@@ -131,7 +149,7 @@ public class Game {
             return
         }
         _lastMove = Solution.object(from: lastMoveJson)
-    }
+    }*/
     
     /// Returns: Index of given player in players array.
     public func index(of player: Player) -> Int? {
@@ -140,7 +158,8 @@ public class Game {
     
     /// Save the current state of the game to disk. Can be restored using `Game(from:)`.
     public func save(to file: URL) -> Bool {
-        var gameType: GameType!
+        // TODO: Store config
+        /*var gameType: GameType!
         if board is SuperScrabbleBoard {
             gameType = .superScrabble
         } else if board is WordsWithFriendsBoard {
@@ -149,10 +168,10 @@ public class Game {
             gameType = .wordfeud
         } else {
             gameType = .scrabble
-        }
+        }*/
         let lastMoveJson = _lastMove?.toJSON() ?? NSNull()
         let output = json(from: [.lastMove: lastMoveJson,
-                                 .gameType: gameType.rawValue,
+                                 //.gameType: gameType.rawValue,
                                  .bag: String(bag.remaining),
                                  .players: players.map({ $0.toJSON() }),
                                  .playerIndex: playerIndex,
@@ -210,7 +229,7 @@ public class Game {
         for i in 0..<newPlayers.count {
             newPlayers[i].score -= newPlayers[i].rack
                 .filter({ !$0.isBlank })
-                .reduce(0){ $0.0 + (bag.dynamicType.letterPoints[$0.1.letter] ?? 0) }
+                .reduce(0){ $0.0 + (bag.letterPoints[$0.1.letter] ?? 0) }
             newPlayers[i].rack = []
         }
         players = newPlayers
@@ -232,8 +251,7 @@ public class Game {
         eventHandler(.turnBegan(self))
         if player is Computer {
             var ai = player as! Computer
-            let vowels = bag.dynamicType.vowels
-            let blank = Game.blankLetter
+            let vowels = bag.vowels
             while aiCanPlayBlanks == false && ai.rack.filter({$0.letter == blank}).count > 0 {
                 if Set(ai.rack.map({$0.letter})).intersection(vowels).count == 0 {
                     // If we have no vowels lets pick a random vowel

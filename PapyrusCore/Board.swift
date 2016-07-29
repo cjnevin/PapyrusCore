@@ -8,7 +8,7 @@
 
 import Foundation
 
-func compareBoards<T: Board>(_ lhs: T, _ rhs: T) -> Bool {
+public func == (_ lhs: Board, _ rhs: Board) -> Bool {
     for (left, right) in zip(lhs.layout, rhs.layout) where left != right { return false }
     return true
 }
@@ -29,7 +29,7 @@ struct Edge: OptionSet {
     static let TopAndBottom: Edge = [Top, Bottom]
 }
 
-public protocol Board: CustomDebugStringConvertible {
+public protocol BoardType: CustomDebugStringConvertible {
     var empty: Character { get }
     var center: Int { get }
     var size: Int { get }
@@ -55,7 +55,7 @@ public protocol Board: CustomDebugStringConvertible {
     mutating func play(solution: Solution) -> [Character]
 }
 
-extension Board {
+extension BoardType {
     var centerPosition: Position {
         return Position(x: center, y: center)
     }
@@ -226,5 +226,26 @@ extension Board {
             set(letter: position.letter, at: position)
             return position.letter
         }
+    }
+}
+
+public struct Board: BoardType, Equatable {
+    public let empty: Character
+    public let center: Int
+    public let size: Int
+    public var layout: [[Character]]
+    public var blanks = Positions()
+    public let letterMultipliers: [[Int]]
+    public let wordMultipliers: [[Int]]
+    public let allPositions: Positions
+    
+    internal init(letterMultipliers: [[Int]], wordMultipliers: [[Int]]) {
+        empty = Character(" ")
+        center = Int(letterMultipliers.count / 2)
+        size = letterMultipliers.count
+        layout = Array(repeating: Array(repeating: Character(" "), count: size), count: size)
+        allPositions = makePositions(indices: layout.indices)
+        self.letterMultipliers = letterMultipliers
+        self.wordMultipliers = wordMultipliers
     }
 }
