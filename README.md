@@ -22,8 +22,11 @@ let hardAI = Computer()
 let easyAI = Computer(difficulty: .easy)
 let players = [human, hardAI, easyAI]
 
+// Path to configuration file
+let configFileURL = ...
+
 // Now we have everything configured, we can create a Game object
-let game = Game(dictionary: dictionary, players: players) { event in 
+let game = Game(config: configFileURL, dictionary: dictionary, players: players) { event in 
   // Switch to main thread before updating UI...
   Dispatch.main.async() {
     switch event {
@@ -60,7 +63,7 @@ game.start()
 The tile bag, provides methods for drawing and replacing tiles in a distribution.
 
 #### Board
-The current board representation, can be configured based on different game types.
+The current board representation.
 
 #### Game
 Main class responsible for gameplay, handles saving and restoring game state (via `save(to:)` and `Game(from:)` methods).
