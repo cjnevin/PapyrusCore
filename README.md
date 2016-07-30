@@ -3,7 +3,7 @@
 ![](https://reposs.herokuapp.com/?path=ChrisAU/PapyrusCore&style=flat)
 ![](https://travis-ci.org/ChrisAU/PapyrusCore.svg?branch=swift-3.0)
 
-Reusable library for playing Scrabble games.
+Reusable library for playing board games with similar rules to Scrabble.
 
 ### Example implementation of a 3 player game (1 human, 2 computers):
 
