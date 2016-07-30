@@ -38,6 +38,7 @@ enum JSONKey: String {
     case bag
     case players
     case playerIndex
+    case config
     case serial
     case lastMove
     

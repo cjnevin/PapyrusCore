@@ -239,6 +239,15 @@ public struct Board: BoardType, Equatable {
     public let wordMultipliers: [[Int]]
     public let allPositions: Positions
     
+    public init?(with config: URL) {
+        guard let json = readJSON(from: config),
+            letterMultipliers: [[Int]] = JSONConfigKey.letterMultipliers.in(json),
+            wordMultipliers: [[Int]] = JSONConfigKey.wordMultipliers.in(json) else {
+               return nil
+        }
+        self.init(letterMultipliers: letterMultipliers, wordMultipliers: wordMultipliers)
+    }
+    
     internal init(letterMultipliers: [[Int]], wordMultipliers: [[Int]]) {
         empty = Character(" ")
         center = Int(letterMultipliers.count / 2)

@@ -150,7 +150,7 @@
 			isa = PBXGroup;
 			children = (
 				99A4C71F1D1C7B0B002C17E1 /* Dictionary */,
-				99A4C71D1D1C7A75002C17E1 /* Scrabble */,
+				99A4C71D1D1C7A75002C17E1 /* ConfigurationTests */,
 				99A4C7171D1C77E9002C17E1 /* CombosTests.swift */,
 				990E2E481D0B1A1F00E2748F /* ComputerPlayerTests.swift */,
 				990E2E461D0B14E500E2748F /* HumanPlayerTests.swift */,
@@ -162,7 +162,7 @@
 			path = PapyrusCoreTests;
 			sourceTree = "<group>";
 		};
-		99A4C71D1D1C7A75002C17E1 /* Scrabble */ = {
+		99A4C71D1D1C7A75002C17E1 /* ConfigurationTests */ = {
 			isa = PBXGroup;
 			children = (
 				995CBC0D1CCCB20A00DF06B8 /* BagTests.swift */,
@@ -171,7 +171,7 @@
 				995CBC111CCCB27300DF06B8 /* SolverTests.swift */,
 				992AB98E1D4C1AB20032CCFC /* TestConfiguration.json */,
 			);
-			name = Scrabble;
+			name = ConfigurationTests;
 			sourceTree = "<group>";
 		};
 		99A4C71F1D1C7B0B002C17E1 /* Dictionary */ = {
