@@ -8,11 +8,11 @@
 
 import Foundation
 
-func == (lhs: BoardState, rhs: BoardState) -> Bool {
+internal func == (lhs: BoardState, rhs: BoardState) -> Bool {
     return lhs.horizontal == rhs.horizontal && lhs.vertical == rhs.vertical
 }
 
-struct BoardState: CustomDebugStringConvertible, Equatable {
+internal struct BoardState: CustomDebugStringConvertible, Equatable {
     private let horizontal: [[Int]]
     private let vertical: [[Int]]
     

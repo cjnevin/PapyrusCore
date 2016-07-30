@@ -8,7 +8,13 @@
 
 import Foundation
 
-enum JSONConfigKey: String {
+public typealias JSON = [String: AnyObject]
+public protocol JSONSerializable {
+    static func object(from json: JSON) -> Self?
+    func toJSON() -> JSON
+}
+
+internal enum JSONConfigKey: String {
     case allTilesUsedBonus
     case maximumWordLength
     case blank
@@ -23,7 +29,7 @@ enum JSONConfigKey: String {
     }
 }
 
-enum JSONKey: String {
+internal enum JSONKey: String {
     case word
     case x
     case y
@@ -47,7 +53,7 @@ enum JSONKey: String {
     }
 }
 
-func json(from: [JSONConfigKey: AnyObject]) -> JSON {
+internal func json(from: [JSONConfigKey: AnyObject]) -> JSON {
     var result = JSON()
     zip(from.keys.map({ $0.rawValue }), from.values).forEach { (key, value) in
         result[key] = value
@@ -55,7 +61,7 @@ func json(from: [JSONConfigKey: AnyObject]) -> JSON {
     return result
 }
 
-func json(from: [JSONKey: AnyObject]) -> JSON {
+internal func json(from: [JSONKey: AnyObject]) -> JSON {
     var result = JSON()
     zip(from.keys.map({ $0.rawValue }), from.values).forEach { (key, value) in
         result[key] = value
@@ -63,14 +69,7 @@ func json(from: [JSONKey: AnyObject]) -> JSON {
     return result
 }
 
-
-public typealias JSON = [String: AnyObject]
-public protocol JSONSerializable {
-    static func object(from json: JSON) -> Self?
-    func toJSON() -> JSON
-}
-
-func readJSON(from file: URL) -> JSON? {
+internal func readJSON(from file: URL) -> JSON? {
     guard let data = try? Data(contentsOf: file),
         optionalJson = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? JSON,
         json = optionalJson else {
@@ -79,7 +78,7 @@ func readJSON(from file: URL) -> JSON? {
     return json
 }
 
-func writeJSON(_ json: JSON, to file: URL) -> Bool {
+internal func writeJSON(_ json: JSON, to file: URL) -> Bool {
     do {
         try JSONSerialization.data(withJSONObject: json, options: .init(rawValue: 0)).write(to: file)
         return true

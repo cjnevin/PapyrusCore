@@ -13,11 +13,11 @@ public func == (_ lhs: Board, _ rhs: Board) -> Bool {
     return true
 }
 
-func makePositions(indices: CountableRange<Int>) -> Positions {
+private func makePositions(indices: CountableRange<Int>) -> Positions {
     return indices.flatMap({ x in indices.flatMap({ y in Position(x: x, y: y) }) })
 }
 
-struct Edge: OptionSet {
+internal struct Edge: OptionSet {
     let rawValue: Int
     
     static let None = Edge(rawValue: 0)
@@ -233,17 +233,24 @@ public struct Board: BoardType, Equatable {
     public let empty: Character
     public let center: Int
     public let size: Int
-    public var layout: [[Character]]
-    public var blanks = Positions()
     public let letterMultipliers: [[Int]]
     public let wordMultipliers: [[Int]]
     public let allPositions: Positions
+    public var layout: [[Character]]
+    public var blanks = Positions()
     
     public init?(with config: URL) {
-        guard let json = readJSON(from: config),
+        guard let json = readJSON(from: config) else {
+            return nil
+        }
+        self.init(json: json)
+    }
+    
+    internal init?(json: JSON) {
+        guard let
             letterMultipliers: [[Int]] = JSONConfigKey.letterMultipliers.in(json),
             wordMultipliers: [[Int]] = JSONConfigKey.wordMultipliers.in(json) else {
-               return nil
+                return nil
         }
         self.init(letterMultipliers: letterMultipliers, wordMultipliers: wordMultipliers)
     }

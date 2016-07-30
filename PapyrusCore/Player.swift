@@ -29,8 +29,6 @@ public struct RackTile: Equatable {
     }
 }
 
-//public typealias RackTile = (letter: Character, isBlank: Bool)
-
 public protocol Player: JSONSerializable {
     /// Unique identifier for player.
     var id: String { get }

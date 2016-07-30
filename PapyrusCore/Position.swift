@@ -25,7 +25,7 @@ public protocol PositionType: Equatable {
     init(x: Int, y: Int)
 }
 
-enum Direction {
+internal enum Direction {
     case vertical
     case horizontal
     case both       // will be true if only 1 element
@@ -33,7 +33,7 @@ enum Direction {
     case scattered
 }
 
-extension Array where Element: PositionType {
+internal extension Array where Element: PositionType {
     mutating func sortByX() {
         self = sortedByX()
     }

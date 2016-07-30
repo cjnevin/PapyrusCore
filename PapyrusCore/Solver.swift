@@ -14,7 +14,7 @@ public enum ValidationResponse {
     case valid(solution: Solution)
 }
 
-protocol SolverType {
+internal protocol SolverType {
     var letterPoints: [Character: Int] { get set }
     var board: Board { get set }
     var boardState: BoardState { get set }
@@ -393,7 +393,7 @@ extension SolverType {
     }
 }
 
-struct Solver: SolverType {
+internal struct Solver: SolverType {
     var letterPoints: [Character: Int]
     var board: Board
     var boardState: BoardState
@@ -402,6 +402,17 @@ struct Solver: SolverType {
     let maximumWordLength: Int
     let allTilesUsedBonus: Int
     let operationQueue = OperationQueue()
+    
+    init?(json: JSON, bag: Bag, dictionary: Lookup) {
+        guard let
+            board = Board(json: json),
+            allTilesUsedBonus: Int = JSONConfigKey.allTilesUsedBonus.in(json),
+            maximumWordLength: Int = JSONConfigKey.maximumWordLength.in(json) else {
+                return nil
+        }
+        self.init(allTilesUsedBonus: allTilesUsedBonus, maximumWordLength: maximumWordLength,
+                  letterPoints: bag.letterPoints, board: board, dictionary: dictionary)
+    }
     
     init(allTilesUsedBonus: Int, maximumWordLength: Int, letterPoints: [Character: Int], board: Board, dictionary: Lookup, debug: Bool = false) {
         self.allTilesUsedBonus = allTilesUsedBonus

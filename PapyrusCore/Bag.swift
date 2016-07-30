@@ -25,7 +25,26 @@ public struct Bag: BagType {
     public let total: Int
     public var remaining: [Character]
     
-    init(vowels: [Character], letters: [Character: Int], letterPoints: [Character: Int]) {
+    internal init?(json: JSON) {
+        guard let
+            lettersStrings: [String: Int] = JSONConfigKey.letters.in(json),
+            letterPointsStrings: [String: Int] = JSONConfigKey.letterPoints.in(json),
+            vowelsStrings: [String] = JSONConfigKey.vowels.in(json) else {
+                return nil
+        }
+        func characterise(values: [String: Int]) -> [Character: Int] {
+            var result = [Character: Int]()
+            for (key, value) in values {
+                result[Character(key)] = value
+            }
+            return result
+        }
+        self.init(vowels: vowelsStrings.map({ Character($0) }),
+                  letters: characterise(values: lettersStrings),
+                  letterPoints: characterise(values: letterPointsStrings))
+    }
+    
+    internal init(vowels: [Character], letters: [Character: Int], letterPoints: [Character: Int]) {
         self.vowels = vowels
         self.letters = letters
         self.letterPoints = letterPoints

@@ -9,9 +9,8 @@
 import Foundation
 
 public enum GameError: ErrorProtocol {
-    case initializationError
+    case initialization
 }
-
 
 public enum GameEvent {
     case over(Game, [Player]?)
@@ -22,72 +21,58 @@ public enum GameEvent {
     case turnEnded(Game)
 }
 
-private func characterise(values: [String: Int]) -> [Character: Int] {
-    var result = [Character: Int]()
-    for (key, value) in values {
-        result[Character(key)] = value
-    }
-    return result
-}
-
-let aiCanPlayBlanks = false
-
 public typealias EventHandler = (GameEvent) -> ()
+
 public class Game {
     /// Character used for blank/wildcard tiles.
     public static let blankLetter = Character("_")
     /// Amount of tiles that should be in a players rack when possible.
     public static let rackAmount = 7
-    var solver: Solver
-    var serial: Bool = false
+    /// Number of times a user is allowed to skip before forfeiting.
+    private static let maximumConsecutiveSkips = 3
+    /// True if AI is allowed to figure out the best blank tile, false if it
+    /// is automatically set to a default value based on their tiles in their rack.
+    private static let aiCanPlayBlanks = false
+
+    private var configJSON: JSON!
+    private var eventHandler: EventHandler
+    private var solver: Solver
+    private var serial: Bool = false
+    private var playerIndex: Int
+    
+    /// True if the game has ended, false if still in progress.
     private(set) public var ended: Bool = true
     /// Bag where tiles are drawn from.
     public var bag: Bag
-    /// All players.
-    public private(set) var players: [Player]
-    var playerIndex: Int
-    
-    private var configJSON: JSON!
     /// Player that is having their turn.
     public var player: Player { return players[playerIndex] }
-    private var eventHandler: EventHandler
-    public var board: Board {
+    /// All players.
+    public private(set) var players: [Player]
+    /// Current representation of the board.
+    public var board: BoardType {
         return solver.board
     }
-    var _lastMove: Solution? = nil
     /// Last solution played.
-    public var lastMove: Solution? {
-        return _lastMove
-    }
-    private let maximumConsecutiveSkips = 3
+    public var lastMove: Solution? { return _lastMove }
+    private var _lastMove: Solution? = nil
     
     /// Create a new game.
     public init(config file: URL, dictionary: Lookup, players: [Player], serial: Bool = false, eventHandler: EventHandler) throws {
         guard let
             json = readJSON(from: file),
-            allTilesUsedBonus: Int = JSONConfigKey.allTilesUsedBonus.in(json),
-            maximumWordLength: Int = JSONConfigKey.maximumWordLength.in(json),
-            lettersStrings: [String: Int] = JSONConfigKey.letters.in(json),
-            letterPointsStrings: [String: Int] = JSONConfigKey.letterPoints.in(json),
-            letterMultipliers: [[Int]] = JSONConfigKey.letterMultipliers.in(json),
-            wordMultipliers: [[Int]] = JSONConfigKey.wordMultipliers.in(json),
-            vowelsStrings: [String] = JSONConfigKey.vowels.in(json) else {
-                throw GameError.initializationError
+            bag = Bag(json: json),
+            solver = Solver(json: json, bag: bag, dictionary: dictionary) else {
+                throw GameError.initialization
         }
         self.configJSON = json
         self.serial = serial
         self.eventHandler = eventHandler
-        self.bag = Bag(vowels: vowelsStrings.map({ Character($0) }),
-                       letters: characterise(values: lettersStrings),
-                       letterPoints: characterise(values: letterPointsStrings))
-        self.players = players
-        
-        let board = Board(letterMultipliers: letterMultipliers, wordMultipliers: wordMultipliers)
-        self.solver = Solver(allTilesUsedBonus: allTilesUsedBonus, maximumWordLength: maximumWordLength,
-                             letterPoints: bag.letterPoints, board: board, dictionary: dictionary)
+        self.bag = bag
+        self.players = players.shuffled()
+        self.solver = solver
         
         self.playerIndex = 0
-        for _ in players {
+        for _ in self.players {
             replenishRack()
             self.playerIndex += 1
         }
@@ -95,7 +80,7 @@ public class Game {
     }
     
     /// Restore a game from file.
-    public init?(from file: URL, dictionary: Lookup, eventHandler: EventHandler) {
+    public init(restoring file: URL, dictionary: Lookup, eventHandler: EventHandler) throws {
         guard let
             json = readJSON(from: file),
             bagRemaining: String = JSONKey.bag.in(json),
@@ -103,31 +88,20 @@ public class Game {
             playerIndex: Int = JSONKey.playerIndex.in(json),
             serial: Bool = JSONKey.serial.in(json),
             configJson: JSON = JSONKey.config.in(json),
-            allTilesUsedBonus: Int = JSONConfigKey.allTilesUsedBonus.in(configJson),
-            maximumWordLength: Int = JSONConfigKey.maximumWordLength.in(configJson),
-            lettersStrings: [String: Int] = JSONConfigKey.letters.in(configJson),
-            letterPointsStrings: [String: Int] = JSONConfigKey.letterPoints.in(configJson),
-            letterMultipliers: [[Int]] = JSONConfigKey.letterMultipliers.in(configJson),
-            wordMultipliers: [[Int]] = JSONConfigKey.wordMultipliers.in(configJson),
-            vowelsStrings: [String] = JSONConfigKey.vowels.in(configJson) else {
-                return nil
+            bag = Bag(json: configJson),
+            solver = Solver(json: configJson, bag: bag, dictionary: dictionary) else {
+                throw GameError.initialization
         }
         
         self.configJSON = configJson
         self.serial = serial
         self.eventHandler = eventHandler
-        self.bag = Bag(vowels: vowelsStrings.map({ Character($0) }),
-                       letters: characterise(values: lettersStrings),
-                       letterPoints: characterise(values: letterPointsStrings))
+        self.bag = bag
         self.bag.remaining = Array(bagRemaining.characters)
+        self.solver = solver
         self.players = makePlayers(using: playersJson)
         self.playerIndex = playerIndex
-        
-        let board = Board(letterMultipliers: letterMultipliers, wordMultipliers: wordMultipliers)
-        self.solver = Solver(allTilesUsedBonus: allTilesUsedBonus, maximumWordLength: maximumWordLength,
-                             letterPoints: bag.letterPoints, board: board, dictionary: dictionary)
-        
-        players.forEach({ $0.solves.forEach({ _ = solver.play(solution: $0) }) })
+        self.players.forEach({ $0.solves.forEach({ _ = self.solver.play(solution: $0) }) })
         
         guard let lastMoveJson: JSON = JSONKey.lastMove.in(json) else {
             return
@@ -140,7 +114,7 @@ public class Game {
         return players.enumerated().filter({ $1.id == player.id }).first?.offset
     }
     
-    /// Save the current state of the game to disk. Can be restored using `Game(from:)`.
+    /// Save the current state of the game to disk. Can be restored using `Game(restoring:)`.
     public func save(to file: URL) -> Bool {
         let lastMoveJson = _lastMove?.toJSON() ?? NSNull()
         let output = json(from: [.lastMove: lastMoveJson,
@@ -185,7 +159,7 @@ public class Game {
         print("Skipped")
         _lastMove = nil
         players[playerIndex].consecutiveSkips += 1
-        guard player.consecutiveSkips < maximumConsecutiveSkips else {
+        guard player.consecutiveSkips < Game.maximumConsecutiveSkips else {
             gameOver()
             return
         }
@@ -225,7 +199,7 @@ public class Game {
         if player is Computer {
             var ai = player as! Computer
             let vowels = bag.vowels
-            while aiCanPlayBlanks == false && ai.rack.filter({$0.letter == Game.blankLetter}).count > 0 {
+            while !Game.aiCanPlayBlanks && ai.rack.filter({$0.letter == Game.blankLetter}).count > 0 {
                 if Set(ai.rack.map({$0.letter})).intersection(vowels).count == 0 {
                     // If we have no vowels lets pick a random vowel
                     ai.updateBlank(to: vowels[Int(arc4random()) % vowels.count])

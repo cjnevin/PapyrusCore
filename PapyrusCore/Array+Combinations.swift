@@ -8,15 +8,15 @@
 
 import Foundation
 
-extension Array {
+internal extension Array {
     
     /// Shuffle array in place.
-    public mutating func shuffle() {
+    mutating func shuffle() {
         self = shuffled()
     }
     
     /// - returns: Shuffled array using elements in array.
-    public func shuffled() -> Array {
+    func shuffled() -> Array {
         return sorted(isOrderedBefore: {_, _ in arc4random() % 2 == 0})
     }
     
