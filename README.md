@@ -66,7 +66,7 @@ The tile bag, provides methods for drawing and replacing tiles in a distribution
 The current board representation.
 
 #### Game
-Main class responsible for gameplay, handles saving and restoring game state (via `save(to:)` and `Game(from:)` methods).
+Main class responsible for gameplay, handles saving and restoring game state (via `save(to:)` and `Game(restoring:)` methods).
 
 Exposes various actions that a Human player may want to take including: move validation, shuffling and rearranging your rack, skipping, submitting moves, suggested moves, and swapping tiles. AI play will be handled automatically once `nextTurn` is called.
 
@@ -74,9 +74,6 @@ Exposes various actions that a Human player may want to take including: move val
 A player can be either a Human or a Computer, Computer's have a difficulty associated with them and are automated. Both have the solutions they have played, the tiles they have in their rack and their score.
 
 ### Dependencies
-
-#### AnagramDictionary
-Allows us to quickly look-up anagrams using lexicographically equivalent comparison.
 
 #### Lookup
 Protocol for dictionary lookup.
