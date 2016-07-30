@@ -16,20 +16,22 @@ func toRackTiles(arr: [(letter: Character, isBlank: Bool)]) -> [RackTile] {
 class HumanPlayerTests : XCTestCase {
     
     var player: Player!
-    let board = ScrabbleBoard()
-
+    var board: Board!
+    
     func rackTiles() -> [RackTile] {
         return toRackTiles(arr: [(Game.blankLetter, true), ("A", false), ("B", false), ("C", false), ("D", false), ("E", false), ("F", false)])
     }
     
     override func setUp() {
         super.setUp()
+        board = HumanPlayerTests.getBoard()
         player = Human(rackTiles: rackTiles())
         _ = Human(rack: [], score: 0, solves: [], consecutiveSkips: 0)
     }
     
     override func tearDown() {
         super.tearDown()
+        board = nil
         player = nil
     }
     

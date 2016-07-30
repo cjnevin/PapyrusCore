@@ -9,8 +9,7 @@
 import XCTest
 @testable import PapyrusCore
 
-class ScrabbleBoardTests: XCTestCase {
-    var boardType: Board.Type!
+class BoardTests: XCTestCase {
     var board: Board!
     var secondBoard: Board!
     var center: Int!
@@ -19,11 +18,9 @@ class ScrabbleBoardTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        boardType = ScrabbleBoard.self
-        let scrabbleBoard = ScrabbleBoard()
-        board = scrabbleBoard
-        secondBoard = ScrabbleBoard()
-        center = scrabbleBoard.center
+        board = BoardTests.getBoard()
+        secondBoard = BoardTests.getBoard()
+        center = board.center
         centerPosition = Position(x: center, y: center)
         bottomEdgePosition = Position(x: board.size - 2, y: board.size - 2)
     }
@@ -252,9 +249,9 @@ class ScrabbleBoardTests: XCTestCase {
     
     func checkEquality(_ expected: Bool = true) {
         if expected {
-            XCTAssertEqual(board as? ScrabbleBoard, secondBoard as? ScrabbleBoard)
+            XCTAssertEqual(board, secondBoard)
         } else {
-            XCTAssertNotEqual(board as? ScrabbleBoard, secondBoard as? ScrabbleBoard)
+            XCTAssertNotEqual(board, secondBoard)
         }
     }
     

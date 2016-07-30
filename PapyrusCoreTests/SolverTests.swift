@@ -9,13 +9,22 @@
 import XCTest
 @testable import PapyrusCore
 
-class ScrabbleSolverTests: XCTestCase {
+class SolverTests: XCTestCase {
     var solver: Solver!
     
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
-        solver = ScrabbleSolver(bagType: ScrabbleBag.self, board: ScrabbleBoard(), dictionary: AnagramDictionary.singleton!)
+        
+        let letterPoints: [Character: Int] = ["_": 0, "a": 1, "b": 3, "c": 3, "d": 2,
+                            "e": 1, "f": 4, "g": 2, "h": 4, "i": 1,
+                            "j": 8, "k": 5, "l": 1, "m": 3, "n": 1,
+                            "o": 1, "p": 3, "q": 10, "r": 1, "s": 1,
+                            "t": 1, "u": 1, "v": 4, "w": 4, "x": 8,
+                            "y": 4, "z": 10]
+        
+        solver = Solver(allTilesUsedBonus: 50, maximumWordLength: 15, letterPoints: letterPoints,
+               board: SolverTests.getBoard(), dictionary: AnagramDictionary.singleton!, debug: false)
     }
     
     func dropWords() {

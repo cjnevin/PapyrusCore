@@ -14,8 +14,8 @@ public enum ValidationResponse {
     case valid(solution: Solution)
 }
 
-protocol Solver {
-    var bagType: Bag.Type { get set }
+protocol SolverType {
+    var letterPoints: [Character: Int] { get set }
     var board: Board { get set }
     var boardState: BoardState { get set }
     var dictionary: Lookup { get set }
@@ -24,7 +24,7 @@ protocol Solver {
     var allTilesUsedBonus: Int { get }
     var operationQueue: OperationQueue { get }
     
-    init(bagType: Bag.Type, board: Board, dictionary: Lookup, debug: Bool)
+    init(allTilesUsedBonus: Int, maximumWordLength: Int, letterPoints: [Character: Int], board: Board, dictionary: Lookup, debug: Bool)
     
     func characters(startingAt: Position, length: Int, horizontal: Bool) -> [Int: Character]?
     func word<T: PositionType>(startingAt: T, horizontal: Bool, with positions: LetterPositions) -> (word: Word, valid: Bool)?
@@ -41,7 +41,7 @@ protocol Solver {
 
 // Characters
 
-extension Solver {
+extension SolverType {
     func lexicographicalString(withLetters letters: [Character]) -> String {
         return String(letters.sorted())
     }
@@ -144,7 +144,7 @@ extension Solver {
 }
 
 // Word
-extension Solver {
+extension SolverType {
     /// - returns: Offsets in word that are blank using a players rack tiles.
     func blanks(forWord word: Word, rackLetters: [RackTile]) -> Positions {
         var tempPlayer = Human(rackTiles: rackLetters)
@@ -157,7 +157,7 @@ extension Solver {
         guard !blanks.contains({ $0.x == letterPosition.x && $0.y == letterPosition.y }) else {
             return 0
         }
-        return bagType.letterPoints[letterPosition.letter]!
+        return letterPoints[letterPosition.letter]!
     }
     
     func intersectingScore(for word: Word, blanks: [Position]) -> Int {
@@ -279,7 +279,7 @@ extension Solver {
 }
 
 // Solution
-extension Solver {
+extension SolverType {
     mutating func play(solution: Solution) -> [Character] {
         let dropped = board.play(solution: solution)
         boardState = BoardState(board: board)
@@ -390,5 +390,26 @@ extension Solver {
             }
         }
         return suitable?.solution ?? best
+    }
+}
+
+struct Solver: SolverType {
+    var letterPoints: [Character: Int]
+    var board: Board
+    var boardState: BoardState
+    var dictionary: Lookup
+    var debug: Bool
+    let maximumWordLength: Int
+    let allTilesUsedBonus: Int
+    let operationQueue = OperationQueue()
+    
+    init(allTilesUsedBonus: Int, maximumWordLength: Int, letterPoints: [Character: Int], board: Board, dictionary: Lookup, debug: Bool = false) {
+        self.allTilesUsedBonus = allTilesUsedBonus
+        self.maximumWordLength = maximumWordLength
+        self.letterPoints = letterPoints
+        self.board = board
+        boardState = BoardState(board: board)
+        self.debug = debug
+        self.dictionary = dictionary
     }
 }
