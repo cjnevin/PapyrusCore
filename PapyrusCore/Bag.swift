@@ -32,16 +32,9 @@ public struct Bag: BagType {
             vowelsStrings: [String] = JSONConfigKey.vowels.in(json) else {
                 return nil
         }
-        func characterise(values: [String: Int]) -> [Character: Int] {
-            var result = [Character: Int]()
-            for (key, value) in values {
-                result[Character(key)] = value
-            }
-            return result
-        }
         self.init(vowels: vowelsStrings.map({ Character($0) }),
-                  letters: characterise(values: lettersStrings),
-                  letterPoints: characterise(values: letterPointsStrings))
+                  letters: lettersStrings.mapTuple({ (Character($0), $1) }),
+                  letterPoints: letterPointsStrings.mapTuple({ (Character($0), $1) }))
     }
     
     internal init(vowels: [Character], letters: [Character: Int], letterPoints: [Character: Int]) {

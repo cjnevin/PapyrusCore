@@ -116,6 +116,30 @@ public struct Position: PositionType {
     func moveY(amount: Int) -> Position {
         return Position(x: x, y: y + amount)
     }
+    
+    func move(amount: Int, horizontal: Bool) -> Position {
+        return horizontal ? moveX(amount: amount) : moveY(amount: amount)
+    }
+    
+    func previous(horizontal: Bool) -> Position {
+        return horizontal ? moveX(amount: -1) : moveY(amount: -1)
+    }
+    
+    func next(horizontal: Bool) -> Position {
+        return horizontal ? moveX(amount: 1) : moveY(amount: 1)
+    }
+    
+    mutating func previousInPlace(horizontal: Bool) {
+        self = previous(horizontal: horizontal)
+    }
+    
+    mutating func nextInPlace(horizontal: Bool) {
+        self = next(horizontal: horizontal)
+    }
+    
+    func areCoordinatesLowerThan(_ maximum: Int) -> Bool {
+        return x < maximum && y < maximum
+    }
 }
 
 public struct LetterPosition: PositionType {

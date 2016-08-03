@@ -46,32 +46,29 @@ extension SolverType {
         return String(letters.sorted())
     }
     
-    func characters(startingAt position: Position, length: Int, horizontal: Bool) -> [Int: Character]? {
-        let size = board.size
-        var fixedLetters = [Int: Character]()
-        var index = 0
-        var offset = boardState.state(at: position, horizontal: horizontal)
+    func characters(startingAt origin: Position, length: Int, horizontal: Bool) -> [Int: Character]? {
+        let start = boardState.state(at: origin, horizontal: horizontal)
+        var position = Position(x: horizontal ? start : origin.x, y: horizontal ? origin.y : start)
+        let startPosition = position
+        let finalPosition = startPosition.move(amount: length - 1, horizontal: horizontal)
+        var positions = [Position]()
         
-        func addCharacter(_ mustExist: Bool, alwaysIncrement: Bool) -> Bool {
-            if offset >= size { return false }
-            var didExist = false
-            if let value = board.letter(at: Position(x: horizontal ? offset : position.x, y: horizontal ? position.y : offset)) {
-                fixedLetters[index] = value
-                didExist = true
+        func addPosition(ifTrue: (Position) -> (Bool)) -> Bool {
+            guard position.areCoordinatesLowerThan(board.size) && ifTrue(position) else {
+                return false
             }
-            // Only increment if alwaysIncrement is set or we found a value.
-            if alwaysIncrement || didExist {
-                index += 1
-                offset += 1
-            }
-            return mustExist == true ? didExist : true
+            positions.append(position)
+            position.nextInPlace(horizontal: horizontal)
+            return true
         }
         
-        while addCharacter(true, alwaysIncrement: false) { }
-        for _ in 0..<length { _ = addCharacter(false, alwaysIncrement: true) }
-        while addCharacter(true, alwaysIncrement: false) { }
+        while addPosition(ifTrue: board.isFilled) { }
+        (0..<length).forEach({ _ in _ = addPosition(ifTrue: { _ in true }) })
+        while addPosition(ifTrue: board.isFilled) { }
         
-        return length != index ? nil : fixedLetters
+        return positions.last != finalPosition ? nil : Dictionary(positions.flatMap({ p in
+            let letter = board.letter(at: p)
+            return letter == nil ? nil : (horizontal ? p.x - start : p.y - start, letter!) }))
     }
     
     func validate(positions: LetterPositions, blanks: Positions) -> ValidationResponse {

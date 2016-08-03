@@ -54,19 +54,11 @@ internal enum JSONKey: String {
 }
 
 internal func json(from: [JSONConfigKey: AnyObject]) -> JSON {
-    var result = JSON()
-    zip(from.keys.map({ $0.rawValue }), from.values).forEach { (key, value) in
-        result[key] = value
-    }
-    return result
+    return from.mapTuple({ ($0.rawValue, $1) })
 }
 
 internal func json(from: [JSONKey: AnyObject]) -> JSON {
-    var result = JSON()
-    zip(from.keys.map({ $0.rawValue }), from.values).forEach { (key, value) in
-        result[key] = value
-    }
-    return result
+    return from.mapTuple({ ($0.rawValue, $1) })
 }
 
 internal func readJSON(from file: URL) -> JSON? {

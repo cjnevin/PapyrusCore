@@ -33,6 +33,7 @@
 		9960AD751BA589D800765614 /* PapyrusCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9960AD6A1BA589D800765614 /* PapyrusCore.framework */; };
 		99A4C7181D1C77E9002C17E1 /* CombosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99A4C7171D1C77E9002C17E1 /* CombosTests.swift */; };
 		99DC69741D2902C200FFC5F6 /* JSONSerializable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DC69731D2902C200FFC5F6 /* JSONSerializable.swift */; };
+		99E7309E1D51C4BC0057E727 /* Dictionary+Tuple.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E7309D1D51C4BC0057E727 /* Dictionary+Tuple.swift */; };
 		99FB2D0E1CF900A2005E611F /* Array+Combinations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FB2D0D1CF900A2005E611F /* Array+Combinations.swift */; };
 /* End PBXBuildFile section */
 
@@ -77,6 +78,7 @@
 		9960AD7B1BA589D800765614 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		99A4C7171D1C77E9002C17E1 /* CombosTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CombosTests.swift; sourceTree = "<group>"; };
 		99DC69731D2902C200FFC5F6 /* JSONSerializable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONSerializable.swift; sourceTree = "<group>"; };
+		99E7309D1D51C4BC0057E727 /* Dictionary+Tuple.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+Tuple.swift"; sourceTree = "<group>"; };
 		99FB2D0D1CF900A2005E611F /* Array+Combinations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Combinations.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -130,6 +132,7 @@
 			isa = PBXGroup;
 			children = (
 				99FB2D0D1CF900A2005E611F /* Array+Combinations.swift */,
+				99E7309D1D51C4BC0057E727 /* Dictionary+Tuple.swift */,
 				9960AD6D1BA589D800765614 /* PapyrusCore.h */,
 				995CBC0B1CCCB1E000DF06B8 /* Bag.swift */,
 				995CBC151CCCB58A00DF06B8 /* Board.swift */,
@@ -305,6 +308,7 @@
 				9951B5981D296A32007FD0EC /* Lookup.swift in Sources */,
 				995CBC181CCCB5FC00DF06B8 /* BoardState.swift in Sources */,
 				995CBC161CCCB58A00DF06B8 /* Board.swift in Sources */,
+				99E7309E1D51C4BC0057E727 /* Dictionary+Tuple.swift in Sources */,
 				995CBC0C1CCCB1E000DF06B8 /* Bag.swift in Sources */,
 				990E2E4F1D0B5BE000E2748F /* WordRepresentation.swift in Sources */,
 				99FB2D0E1CF900A2005E611F /* Array+Combinations.swift in Sources */,
