@@ -53,8 +53,8 @@ extension SolverType {
         let finalPosition = startPosition.move(amount: length - 1, horizontal: horizontal)
         var positions = [Position]()
         
-        func addPosition(ifTrue: (Position) -> (Bool)) -> Bool {
-            guard position.areCoordinatesLowerThan(board.size) && ifTrue(position) else {
+        @discardableResult func addPosition(ifTrue: ((Position) -> (Bool))? = nil) -> Bool {
+            guard position.areCoordinatesUnder(board.size) && (ifTrue == nil || ifTrue?(position) == true) else {
                 return false
             }
             positions.append(position)
@@ -62,9 +62,13 @@ extension SolverType {
             return true
         }
         
-        while addPosition(ifTrue: board.isFilled) { }
-        (0..<length).forEach({ _ in _ = addPosition(ifTrue: { _ in true }) })
-        while addPosition(ifTrue: board.isFilled) { }
+        func addPositionWhileFilled() {
+            board.size.times(whileTrue: { addPosition(ifTrue: self.board.isFilled) })
+        }
+        
+        addPositionWhileFilled()
+        length.times({ addPosition() })
+        addPositionWhileFilled()
         
         return positions.last != finalPosition ? nil : Dictionary(positions.flatMap({ p in
             let letter = board.letter(at: p)

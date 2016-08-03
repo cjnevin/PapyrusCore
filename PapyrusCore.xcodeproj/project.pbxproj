@@ -34,6 +34,7 @@
 		99A4C7181D1C77E9002C17E1 /* CombosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99A4C7171D1C77E9002C17E1 /* CombosTests.swift */; };
 		99DC69741D2902C200FFC5F6 /* JSONSerializable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DC69731D2902C200FFC5F6 /* JSONSerializable.swift */; };
 		99E7309E1D51C4BC0057E727 /* Dictionary+Tuple.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E7309D1D51C4BC0057E727 /* Dictionary+Tuple.swift */; };
+		99E730A01D5269DA0057E727 /* Int+Times.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E7309F1D5269DA0057E727 /* Int+Times.swift */; };
 		99FB2D0E1CF900A2005E611F /* Array+Combinations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FB2D0D1CF900A2005E611F /* Array+Combinations.swift */; };
 /* End PBXBuildFile section */
 
@@ -79,6 +80,7 @@
 		99A4C7171D1C77E9002C17E1 /* CombosTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CombosTests.swift; sourceTree = "<group>"; };
 		99DC69731D2902C200FFC5F6 /* JSONSerializable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONSerializable.swift; sourceTree = "<group>"; };
 		99E7309D1D51C4BC0057E727 /* Dictionary+Tuple.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+Tuple.swift"; sourceTree = "<group>"; };
+		99E7309F1D5269DA0057E727 /* Int+Times.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Int+Times.swift"; sourceTree = "<group>"; };
 		99FB2D0D1CF900A2005E611F /* Array+Combinations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Combinations.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -133,6 +135,7 @@
 			children = (
 				99FB2D0D1CF900A2005E611F /* Array+Combinations.swift */,
 				99E7309D1D51C4BC0057E727 /* Dictionary+Tuple.swift */,
+				99E7309F1D5269DA0057E727 /* Int+Times.swift */,
 				9960AD6D1BA589D800765614 /* PapyrusCore.h */,
 				995CBC0B1CCCB1E000DF06B8 /* Bag.swift */,
 				995CBC151CCCB58A00DF06B8 /* Board.swift */,
@@ -303,6 +306,7 @@
 				9948DF471D3BAF230091A333 /* Position.swift in Sources */,
 				995CBC061CCCB19000DF06B8 /* Game.swift in Sources */,
 				995CBC081CCCB1A000DF06B8 /* Solver.swift in Sources */,
+				99E730A01D5269DA0057E727 /* Int+Times.swift in Sources */,
 				995CBC0A1CCCB1C400DF06B8 /* Player.swift in Sources */,
 				99DC69741D2902C200FFC5F6 /* JSONSerializable.swift in Sources */,
 				9951B5981D296A32007FD0EC /* Lookup.swift in Sources */,

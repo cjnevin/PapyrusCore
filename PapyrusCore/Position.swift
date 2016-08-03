@@ -137,7 +137,7 @@ public struct Position: PositionType {
         self = next(horizontal: horizontal)
     }
     
-    func areCoordinatesLowerThan(_ maximum: Int) -> Bool {
+    func areCoordinatesUnder(_ maximum: Int) -> Bool {
         return x < maximum && y < maximum
     }
 }
