@@ -27,27 +27,28 @@ internal struct BoardState: CustomDebugStringConvertible, Equatable {
     
     init(board: Board) {
         let size = board.size
-        let range = board.boardRange
+        let range = board.layout.indices
         var h = Array(repeating: Array(repeating: 0, count: size), count: size)
         var v = Array(repeating: Array(repeating: 0, count: size), count: size)
-        func update(_ first: Int, while: (Int) -> Bool) -> Int {
-            var start = first
-            var escape = false
-            while start > 0 && `while`(start) && !escape {
-                if `while`(start - 1) {
-                    start -= 1
-                } else {
-                    escape = true
+        
+        func decrement(from index: Int, when passing: (Int) -> Bool) -> Int {
+            var start = index
+            while start > 0 && passing(start) {
+                guard passing(start - 1) else {
+                    break
                 }
+                start -= 1
             }
             return start
         }
+        
         for x in range {
             for y in range {
-                h[y][x] = update(x){ board.isFilled(at: Position(x: $0, y: y)) }
-                v[y][x] = update(y){ board.isFilled(at: Position(x: x, y: $0)) }
+                h[y][x] = decrement(from: x, when: { board.isFilled(at: Position(x: $0, y: y)) })
+                v[y][x] = decrement(from: y, when: { board.isFilled(at: Position(x: x, y: $0)) })
             }
         }
+        
         horizontal = h
         vertical = v
     }

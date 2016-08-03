@@ -117,15 +117,7 @@ public struct Solution: WordRepresentation, Equatable, JSONSerializable {
     }
     
     public func getPositions() -> Positions {
-        var points = toPositions()
-        intersections.map({ $0.toPositions() }).forEach({ intersectedPoints in
-            intersectedPoints.forEach({ intersectedPoint in
-                if !points.contains({ $0.x == intersectedPoint.x && $0.y == intersectedPoint.y }) {
-                    points.append(intersectedPoint)
-                }
-            })
-        })
-        return points
+        return Array(Set(toPositions()).union(intersections.flatMap({ $0.toPositions() })))
     }
     
     public func toJSON() -> JSON {

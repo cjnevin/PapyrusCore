@@ -33,7 +33,6 @@ public protocol BoardType: CustomDebugStringConvertible {
     var empty: Character { get }
     var center: Int { get }
     var size: Int { get }
-    var boardRange: CountableRange<Int> { get }
     var layout: [[Character]] { get set }
     var blanks: Positions { get set }
     var isFirstPlay: Bool { get }
@@ -62,10 +61,6 @@ extension BoardType {
     
     public var isFirstPlay: Bool {
         return isEmpty(at: centerPosition)
-    }
-    
-    public var boardRange: CountableRange<Int> {
-        return layout.indices
     }
     
     public var emptyPositions: Positions {

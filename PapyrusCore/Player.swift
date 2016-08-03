@@ -54,10 +54,8 @@ public protocol Player: JSONSerializable {
 
 public extension Player {
     mutating func remove(letter: Character) -> (removed: Bool, wasBlank: Bool) {
-        for n in 0..<rack.count where rack[n].letter == letter {
-            let isBlank = rack[n].isBlank
-            rack.remove(at: n)
-            return (true, isBlank)
+        for i in 0..<rack.count where rack[i].letter == letter {
+            return (true, rack.remove(at: i).isBlank)
         }
         // Tile must be a blank? Lets check...
         if rack.map({$0.letter}).contains(Game.blankLetter) {
@@ -84,14 +82,12 @@ public extension Player {
     }
     
     mutating func drew(tiles: [Character]) {
-        for tile in tiles {
-            rack.append(RackTile(letter: tile, isBlank: tile == Game.blankLetter))
-        }
+        rack += tiles.map({ RackTile(letter: $0, isBlank: $0 == Game.blankLetter) })
     }
     
     mutating func updateBlank(to newValue: Character) {
-        for n in 0..<rack.count where rack[n].letter == Game.blankLetter && rack[n].isBlank == true {
-            rack[n] = RackTile(letter: newValue, isBlank: true)
+        for i in 0..<rack.count where rack[i].letter == Game.blankLetter && rack[i].isBlank {
+            rack[i] = RackTile(letter: newValue, isBlank: true)
             break
         }
     }

@@ -48,13 +48,8 @@ public struct Bag: BagType {
         self.vowels = vowels
         self.letters = letters
         self.letterPoints = letterPoints
-        
-        var tiles = [Character]()
-        for (character, i) in letters {
-            tiles += Array(repeating: character, count: i)
-        }
-        self.remaining = tiles.shuffled()
-        self.total = tiles.count
+        self.remaining = letters.flatMap({ Array(repeating: $0, count: $1) }).shuffled()
+        self.total = remaining.count
     }
     
     mutating public func replace(_ letter: Character) {
@@ -62,7 +57,6 @@ public struct Bag: BagType {
     }
     
     mutating public func draw() -> Character? {
-        if remaining.count == 0 { return nil }
-        return remaining.removeFirst()
+        return remaining.count > 0 ? remaining.removeFirst() : nil
     }
 }

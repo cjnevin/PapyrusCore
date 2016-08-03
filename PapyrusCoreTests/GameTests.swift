@@ -63,13 +63,12 @@ class GameTests: XCTestCase {
         let url = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true).first! + "/game.json")
         XCTAssert(game.save(to: url))
         
-        guard let loadedGame = Game(from: url, dictionary: dictionary, eventHandler: eventHandler) else {
+        guard let loadedGame = try? Game(restoring: url, dictionary: dictionary, eventHandler: eventHandler) else {
             XCTFail()
             return
         }
         XCTAssertEqual(String(loadedGame.bag.remaining), String(game.bag.remaining))
-        XCTAssertEqual(loadedGame.solver.boardState, game.solver.boardState)
-        checkBoardEquality(loadedGame.solver.board, game.solver.board)
+        checkBoardEquality(loadedGame.board as! Board, game.board as! Board)
     }
     
 }

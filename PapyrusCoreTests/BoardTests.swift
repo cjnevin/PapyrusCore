@@ -363,12 +363,6 @@ class BoardTests: XCTestCase {
         XCTAssertEqual(board.letter(at: centerPosition.moveY(amount: 3)), "T")
     }
     
-    // MARK: - Board Range
-    
-    func testConfigBoardRange() {
-        XCTAssertEqual(board.boardRange.count, board.size)
-    }
-    
     // MARK: - Debug String
     
     func testBoardDebugString() {
