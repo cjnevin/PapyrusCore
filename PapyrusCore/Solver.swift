@@ -373,24 +373,19 @@ extension SolverType {
         if solutions.count == 0 {
             return nil
         }
-        let best = solutions.sorted(isOrderedBefore: { $0.score < $1.score }).last!
-        if difficulty == .hard {
+        let sorted = solutions.sorted(isOrderedBefore: { $0.score > $1.score })
+        let best = sorted.first!
+        if difficulty == .hard || sorted.count == 1 {
             return best
         }
         let scaled = Double(best.score) * difficulty.rawValue
-        var suitable: (difference: Double, solution: Solution)?
-        // Smallest difference = solution to play
-        for solution in solutions where Double(solution.score) < scaled {
-            let diff = abs(scaled - Double(solution.score))
-            if suitable == nil {
-                suitable = (diff, solution)
-                continue
-            }
-            if min(abs(suitable!.difference), diff) == diff {
-                suitable = (diff, solution)
-            }
+        func diff(solution: Solution) -> Double {
+            return abs(scaled - Double(solution.score))
         }
-        return suitable?.solution ?? best
+        return sorted.reduce((diff: diff(solution: best), solution: best)) { (current, solution) in
+            let newDiff = diff(solution: solution)
+            return min(current.diff, newDiff) == newDiff ? (newDiff, solution) : current
+        }.solution
     }
 }
 

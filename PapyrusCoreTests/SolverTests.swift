@@ -340,18 +340,19 @@ class SolverTests: XCTestCase {
             XCTAssertEqual(hard, hardExpectation)
             
             let medium = self.solver.solve(with: solutions, difficulty: .medium)!
-            let mediumExpectation = Solution(word: "aced", x: 7, y: 11, horizontal: false, score: 28, intersections: [
-                Word(word: "da", x: 6, y: 11, horizontal: true)], blanks: [])
+            let mediumExpectation = Solution(word: "recta", x: 7, y: 10, horizontal: false, score: 30, intersections: [
+                Word(word: "er", x: 6, y: 10, horizontal: true),
+                Word(word: "de", x: 6, y: 11, horizontal: true)], blanks: [])
             XCTAssertEqual(medium, mediumExpectation)
             
             let easy = self.solver.solve(with: solutions, difficulty: .easy)!
-            let easyExpectation = Solution(word: "acre", x: 9, y: 4, horizontal: false, score: 19, intersections: [
-                Word(word: "carte", x: 5, y: 7, horizontal: true)], blanks: [])
+            let easyExpectation = Solution(word: "reacted", x: 5, y: 10, horizontal: true, score: 20, intersections: [
+                Word(word: "asked", x: 6, y: 7, horizontal: false)], blanks: [])
             XCTAssertEqual(easy, easyExpectation)
             
             let veryEasy = self.solver.solve(with: solutions, difficulty: .veryEasy)!
-            let veryEasyExpectation = Solution(word: "ace", x: 8, y: 6, horizontal: true, score: 9, intersections: [
-                Word(word: "at", x: 8, y: 6, horizontal: false)], blanks: [])
+            let veryEasyExpectation = Solution(word: "ared", x: 5, y: 11, horizontal: false, score: 10, intersections: [
+                Word(word: "ad", x: 5, y: 11, horizontal: true)], blanks: [])
             XCTAssertEqual(veryEasy, veryEasyExpectation)
         }
     }
@@ -379,16 +380,16 @@ class SolverTests: XCTestCase {
         racks.append(toRackTiles(arr: [("c", false), ("a", false), ("t", false)]))
     
         let expectations = [
-            Solution(word: "tiars", x: 7, y: 10, horizontal: false, score: 24, intersections: [Word(word: "et", x: 6, y: 10, horizontal: true), Word(word: "di", x: 6, y: 11, horizontal: true)], blanks: []),
-            Solution(word: "abetter", x: 4, y: 10, horizontal: true, score: 36, intersections: [Word(word: "asked", x: 6, y: 7, horizontal: false), Word(word: "tiars", x: 7, y: 10, horizontal: false)], blanks: []),
-            Solution(word: "ceil", x: 6, y: 6, horizontal: true, score: 31, intersections: [Word(word: "casked", x: 6, y: 6, horizontal: false), Word(word: "er", x: 7, y: 6, horizontal: false), Word(word: "it", x: 8, y: 6, horizontal: false)], blanks: []),
-            Solution(word: "zebra", x: 0, y: 11, horizontal: true, score: 54, intersections: [Word(word: "aa", x: 4, y: 10, horizontal: false)], blanks: []),
-            Solution(word: "queyn", x: 1, y: 9, horizontal: false, score: 74, intersections: [Word(word: "zebra", x: 0, y: 11, horizontal: true)], blanks: []),
-            Solution(word: "tsade", x: 0, y: 14, horizontal: true, score: 42, intersections: [Word(word: "queyns", x: 1, y: 9, horizontal: false)], blanks: []),
-            Solution(word: "gratin", x: 10, y: 2, horizontal: false, score: 21, intersections: [Word(word: "ceili", x: 6, y: 6, horizontal: true)], blanks: []),
-            Solution(word: "gant", x: 10, y: 8, horizontal: true, score: 15, intersections: [Word(word: "grating", x: 10, y: 2, horizontal: false)], blanks: []),
-            Solution(word: "tangi", x: 2, y: 5, horizontal: false, score: 20, intersections: [Word(word: "qi", x: 1, y: 9, horizontal: true)], blanks: []),
-            Solution(word: "cant", x: 0, y: 7, horizontal: true, score: 21, intersections: [Word(word: "tangi", x: 2, y: 5, horizontal: false)], blanks: [])]
+            Solution(word: "airts", x: 7, y: 10, horizontal: false, score: 24, intersections: [Word(word: "ea", x: 6, y: 10, horizontal: true), Word(word: "di", x: 6, y: 11, horizontal: true)], blanks: []),
+            Solution(word: "breathe", x: 4, y: 10, horizontal: true, score: 48, intersections: [Word(word: "asked", x: 6, y: 7, horizontal: false), Word(word: "airts", x: 7, y: 10, horizontal: false)], blanks: []),
+            Solution(word: "celiac", x: 9, y: 9, horizontal: true, score: 33, intersections: [Word(word: "ch", x: 9, y: 9, horizontal: false), Word(word: "ee", x: 10, y: 9, horizontal: false)], blanks: []),
+            Solution(word: "zeribas", x: 12, y: 6, horizontal: false, score: 58, intersections: [Word(word: "celiac", x: 9, y: 9, horizontal: true)], blanks: []),
+            Solution(word: "queechy", x: 9, y: 5, horizontal: false, score: 51, intersections: [Word(word: "carte", x: 5, y: 7, horizontal: true), Word(word: "celiac", x: 9, y: 9, horizontal: true), Word(word: "breathe", x: 4, y: 10, horizontal: true)], blanks: []),
+            Solution(word: "gedacts", x: 14, y: 5, horizontal: false, score: 36, intersections: [Word(word: "celiac", x: 9, y: 9, horizontal: true)], blanks: []),
+            Solution(word: "gratin", x: 10, y: 1, horizontal: false, score: 27, intersections: [Word(word: "qi", x: 9, y: 5, horizontal: true), Word(word: "un", x: 9, y: 6, horizontal: true)], blanks: []),
+            Solution(word: "tang", x: 11, y: 11, horizontal: false, score: 20, intersections: [Word(word: "ta", x: 11, y: 11, horizontal: true), Word(word: "as", x: 11, y: 12, horizontal: true)], blanks: []),
+            Solution(word: "tangi", x: 0, y: 11, horizontal: true, score: 18, intersections: [Word(word: "bi", x: 4, y: 10, horizontal: false)], blanks: []),
+            Solution(word: "ta", x: 6, y: 6, horizontal: true, score: 17, intersections: [Word(word: "tasked", x: 6, y: 6, horizontal: false), Word(word: "ar", x: 7, y: 6, horizontal: false)], blanks: [])]
        
         for (index, rack) in racks.enumerated() {
             let expectation = expectations[index]
