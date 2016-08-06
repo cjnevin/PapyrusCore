@@ -99,7 +99,6 @@ public struct Solution: WordRepresentation, Equatable, JSONSerializable {
         self.x = x
         self.y = y
         self.horizontal = horizontal
-        
         self.intersections = intersections
         self.score = score
         self.blanks = blanks
@@ -110,7 +109,6 @@ public struct Solution: WordRepresentation, Equatable, JSONSerializable {
         self.x = word.x
         self.y = word.y
         self.horizontal = word.horizontal
-        
         self.intersections = intersections
         self.score = score
         self.blanks = blanks

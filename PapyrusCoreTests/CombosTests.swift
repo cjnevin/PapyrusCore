@@ -10,16 +10,6 @@ import XCTest
 @testable import PapyrusCore
 
 class CombosTests: XCTestCase {
-    func testMeasureCombos() {
-        measure {
-            for _ in 0..<100 {
-                for n in 2..<8 {
-                    _ = ["a", "b", "c", "d", "e", "f", "g"].combos(n)
-                }
-            }
-        }
-    }
-    
     func testMeasureCombinations() {
         measure {
             for _ in 0..<100 {
@@ -30,4 +20,7 @@ class CombosTests: XCTestCase {
         }
     }
     
+    func testCombinations() {
+        XCTAssertEqual(["a", "b", "c", "d"].combinations(3), [ ["a", "b", "c"], ["a", "b", "d"], ["a", "c", "d"], ["b", "c", "d"] ])
+    }
 }

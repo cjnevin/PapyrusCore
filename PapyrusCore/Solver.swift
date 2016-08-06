@@ -54,7 +54,7 @@ extension SolverType {
         var positions = [Position]()
         
         @discardableResult func addPosition(ifTrue: ((Position) -> (Bool))? = nil) -> Bool {
-            guard position.areCoordinatesUnder(board.size) && (ifTrue == nil || ifTrue?(position) == true) else {
+            guard position.axesFallBelow(maximum: board.size) && (ifTrue == nil || ifTrue?(position) == true) else {
                 return false
             }
             positions.append(position)

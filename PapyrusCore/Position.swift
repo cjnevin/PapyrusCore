@@ -50,11 +50,11 @@ internal extension Array where Element: PositionType {
     }
     
     func sortedByX() -> [Element] {
-        return self.sorted(isOrderedBefore: { $0.x < $1.x })
+        return sorted(isOrderedBefore: { $0.x < $1.x })
     }
     
     func sortedByY() -> [Element] {
-        return self.sorted(isOrderedBefore: { $0.y < $1.y })
+        return sorted(isOrderedBefore: { $0.y < $1.y })
     }
     
     var direction: Direction {
@@ -137,7 +137,7 @@ public struct Position: PositionType {
         self = next(horizontal: horizontal)
     }
     
-    func areCoordinatesUnder(_ maximum: Int) -> Bool {
+    func axesFallBelow(maximum: Int) -> Bool {
         return x < maximum && y < maximum
     }
 }
