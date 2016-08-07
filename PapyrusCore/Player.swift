@@ -9,15 +9,27 @@
 import Foundation
 
 public enum Difficulty: Double {
-    case VeryEasy = 0.25
-    case Easy = 0.5
-    case Medium = 0.75
-    case Hard = 1.0
+    case veryEasy = 0.25
+    case easy = 0.5
+    case medium = 0.75
+    case hard = 1.0
 }
 
-public typealias RackTile = (letter: Character, isBlank: Bool)
+public func == (lhs: RackTile, rhs: RackTile) -> Bool {
+    return lhs.id == rhs.id
+}
 
-public protocol Player {
+public struct RackTile: Equatable {
+    private let id = UUID().uuidString
+    public let letter: Character
+    public let isBlank: Bool
+    public init(letter: Character, isBlank: Bool) {
+        self.letter = letter
+        self.isBlank = isBlank
+    }
+}
+
+public protocol Player: JSONSerializable {
     /// Unique identifier for player.
     var id: String { get }
     /// Current tiles in rack.
@@ -33,21 +45,21 @@ public protocol Player {
     /// Add solution to list of `solves`, removing `tiles` from `rack`.
     mutating func played(solution: Solution, tiles: [Character])
     /// Swap out `tiles` in `rack` with `newTiles`.
-    mutating func swapped(tiles: [Character], newTiles: [Character])
+    mutating func swapped(tiles: [Character], with newTiles: [Character])
     /// Shuffle rack tile order.
     mutating func shuffle()
+    /// Move a tile in your rack.
+    mutating func moveTile(from index: Int, to newIndex: Int)
 }
 
 public extension Player {
-    mutating func removeLetter(letter: Character) -> (removed: Bool, wasBlank: Bool) {
-        for n in 0..<rack.count where rack[n].0 == letter {
-            let isBlank = rack[n].isBlank
-            rack.removeAtIndex(n)
-            return (true, isBlank)
+    mutating func remove(letter: Character) -> (removed: Bool, wasBlank: Bool) {
+        for i in 0..<rack.count where rack[i].letter == letter {
+            return (true, rack.remove(at: i).isBlank)
         }
         // Tile must be a blank? Lets check...
-        if rack.map({$0.0}).contains(Game.blankLetter) {
-            return removeLetter(Game.blankLetter)
+        if rack.map({$0.letter}).contains(Game.blankLetter) {
+            return remove(letter: Game.blankLetter)
         }
         return (false, false)
     }
@@ -59,32 +71,71 @@ public extension Player {
     mutating func played(solution: Solution, tiles: [Character]) {
         score += solution.score
         solves.append(solution)
-        tiles.forEach({ assert(removeLetter($0).removed) })
+        tiles.forEach({ assert(remove(letter: $0).removed) })
         consecutiveSkips = 0
     }
     
-    mutating func swapped(tiles: [Character], newTiles: [Character]) {
-        tiles.forEach({ assert(removeLetter($0).removed) })
-        drew(newTiles)
+    mutating func swapped(tiles: [Character], with newTiles: [Character]) {
+        tiles.forEach({ assert(remove(letter: $0).removed) })
+        drew(tiles: newTiles)
         consecutiveSkips = 0
     }
     
     mutating func drew(tiles: [Character]) {
-        for tile in tiles {
-            rack.append((tile, tile == Game.blankLetter))
-        }
+        rack += tiles.map({ RackTile(letter: $0, isBlank: $0 == Game.blankLetter) })
     }
     
-    mutating func updateBlank(newValue: Character) {
-        for n in 0..<rack.count where rack[n].letter == Game.blankLetter && rack[n].isBlank == true {
-            rack[n] = (newValue, true)
+    mutating func updateBlank(to newValue: Character) {
+        for i in 0..<rack.count where rack[i].letter == Game.blankLetter && rack[i].isBlank {
+            rack[i] = RackTile(letter: newValue, isBlank: true)
             break
         }
     }
+    
+    mutating func moveTile(from currentIndex: Int, to newIndex: Int) {
+        guard rack.indices.contains(currentIndex) && rack.indices.contains(newIndex) && currentIndex != newIndex else {
+            return
+        }
+        let obj = rack[currentIndex]
+        rack.remove(at: currentIndex)
+        rack.insert(obj, at: newIndex)
+    }
+}
+
+private func makePlayers(using values: [JSON], f: (from: JSON) -> Player?) -> [Player] {
+    return values.flatMap({ f(from: $0) })
+}
+
+func makePlayers(using JSONSerializables: [JSON]) -> [Player] {
+    return makePlayers(using: JSONSerializables.filter({ $0[JSONKey.difficulty.rawValue] != nil }), f: Computer.object) +
+        makePlayers(using: JSONSerializables.filter({ $0[JSONKey.difficulty.rawValue] == nil }), f: Human.object)
+}
+
+private func json<T: Player>(forPlayer player: T) -> JSON {
+    let rackJson: [JSON] = player.rack.map({ json(from: [.letter: String($0.letter), .blank: $0.isBlank]) })
+    let solvesJson = player.solves.map({ $0.toJSON() })
+    return json(from: [.score: player.score, .rack: rackJson, .solves: solvesJson])
+}
+
+private func parameters(from json: JSON) -> (rack: [Character], solves: [Solution], score: Int)? {
+    guard let
+        rackJson: [JSON] = JSONKey.rack.in(json),
+        solvesJson: [JSON] = JSONKey.solves.in(json),
+        score: Int = JSONKey.score.in(json) else {
+        return nil
+    }
+    func letter(from json: JSON) -> Character {
+        let blank: Bool = JSONKey.blank.in(json)!
+        let char: String = JSONKey.letter.in(json)!
+        return blank ? Game.blankLetter : Character(char)
+    }
+    let solves = solvesJson.flatMap({ Solution.object(from: $0) })
+    let rack = rackJson.map(letter)
+    return (rack, solves, score)
 }
 
 public struct Human: Player {
-    public let id = NSUUID().UUIDString
+    public let id = UUID().uuidString
     public var rack: [RackTile] = []
     public var score: Int
     public var solves: [Solution]
@@ -93,7 +144,7 @@ public struct Human: Player {
         self.score = score
         self.solves = solves
         self.consecutiveSkips = consecutiveSkips
-        self.drew(rack)
+        self.drew(tiles: rack)
     }
     public init(rackTiles: [RackTile]) {
         self.score = 0
@@ -101,20 +152,47 @@ public struct Human: Player {
         self.consecutiveSkips = 0
         self.rack = rackTiles
     }
+    
+    public func toJSON() -> JSON {
+        return json(forPlayer: self)
+    }
+    
+    public static func object(from json: JSON) -> Human? {
+        guard let (rack, solves, score) = parameters(from: json) else {
+            return nil
+        }
+        return Human(rack: rack, score: score, solves: solves, consecutiveSkips: 0)
+    }
 }
 
 public struct Computer: Player {
-    public let id = NSUUID().UUIDString
+    public let id = UUID().uuidString
     public let difficulty: Difficulty
     public var rack: [RackTile] = []
     public var score: Int
     public var solves: [Solution]
     public var consecutiveSkips: Int
-    public init(difficulty: Difficulty = .Hard, rack: [Character] = [], score: Int = 0, solves: [Solution] = [], consecutiveSkips: Int = 0) {
+    public init(difficulty: Difficulty = .hard, rack: [Character] = [], score: Int = 0, solves: [Solution] = [], consecutiveSkips: Int = 0) {
         self.difficulty = difficulty
         self.score = score
         self.solves = solves
         self.consecutiveSkips = consecutiveSkips
-        self.drew(rack)
+        self.drew(tiles: rack)
+    }
+    
+    public func toJSON() -> JSON {
+        var buffer = json(forPlayer: self)
+        buffer[JSONKey.difficulty.rawValue] = difficulty.rawValue
+        return buffer
+    }
+    
+    public static func object(from json: JSON) -> Computer? {
+        guard let
+            diff: Double = JSONKey.difficulty.in(json),
+            difficulty = Difficulty(rawValue: diff),
+            (rack, solves, score) = parameters(from: json) else {
+            return nil
+        }
+        return Computer(difficulty: difficulty, rack: rack, score: score, solves: solves, consecutiveSkips: 0)
     }
 }

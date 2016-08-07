@@ -8,9 +8,7 @@
 
 import Foundation
 
-typealias WordPosition = (x: Int, y: Int)
-
-private func matches<T: WordRepresentation>(lhs: T, _ rhs: T) -> Bool {
+private func matches<T: WordRepresentation>(_ lhs: T, _ rhs: T) -> Bool {
     return (lhs.horizontal == rhs.horizontal &&
         lhs.word == rhs.word &&
         lhs.x == rhs.x &&
@@ -35,8 +33,8 @@ protocol WordRepresentation {
     var horizontal: Bool { get }
     
     func length() -> Int
-    func toPositions() -> [WordPosition]
-    func position(forIndex index: Int) -> WordPosition
+    func toPositions() -> [Position]
+    func position(forIndex index: Int) -> Position
 }
 
 extension WordRepresentation {
@@ -44,63 +42,106 @@ extension WordRepresentation {
         return word.characters.count
     }
     
-    func toPositions() -> [WordPosition] {
+    func toLetterPositions() -> [LetterPosition] {
+        return word.characters.enumerated().flatMap { (offset, element) in
+            let pos = position(forIndex: offset)
+            return LetterPosition(x: pos.x, y: pos.y, letter: element)
+        }
+    }
+    
+    func toPositions() -> [Position] {
         return (0..<word.characters.count).flatMap{ position(forIndex: $0) }
     }
     
-    func position(forIndex index: Int) -> WordPosition {
-        return (x + (horizontal ? index : 0),
-                y + (horizontal ? 0 : index))
+    func position(forIndex index: Int) -> Position {
+        return Position(x: x + (horizontal ? index : 0),
+                        y: y + (horizontal ? 0 : index))
     }
 }
 
-public struct Word: WordRepresentation, Equatable {
-    let word: String
-    let x: Int
-    let y: Int
-    let horizontal: Bool
+public struct Word: WordRepresentation, Equatable, JSONSerializable {
+    public let word: String
+    public let x: Int
+    public let y: Int
+    public let horizontal: Bool
+    
+    public func toJSON() -> JSON {
+        return json(from: [
+            .word: word,
+            .x: x,
+            .y: y,
+            .horizontal: horizontal])
+    }
+    
+    public static func object(from json: JSON) -> Word? {
+        guard let
+            word: String = JSONKey.word.in(json),
+            x: Int = JSONKey.x.in(json),
+            y: Int = JSONKey.y.in(json),
+            horizontal: Bool = JSONKey.horizontal.in(json) else {
+                return nil
+        }
+        return Word(word: word, x: x, y: y, horizontal: horizontal)
+    }
 }
 
-public struct Solution: WordRepresentation, Equatable {
+public struct Solution: WordRepresentation, Equatable, JSONSerializable {
     public let word: String
     public let x: Int
     public let y: Int
     public let horizontal: Bool
     public let score: Int
-    let intersections: [Word]
-    let blanks: [(x: Int, y: Int)]
+    public let intersections: [Word]
+    let blanks: [Position]
     
-    init(word: String, x: Int, y: Int, horizontal: Bool, score: Int, intersections: [Word], blanks: [(x: Int, y: Int)]) {
+    init(word: String, x: Int, y: Int, horizontal: Bool, score: Int, intersections: [Word], blanks: [Position]) {
         self.word = word
         self.x = x
         self.y = y
         self.horizontal = horizontal
-        
         self.intersections = intersections
         self.score = score
         self.blanks = blanks
     }
     
-    init(word: Word, score: Int, intersections: [Word], blanks: [(x: Int, y: Int)]) {
+    init(word: Word, score: Int, intersections: [Word], blanks: [Position]) {
         self.word = word.word
         self.x = word.x
         self.y = word.y
         self.horizontal = word.horizontal
-        
         self.intersections = intersections
         self.score = score
         self.blanks = blanks
     }
     
-    public func getPositions() -> [(x: Int, y: Int)] {
-        var points = toPositions()
-        intersections.map({ $0.toPositions() }).forEach({ intersectedPoints in
-            intersectedPoints.forEach({ intersectedPoint in
-                if !points.contains({ $0.x == intersectedPoint.x && $0.y == intersectedPoint.y }) {
-                    points.append(intersectedPoint)
-                }
-            })
-        })
-        return points
+    public func getPositions() -> Positions {
+        return Array(Set(toPositions()).union(intersections.flatMap({ $0.toPositions() })))
+    }
+    
+    public func toJSON() -> JSON {
+        return json(from: [
+            .word: word,
+            .x: x,
+            .y: y,
+            .horizontal: horizontal,
+            .score: score,
+            .intersections: intersections.map({ $0.toJSON() }),
+            .blank: blanks.map({ json(from: [.x: $0.x, .y: $0.y]) })])
+    }
+    
+    public static func object(from json: JSON) -> Solution? {
+        guard let
+            word: String = JSONKey.word.in(json),
+            x: Int = JSONKey.x.in(json),
+            y: Int = JSONKey.y.in(json),
+            horizontal: Bool = JSONKey.horizontal.in(json),
+            score: Int = JSONKey.score.in(json),
+            blanksJson: [JSON] = JSONKey.blank.in(json),
+            intersectionsJson: [JSON] = JSONKey.intersections.in(json) else {
+                return nil
+        }
+        let intersections = intersectionsJson.flatMap({ Word.object(from: $0) })
+        let blanks: [Position] = blanksJson.flatMap(Position.init)
+        return Solution(word: word, x: x, y: y, horizontal: horizontal, score: score, intersections: intersections, blanks: blanks)
     }
 }

@@ -8,12 +8,16 @@
 
 import Foundation
 
-func compareBoards<T: Board>(lhs: T, _ rhs: T) -> Bool {
+public func == (_ lhs: Board, _ rhs: Board) -> Bool {
     for (left, right) in zip(lhs.layout, rhs.layout) where left != right { return false }
     return true
 }
 
-struct Edge: OptionSetType {
+private func makePositions(indices: CountableRange<Int>) -> Positions {
+    return indices.flatMap({ x in indices.flatMap({ y in Position(x: x, y: y) }) })
+}
+
+internal struct Edge: OptionSet {
     let rawValue: Int
     
     static let None = Edge(rawValue: 0)
@@ -25,190 +29,234 @@ struct Edge: OptionSetType {
     static let TopAndBottom: Edge = [Top, Bottom]
 }
 
-public protocol Board: CustomDebugStringConvertible {
+public protocol BoardType: CustomDebugStringConvertible {
     var empty: Character { get }
     var center: Int { get }
     var size: Int { get }
-    var boardRange: Range<Int> { get }
     var layout: [[Character]] { get set }
-    var blanks: [(x: Int, y: Int)] { get set }
+    var blanks: Positions { get set }
     var isFirstPlay: Bool { get }
     var letterMultipliers: [[Int]] { get }
     var wordMultipliers: [[Int]] { get }
+    var emptyPositions: Positions { get }
+    var allPositions: Positions { get }
     
-    subscript(x: Int, y: Int) -> Character? { get }
-    func letterAt(x: Int, _ y: Int) -> Character?
-    func isEmptyAt(x: Int, _ y: Int) -> Bool
-    func isFilledAt(x: Int, _ y: Int) -> Bool
-    func isCenterAt(x: Int, _ y: Int) -> Bool
-    func isValidAt(x: Int, _ y: Int, length: Int, horizontal: Bool) -> Bool
+    mutating func set<T: PositionType>(letter: Character, at position: T)
+    func letter<T: PositionType>(at position: T) -> Character?
+    func isEmpty<T: PositionType>(at position: T) -> Bool
+    func isFilled<T: PositionType>(at position: T) -> Bool
+    func isCenter<T: PositionType>(at position: T) -> Bool
+    func isValid(at position: Position, length: Int, horizontal: Bool) -> Bool
+    
+    func letterMultiplier<T: PositionType>(at position: T) -> Int
+    func wordMultiplier<T: PositionType>(at position: T) -> Int
     
     mutating func play(solution: Solution) -> [Character]
 }
 
-extension Board {
-    public var isFirstPlay: Bool {
-        return isEmptyAt(center, center)
+extension BoardType {
+    var centerPosition: Position {
+        return Position(x: center, y: center)
     }
     
-    public var boardRange: Range<Int> {
-        return layout.indices
+    public var isFirstPlay: Bool {
+        return isEmpty(at: centerPosition)
+    }
+    
+    public var emptyPositions: Positions {
+        return allPositions.filter({ isEmpty(at: $0) })
     }
     
     public var debugDescription: String {
         return layout.map { (line) in
-            line.map({ String($0 == empty ? "_" : $0) }).joinWithSeparator(",")
-            }.joinWithSeparator("\n")
+            line.map({ String($0 == empty ? "_" : $0) }).joined(separator: ",")
+            }.joined(separator: "\n")
     }
     
-    public subscript(x: Int, y: Int) -> Character? {
-        return letterAt(x, y)
+    public func letterMultiplier<T: PositionType>(at position: T) -> Int {
+        return letterMultipliers[position.y][position.x]
     }
     
-    public func letterAt(x: Int, _ y: Int) -> Character? {
-        let value = layout[y][x]
+    public func wordMultiplier<T: PositionType>(at position: T) -> Int {
+        return wordMultipliers[position.y][position.x]
+    }
+    
+    public mutating func set<T: PositionType>(letter: Character, at position: T) {
+        layout[position.y][position.x] = letter
+    }
+    
+    public func letter<T: PositionType>(at position: T) -> Character? {
+        let value = layout[position.y][position.x]
         return value == empty ? nil : value
     }
     
-    public func isEmptyAt(x: Int, _ y: Int) -> Bool {
-        return layout[y][x] == empty
+    public func isEmpty<T: PositionType>(at position: T) -> Bool {
+        return letter(at: position) == nil
     }
     
-    public func isFilledAt(x: Int, _ y: Int) -> Bool {
-        return layout[y][x] != empty
+    public func isFilled<T: PositionType>(at position: T) -> Bool {
+        return letter(at: position) != nil
     }
     
-    public func isCenterAt(x: Int, _ y: Int) -> Bool {
-        return x == center && y == center
+    public func isCenter<T: PositionType>(at position: T) -> Bool {
+        return position == centerPosition
     }
     
-    public func isValidAt(x: Int, _ y: Int, length: Int, horizontal: Bool) -> Bool {
-        if isFilledAt(x, y) {
+    public func isValid(at position: Position, length: Int, horizontal: Bool) -> Bool {
+        guard isEmpty(at: position) else {
             return false
         }
         
+
         // Too long?
-        var currentX = x
-        var currentY = y
-        if exceedsBoundaryAt(&currentX, &currentY, length: length, horizontal: horizontal) {
+        guard let clampedPosition = restrict(position: position, to: length, horizontal: horizontal) else {
             return false
         }
         
-        if isCenterAt(x, y) && isFirstPlay {
+        if isCenter(at: position) && isFirstPlay {
             return true
         }
         
         // Horizontal?
         if horizontal {
             // Touches on left or right (cannot accept prefixed or suffixed spots)
-            if horizontallyTouchesAt(x, y, length: length, edges: .LeftAndRight) {
+            if touchesHorizontally(at: position, length: length, edges: .LeftAndRight) {
                 return false
             }
             // Touches on top or bottom (allowed)
-            if horizontallyTouchesAt(x, y, length: length, edges: .TopAndBottom) {
+            if touchesHorizontally(at: position, length: length, edges: .TopAndBottom) {
                 return true
             }
             // Intersects other letters?
-            return currentX > x + length
+            return clampedPosition.x > position.x + length
         } else {
             // Touches on bottom or top (cannot accept prefixed or suffixed spots)
-            if verticallyTouchesAt(x, y, length: length, edges: .TopAndBottom) {
+            if touchesVertically(at: position, length: length, edges: .TopAndBottom) {
                 return false
             }
             // Touches on left or right (allowed)
-            if verticallyTouchesAt(x, y, length: length, edges: .LeftAndRight) {
+            if touchesVertically(at: position, length: length, edges: .LeftAndRight) {
                 return true
             }
             // Intersects other letters?
-            return currentY > y + length
+            return clampedPosition.y > position.y + length
         }
     }
     
-    func verticallyTouchesAt(x: Int, _ y: Int, length: Int, edges: Edge) -> Bool {
-        if y + length > size {
+    func touchesVertically(at position: Position, length: Int, edges: Edge) -> Bool {
+        if position.y + length > size {
             return false
         }
         
-        if edges.contains(.Top) && y > 0 && isFilledAt(x, y - 1) {
+        if edges.contains(.Top) && position.y > 0 && isFilled(at: position.top) {
             return true
         }
-        else if edges.contains(.Bottom) && y + length < size && isFilledAt(x, y + length) {
+        else if edges.contains(.Bottom) && position.y + length < size && isFilled(at: position.moveY(amount: length)) {
             return true
         }
         
         let (left, right) = (edges.contains(.Left), edges.contains(.Right))
-        if left || right {
-            for i in y..<(y + length) {
-                if left && x > 0 && isFilledAt(x - 1, i) {
-                    return true
-                }
-                if right && x < (size - 1) && isFilledAt(x + 1, i) {
-                    return true
-                }
+        guard left || right else {
+            return false
+        }
+        for offset in (0..<length).map({ Position(x: position.x, y: position.y + $0) }) {
+            if left && offset.x > 0 && isFilled(at: offset.left) {
+                return true
+            } else if right && offset.x < (size - 1) && isFilled(at: offset.right) {
+                return true
             }
         }
         return false
     }
     
-    func horizontallyTouchesAt(x: Int, _ y: Int, length: Int, edges: Edge) -> Bool {
-        if x + length > size {
+    func touchesHorizontally(at position: Position, length: Int, edges: Edge) -> Bool {
+        if position.x + length > size {
             return false
         }
         
-        if edges.contains(.Left) && x > 0 && isFilledAt(x - 1, y) {
+        if edges.contains(.Left) && position.x > 0 && isFilled(at: position.left) {
             return true
         }
-        else if edges.contains(.Right) && x + length < size && isFilledAt(x + length, y) {
+        else if edges.contains(.Right) && position.x + length < size && isFilled(at: position.moveX(amount: length)) {
             return true
         }
         
         let (top, bottom) = (edges.contains(.Top), edges.contains(.Bottom))
-        if top || bottom {
-            for i in x..<(x + length) {
-                if top && y > 0 && isFilledAt(i, y - 1) {
-                    return true
-                }
-                else if bottom && y < (size - 1) && isFilledAt(i, y + 1) {
-                    return true
-                }
+        guard top || bottom else {
+            return false
+        }
+        for offset in (0..<length).map({ Position(x: position.x + $0, y: position.y) }) {
+            if top && offset.y > 0 && isFilled(at: offset.top) {
+                return true
+            } else if bottom && offset.y < (size - 1) && isFilled(at: offset.bottom) {
+                return true
             }
         }
         return false
     }
-    
-    func exceedsBoundaryAt(inout x: Int, inout _ y: Int, length: Int, horizontal: Bool) -> Bool {
-        var currentLength = length
-        
-        while currentLength > 0 && (horizontal && x < size || !horizontal && y < size)  {
-            if isEmptyAt(x, y) {
-                currentLength -= 1
+
+    /// - returns: Nil if position exceeds boundary after adding length, or the new Position after skipping empty spots.
+    /// - parameter position: Starting position.
+    /// - parameter length: Number of empty spots needed.
+    /// - parameter horizontal: Direction to move position.
+    func restrict(position: Position, to length: Int, horizontal: Bool) -> Position? {
+        var length = length
+        var position = position
+        // TODO: The position returned actually sits outside of the boundary? (size - 1)
+        while length > 0 && ((horizontal && position.x < size) || (!horizontal && position.y < size)) {
+            if isEmpty(at: position) {
+                length -= 1
             }
-            if horizontal {
-                x += 1
-            } else {
-                y += 1
-            }
+            position = horizontal ? position.right : position.bottom
         }
-        
-        return currentLength != 0
+        return length != 0 ? nil : position
     }
     
     mutating public func play(solution: Solution) -> [Character] {
-        var dropped = [Character]()
-        for (i, letter) in solution.word.characters.enumerate() {
-            if solution.horizontal {
-                if isEmptyAt(solution.x + i, solution.y) {
-                    layout[solution.y][solution.x + i] = letter
-                    dropped.append(letter)
-                }
-            } else {
-                if isEmptyAt(solution.x, solution.y + i) {
-                    layout[solution.y + i][solution.x] = letter
-                    dropped.append(letter)
-                }
+        blanks.append(contentsOf: solution.blanks)
+        return solution.toLetterPositions().flatMap { position -> Character? in
+            guard isEmpty(at: position) else {
+                return nil
             }
+            set(letter: position.letter, at: position)
+            return position.letter
         }
-        blanks.appendContentsOf(solution.blanks)
-        return dropped
+    }
+}
+
+public struct Board: BoardType, Equatable {
+    public let empty: Character
+    public let center: Int
+    public let size: Int
+    public let letterMultipliers: [[Int]]
+    public let wordMultipliers: [[Int]]
+    public let allPositions: Positions
+    public var layout: [[Character]]
+    public var blanks = Positions()
+    
+    public init?(with config: URL) {
+        guard let json = readJSON(from: config) else {
+            return nil
+        }
+        self.init(json: json)
+    }
+    
+    internal init?(json: JSON) {
+        guard let
+            letterMultipliers: [[Int]] = JSONConfigKey.letterMultipliers.in(json),
+            wordMultipliers: [[Int]] = JSONConfigKey.wordMultipliers.in(json) else {
+                return nil
+        }
+        self.init(letterMultipliers: letterMultipliers, wordMultipliers: wordMultipliers)
+    }
+    
+    internal init(letterMultipliers: [[Int]], wordMultipliers: [[Int]]) {
+        empty = Character(" ")
+        center = Int(letterMultipliers.count / 2)
+        size = letterMultipliers.count
+        layout = Array(repeating: Array(repeating: Character(" "), count: size), count: size)
+        allPositions = makePositions(indices: layout.indices)
+        self.letterMultipliers = letterMultipliers
+        self.wordMultipliers = wordMultipliers
     }
 }

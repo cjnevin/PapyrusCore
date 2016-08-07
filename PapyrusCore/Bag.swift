@@ -8,32 +8,48 @@
 
 import Foundation
 
-public protocol Bag {
-    static var vowels: [Character] { get }
-    static var letterPoints: [Character: Int] { get }
-    static var letterCounts: [Character: Int] { get }
-    static var total: Int { get }
+public protocol BagType {
+    var vowels: [Character] { get }
+    var letterPoints: [Character: Int] { get }
+    var letters: [Character: Int] { get }
+    var total: Int { get }
     var remaining: [Character] { get set }
-    mutating func replace(letter: Character)
+    mutating func replace(_ letter: Character)
     mutating func draw() -> Character?
 }
 
-public extension Bag {
-    mutating public func replace(letter: Character) {
+public struct Bag: BagType {
+    public let letters: [Character: Int]
+    public let letterPoints: [Character: Int]
+    public let vowels: [Character]
+    public let total: Int
+    public var remaining: [Character]
+    
+    internal init?(json: JSON) {
+        guard let
+            lettersStrings: [String: Int] = JSONConfigKey.letters.in(json),
+            letterPointsStrings: [String: Int] = JSONConfigKey.letterPoints.in(json),
+            vowelsStrings: [String] = JSONConfigKey.vowels.in(json) else {
+                return nil
+        }
+        self.init(vowels: vowelsStrings.map({ Character($0) }),
+                  letters: lettersStrings.mapTuple({ (Character($0), $1) }),
+                  letterPoints: letterPointsStrings.mapTuple({ (Character($0), $1) }))
+    }
+    
+    internal init(vowels: [Character], letters: [Character: Int], letterPoints: [Character: Int]) {
+        self.vowels = vowels
+        self.letters = letters
+        self.letterPoints = letterPoints
+        self.remaining = letters.flatMap({ Array(repeating: $0, count: $1) }).shuffled()
+        self.total = remaining.count
+    }
+    
+    mutating public func replace(_ letter: Character) {
         remaining.append(letter)
     }
     
     mutating public func draw() -> Character? {
-        if remaining.count == 0 { return nil }
-        return remaining.removeFirst()
-    }
-    
-    mutating func prepare() {
-        var tiles = [Character]()
-        for (character, i) in Self.letterCounts {
-            tiles += Array(count: i, repeatedValue: character)
-        }
-        remaining = tiles.shuffled()
-        assert(remaining.count == self.dynamicType.total)
+        return remaining.count > 0 ? remaining.removeFirst() : nil
     }
 }

@@ -8,55 +8,52 @@
 
 import Foundation
 
-func == (lhs: BoardState, rhs: BoardState) -> Bool {
+internal func == (lhs: BoardState, rhs: BoardState) -> Bool {
     return lhs.horizontal == rhs.horizontal && lhs.vertical == rhs.vertical
 }
 
-struct BoardState: CustomDebugStringConvertible, Equatable {
+internal struct BoardState: CustomDebugStringConvertible, Equatable {
     private let horizontal: [[Int]]
     private let vertical: [[Int]]
     
     var debugDescription: String {
-        func str(arr: [[Int]]) -> String {
+        func str(_ arr: [[Int]]) -> String {
             return arr.map { (line) in
-                line.map({ $0 < 10 ? "_\($0)" : "\($0)" }).joinWithSeparator(", ")
-                }.joinWithSeparator("\n")
+                line.map({ $0 < 10 ? "_\($0)" : "\($0)" }).joined(separator: ", ")
+                }.joined(separator: "\n")
         }
         return "Horizontal: \n\(str(horizontal)) \n\nVertical: \n\(str(vertical))"
     }
     
     init(board: Board) {
         let size = board.size
-        let range = board.boardRange
-        var h = Array(count: size, repeatedValue: Array(count: size, repeatedValue: 0))
-        var v = Array(count: size, repeatedValue: Array(count: size, repeatedValue: 0))
-        func update(first: Int, `while`: (Int) -> Bool) -> Int {
-            var start = first
-            var escape = false
-            while start > 0 && `while`(start) && !escape {
-                if `while`(start - 1) {
-                    start -= 1
-                } else {
-                    escape = true
+        let range = board.layout.indices
+        var h = Array(repeating: Array(repeating: 0, count: size), count: size)
+        var v = Array(repeating: Array(repeating: 0, count: size), count: size)
+        
+        func decrement(from index: Int, when passing: (Int) -> Bool) -> Int {
+            var start = index
+            while start > 0 && passing(start) {
+                guard passing(start - 1) else {
+                    break
                 }
+                start -= 1
             }
             return start
         }
+        
         for x in range {
             for y in range {
-                h[y][x] = update(x){ board.isFilledAt($0, y) }
-                v[y][x] = update(y){ board.isFilledAt(x, $0) }
+                h[y][x] = decrement(from: x, when: { board.isFilled(at: Position(x: $0, y: y)) })
+                v[y][x] = decrement(from: y, when: { board.isFilled(at: Position(x: x, y: $0)) })
             }
         }
+        
         horizontal = h
         vertical = v
     }
     
-    subscript(isHorizontal: Bool, y: Int, x: Int) -> Int {
-        return self[isHorizontal][y][x]
-    }
-    
-    subscript(isHorizontal: Bool) -> [[Int]] {
-        return isHorizontal ? horizontal : vertical
+    func state(at position: Position, horizontal h: Bool) -> Int {
+        return (h ? horizontal : vertical)[position.y][position.x]
     }
 }

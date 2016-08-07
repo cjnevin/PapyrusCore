@@ -7,9 +7,9 @@
 //
 
 import Foundation
-@testable import AnagramDictionary
-@testable import PapyrusCore
 
 extension AnagramDictionary {
-    static let singleton = AnagramDictionary.deserialize(NSData(contentsOfFile: NSBundle(forClass: SolutionTests.self).pathForResource("sowpods_anagrams", ofType: "bin")!)!)
+    static let singleton = AnagramDictionary.deserialize(
+        try! Data(contentsOf: URL(
+            fileURLWithPath: Bundle(for: SolutionTests.self).pathForResource("sowpods_anagrams", ofType: "bin")!)))
 }

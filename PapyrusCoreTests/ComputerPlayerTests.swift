@@ -12,10 +12,10 @@ import XCTest
 class ComputerPlayerTests : HumanPlayerTests {
     override func setUp() {
         super.setUp()
-        player = Computer(difficulty: .Easy, rack: charactersForRack(rackTiles()), score: 0, solves: [], consecutiveSkips: 0)
+        player = Computer(difficulty: .easy, rack: charactersForRack(rackTiles()), score: 0, solves: [], consecutiveSkips: 0)
     }
     
     func testDifficulty() {
-        XCTAssertEqual((player as! Computer).difficulty, Difficulty.Easy)
+        XCTAssertEqual((player as! Computer).difficulty, Difficulty.easy)
     }
 }

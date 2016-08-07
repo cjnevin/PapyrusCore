@@ -12,94 +12,33 @@
 		990E2E4B1D0B1DF100E2748F /* WordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990E2E4A1D0B1DF100E2748F /* WordTests.swift */; };
 		990E2E4D1D0B1F4400E2748F /* SolutionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990E2E4C1D0B1F4400E2748F /* SolutionTests.swift */; };
 		990E2E4F1D0B5BE000E2748F /* WordRepresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990E2E4E1D0B5BE000E2748F /* WordRepresentation.swift */; };
-		99139BEF1D1EF2610033E114 /* ScrabbleSolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139BEE1D1EF2610033E114 /* ScrabbleSolver.swift */; };
-		99139BF31D1EF2D60033E114 /* ScrabbleBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139BF21D1EF2D60033E114 /* ScrabbleBoard.swift */; };
-		99139BF51D1EF2DE0033E114 /* SuperScrabbleBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139BF41D1EF2DE0033E114 /* SuperScrabbleBoard.swift */; };
-		99139BFB1D1EF91F0033E114 /* WordsWithFriendsBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139BFA1D1EF91F0033E114 /* WordsWithFriendsBoard.swift */; };
-		99139BFD1D1EFB330033E114 /* WordsWithFriendsSolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139BFC1D1EFB330033E114 /* WordsWithFriendsSolver.swift */; };
-		99139BFF1D1EFB530033E114 /* ScrabbleBag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139BFE1D1EFB530033E114 /* ScrabbleBag.swift */; };
-		99139C011D1EFB590033E114 /* SuperScrabbleBag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C001D1EFB590033E114 /* SuperScrabbleBag.swift */; };
-		99139C031D1EFB7B0033E114 /* WordsWithFriendsBag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C021D1EFB7B0033E114 /* WordsWithFriendsBag.swift */; };
-		99139C101D1F173D0033E114 /* WordsWithFriendsBagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C0D1D1F173D0033E114 /* WordsWithFriendsBagTests.swift */; };
-		99139C111D1F173D0033E114 /* WordsWithFriendsBoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C0E1D1F173D0033E114 /* WordsWithFriendsBoardTests.swift */; };
-		99139C121D1F173D0033E114 /* WordsWithFriendsGameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C0F1D1F173D0033E114 /* WordsWithFriendsGameTests.swift */; };
-		99139C151D1F1A320033E114 /* WordfeudBag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C141D1F1A320033E114 /* WordfeudBag.swift */; };
-		99139C171D1F1AF00033E114 /* WordfeudBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C161D1F1AF00033E114 /* WordfeudBoard.swift */; };
-		99139C191D1F1B080033E114 /* WordfeudSolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C181D1F1B080033E114 /* WordfeudSolver.swift */; };
-		99139C1D1D1F1E0F0033E114 /* WordfeudBagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C1A1D1F1E0F0033E114 /* WordfeudBagTests.swift */; };
-		99139C1E1D1F1E0F0033E114 /* WordfeudBoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C1B1D1F1E0F0033E114 /* WordfeudBoardTests.swift */; };
-		99139C1F1D1F1E0F0033E114 /* WordfeudGameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99139C1C1D1F1E0F0033E114 /* WordfeudGameTests.swift */; };
-		9938B4021D0AED130018B8D2 /* ScrabbleBoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9938B4011D0AED130018B8D2 /* ScrabbleBoardTests.swift */; };
-		9938B4041D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9938B4031D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift */; };
+		992AB98F1D4C1AB20032CCFC /* TestConfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 992AB98E1D4C1AB20032CCFC /* TestConfiguration.json */; };
+		992AB9911D4C1D7B0032CCFC /* XCTestCase+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 992AB9901D4C1D7B0032CCFC /* XCTestCase+Extensions.swift */; };
+		9938B4021D0AED130018B8D2 /* BoardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9938B4011D0AED130018B8D2 /* BoardTests.swift */; };
 		99417A621CF96F4800553AE0 /* AnagramSingleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99417A611CF96F4800553AE0 /* AnagramSingleton.swift */; };
 		99417A641CF96F6400553AE0 /* sowpods_anagrams.bin in Resources */ = {isa = PBXBuildFile; fileRef = 99417A631CF96F6400553AE0 /* sowpods_anagrams.bin */; };
+		9948DF471D3BAF230091A333 /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9948DF461D3BAF230091A333 /* Position.swift */; };
+		9951B5941D295AD8007FD0EC /* AnagramDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9951B5931D295AD8007FD0EC /* AnagramDictionary.swift */; };
+		9951B5981D296A32007FD0EC /* Lookup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9951B5971D296A32007FD0EC /* Lookup.swift */; };
 		995CBC061CCCB19000DF06B8 /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC051CCCB19000DF06B8 /* Game.swift */; };
 		995CBC081CCCB1A000DF06B8 /* Solver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC071CCCB1A000DF06B8 /* Solver.swift */; };
 		995CBC0A1CCCB1C400DF06B8 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC091CCCB1C400DF06B8 /* Player.swift */; };
 		995CBC0C1CCCB1E000DF06B8 /* Bag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC0B1CCCB1E000DF06B8 /* Bag.swift */; };
-		995CBC0E1CCCB20A00DF06B8 /* ScrabbleBagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC0D1CCCB20A00DF06B8 /* ScrabbleBagTests.swift */; };
-		995CBC101CCCB24800DF06B8 /* ScrabbleGameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC0F1CCCB24800DF06B8 /* ScrabbleGameTests.swift */; };
-		995CBC121CCCB27300DF06B8 /* ScrabbleSolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC111CCCB27300DF06B8 /* ScrabbleSolverTests.swift */; };
+		995CBC0E1CCCB20A00DF06B8 /* BagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC0D1CCCB20A00DF06B8 /* BagTests.swift */; };
+		995CBC101CCCB24800DF06B8 /* GameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC0F1CCCB24800DF06B8 /* GameTests.swift */; };
+		995CBC121CCCB27300DF06B8 /* SolverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC111CCCB27300DF06B8 /* SolverTests.swift */; };
 		995CBC161CCCB58A00DF06B8 /* Board.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC151CCCB58A00DF06B8 /* Board.swift */; };
 		995CBC181CCCB5FC00DF06B8 /* BoardState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995CBC171CCCB5FC00DF06B8 /* BoardState.swift */; };
 		9960AD6E1BA589D800765614 /* PapyrusCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 9960AD6D1BA589D800765614 /* PapyrusCore.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9960AD751BA589D800765614 /* PapyrusCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9960AD6A1BA589D800765614 /* PapyrusCore.framework */; };
 		99A4C7181D1C77E9002C17E1 /* CombosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99A4C7171D1C77E9002C17E1 /* CombosTests.swift */; };
-		99A4C71A1D1C7A3C002C17E1 /* SuperScrabbleGameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99A4C7191D1C7A3C002C17E1 /* SuperScrabbleGameTests.swift */; };
-		99A4C71C1D1C7A5C002C17E1 /* SuperScrabbleBagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99A4C71B1D1C7A5C002C17E1 /* SuperScrabbleBagTests.swift */; };
+		99DC69741D2902C200FFC5F6 /* JSONSerializable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DC69731D2902C200FFC5F6 /* JSONSerializable.swift */; };
+		99E7309E1D51C4BC0057E727 /* Dictionary+Tuple.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E7309D1D51C4BC0057E727 /* Dictionary+Tuple.swift */; };
+		99E730A01D5269DA0057E727 /* Int+Times.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99E7309F1D5269DA0057E727 /* Int+Times.swift */; };
 		99FB2D0E1CF900A2005E611F /* Array+Combinations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99FB2D0D1CF900A2005E611F /* Array+Combinations.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		991AE4681D1FC284001C98E4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 991AE4631D1FC284001C98E4 /* Lookup.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 99127A931D1FC082009DCF7A;
-			remoteInfo = Lookup;
-		};
-		991AE46A1D1FC284001C98E4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 991AE4631D1FC284001C98E4 /* Lookup.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 99127A9D1D1FC082009DCF7A;
-			remoteInfo = LookupTests;
-		};
-		991AE46C1D1FC28C001C98E4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 991AE4631D1FC284001C98E4 /* Lookup.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 99127A921D1FC082009DCF7A;
-			remoteInfo = Lookup;
-		};
-		991AE4751D1FC2AC001C98E4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 991AE46F1D1FC2AC001C98E4 /* AnagramDictionary.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 99127A591D1FBEFD009DCF7A;
-			remoteInfo = AnagramDictionary;
-		};
-		991AE4771D1FC2AC001C98E4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 991AE46F1D1FC2AC001C98E4 /* AnagramDictionary.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 99127A631D1FBEFD009DCF7A;
-			remoteInfo = AnagramDictionaryTests;
-		};
-		991AE4791D1FC336001C98E4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 991AE46F1D1FC2AC001C98E4 /* AnagramDictionary.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 99127A581D1FBEFD009DCF7A;
-			remoteInfo = AnagramDictionary;
-		};
-		991AE47B1D1FC33C001C98E4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 991AE4631D1FC284001C98E4 /* Lookup.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 99127A921D1FC082009DCF7A;
-			remoteInfo = Lookup;
-		};
 		9960AD761BA589D800765614 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 9960AD611BA589D800765614 /* Project object */;
@@ -115,36 +54,22 @@
 		990E2E4A1D0B1DF100E2748F /* WordTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordTests.swift; sourceTree = "<group>"; };
 		990E2E4C1D0B1F4400E2748F /* SolutionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SolutionTests.swift; sourceTree = "<group>"; };
 		990E2E4E1D0B5BE000E2748F /* WordRepresentation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordRepresentation.swift; sourceTree = "<group>"; };
-		99139BEE1D1EF2610033E114 /* ScrabbleSolver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrabbleSolver.swift; sourceTree = "<group>"; };
-		99139BF21D1EF2D60033E114 /* ScrabbleBoard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrabbleBoard.swift; sourceTree = "<group>"; };
-		99139BF41D1EF2DE0033E114 /* SuperScrabbleBoard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuperScrabbleBoard.swift; sourceTree = "<group>"; };
-		99139BFA1D1EF91F0033E114 /* WordsWithFriendsBoard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordsWithFriendsBoard.swift; sourceTree = "<group>"; };
-		99139BFC1D1EFB330033E114 /* WordsWithFriendsSolver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordsWithFriendsSolver.swift; sourceTree = "<group>"; };
-		99139BFE1D1EFB530033E114 /* ScrabbleBag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrabbleBag.swift; sourceTree = "<group>"; };
-		99139C001D1EFB590033E114 /* SuperScrabbleBag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuperScrabbleBag.swift; sourceTree = "<group>"; };
-		99139C021D1EFB7B0033E114 /* WordsWithFriendsBag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordsWithFriendsBag.swift; sourceTree = "<group>"; };
-		99139C0D1D1F173D0033E114 /* WordsWithFriendsBagTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordsWithFriendsBagTests.swift; sourceTree = "<group>"; };
-		99139C0E1D1F173D0033E114 /* WordsWithFriendsBoardTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordsWithFriendsBoardTests.swift; sourceTree = "<group>"; };
-		99139C0F1D1F173D0033E114 /* WordsWithFriendsGameTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordsWithFriendsGameTests.swift; sourceTree = "<group>"; };
-		99139C141D1F1A320033E114 /* WordfeudBag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordfeudBag.swift; sourceTree = "<group>"; };
-		99139C161D1F1AF00033E114 /* WordfeudBoard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordfeudBoard.swift; sourceTree = "<group>"; };
-		99139C181D1F1B080033E114 /* WordfeudSolver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordfeudSolver.swift; sourceTree = "<group>"; };
-		99139C1A1D1F1E0F0033E114 /* WordfeudBagTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordfeudBagTests.swift; sourceTree = "<group>"; };
-		99139C1B1D1F1E0F0033E114 /* WordfeudBoardTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordfeudBoardTests.swift; sourceTree = "<group>"; };
-		99139C1C1D1F1E0F0033E114 /* WordfeudGameTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WordfeudGameTests.swift; sourceTree = "<group>"; };
-		991AE4631D1FC284001C98E4 /* Lookup.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Lookup.xcodeproj; path = Lookup/Lookup.xcodeproj; sourceTree = SOURCE_ROOT; };
-		991AE46F1D1FC2AC001C98E4 /* AnagramDictionary.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = AnagramDictionary.xcodeproj; path = AnagramDictionary/AnagramDictionary.xcodeproj; sourceTree = SOURCE_ROOT; };
-		9938B4011D0AED130018B8D2 /* ScrabbleBoardTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrabbleBoardTests.swift; sourceTree = "<group>"; };
-		9938B4031D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuperScrabbleBoardTests.swift; sourceTree = "<group>"; };
+		992AB98E1D4C1AB20032CCFC /* TestConfiguration.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TestConfiguration.json; sourceTree = "<group>"; };
+		992AB9901D4C1D7B0032CCFC /* XCTestCase+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCTestCase+Extensions.swift"; sourceTree = "<group>"; };
+		9938B4011D0AED130018B8D2 /* BoardTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardTests.swift; sourceTree = "<group>"; };
 		99417A611CF96F4800553AE0 /* AnagramSingleton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnagramSingleton.swift; sourceTree = "<group>"; };
 		99417A631CF96F6400553AE0 /* sowpods_anagrams.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = sowpods_anagrams.bin; sourceTree = "<group>"; };
+		9948DF461D3BAF230091A333 /* Position.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Position.swift; sourceTree = "<group>"; };
+		9951B56A1D2922A4007FD0EC /* Lookup.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lookup.framework; path = "../AnagramDictionary/Lookup/build/Debug-iphoneos/Lookup.framework"; sourceTree = "<group>"; };
+		9951B5931D295AD8007FD0EC /* AnagramDictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnagramDictionary.swift; sourceTree = "<group>"; };
+		9951B5971D296A32007FD0EC /* Lookup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lookup.swift; sourceTree = "<group>"; };
 		995CBC051CCCB19000DF06B8 /* Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
 		995CBC071CCCB1A000DF06B8 /* Solver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Solver.swift; sourceTree = "<group>"; };
 		995CBC091CCCB1C400DF06B8 /* Player.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
 		995CBC0B1CCCB1E000DF06B8 /* Bag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Bag.swift; sourceTree = "<group>"; };
-		995CBC0D1CCCB20A00DF06B8 /* ScrabbleBagTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrabbleBagTests.swift; sourceTree = "<group>"; };
-		995CBC0F1CCCB24800DF06B8 /* ScrabbleGameTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrabbleGameTests.swift; sourceTree = "<group>"; };
-		995CBC111CCCB27300DF06B8 /* ScrabbleSolverTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrabbleSolverTests.swift; sourceTree = "<group>"; };
+		995CBC0D1CCCB20A00DF06B8 /* BagTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BagTests.swift; sourceTree = "<group>"; };
+		995CBC0F1CCCB24800DF06B8 /* GameTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameTests.swift; sourceTree = "<group>"; };
+		995CBC111CCCB27300DF06B8 /* SolverTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SolverTests.swift; sourceTree = "<group>"; };
 		995CBC151CCCB58A00DF06B8 /* Board.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Board.swift; sourceTree = "<group>"; };
 		995CBC171CCCB5FC00DF06B8 /* BoardState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BoardState.swift; sourceTree = "<group>"; };
 		9960AD6A1BA589D800765614 /* PapyrusCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PapyrusCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -153,8 +78,9 @@
 		9960AD741BA589D800765614 /* PapyrusCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PapyrusCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9960AD7B1BA589D800765614 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		99A4C7171D1C77E9002C17E1 /* CombosTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CombosTests.swift; sourceTree = "<group>"; };
-		99A4C7191D1C7A3C002C17E1 /* SuperScrabbleGameTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuperScrabbleGameTests.swift; sourceTree = "<group>"; };
-		99A4C71B1D1C7A5C002C17E1 /* SuperScrabbleBagTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuperScrabbleBagTests.swift; sourceTree = "<group>"; };
+		99DC69731D2902C200FFC5F6 /* JSONSerializable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONSerializable.swift; sourceTree = "<group>"; };
+		99E7309D1D51C4BC0057E727 /* Dictionary+Tuple.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+Tuple.swift"; sourceTree = "<group>"; };
+		99E7309F1D5269DA0057E727 /* Int+Times.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Int+Times.swift"; sourceTree = "<group>"; };
 		99FB2D0D1CF900A2005E611F /* Array+Combinations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+Combinations.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -177,86 +103,12 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		99139BF81D1EF6EC0033E114 /* Board */ = {
+		9951B5691D2922A4007FD0EC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				995CBC151CCCB58A00DF06B8 /* Board.swift */,
-				995CBC171CCCB5FC00DF06B8 /* BoardState.swift */,
-				99139BF21D1EF2D60033E114 /* ScrabbleBoard.swift */,
-				99139BF41D1EF2DE0033E114 /* SuperScrabbleBoard.swift */,
-				99139C161D1F1AF00033E114 /* WordfeudBoard.swift */,
-				99139BFA1D1EF91F0033E114 /* WordsWithFriendsBoard.swift */,
+				9951B56A1D2922A4007FD0EC /* Lookup.framework */,
 			);
-			name = Board;
-			sourceTree = "<group>";
-		};
-		99139BF91D1EF7090033E114 /* Solver */ = {
-			isa = PBXGroup;
-			children = (
-				995CBC071CCCB1A000DF06B8 /* Solver.swift */,
-				99139BEE1D1EF2610033E114 /* ScrabbleSolver.swift */,
-				99139C181D1F1B080033E114 /* WordfeudSolver.swift */,
-				99139BFC1D1EFB330033E114 /* WordsWithFriendsSolver.swift */,
-			);
-			name = Solver;
-			sourceTree = "<group>";
-		};
-		99139C041D1EFE7F0033E114 /* Bag */ = {
-			isa = PBXGroup;
-			children = (
-				995CBC0B1CCCB1E000DF06B8 /* Bag.swift */,
-				99139BFE1D1EFB530033E114 /* ScrabbleBag.swift */,
-				99139C001D1EFB590033E114 /* SuperScrabbleBag.swift */,
-				99139C141D1F1A320033E114 /* WordfeudBag.swift */,
-				99139C021D1EFB7B0033E114 /* WordsWithFriendsBag.swift */,
-			);
-			name = Bag;
-			sourceTree = "<group>";
-		};
-		99139C131D1F17410033E114 /* WordsWithFriends */ = {
-			isa = PBXGroup;
-			children = (
-				99139C0D1D1F173D0033E114 /* WordsWithFriendsBagTests.swift */,
-				99139C0E1D1F173D0033E114 /* WordsWithFriendsBoardTests.swift */,
-				99139C0F1D1F173D0033E114 /* WordsWithFriendsGameTests.swift */,
-			);
-			name = WordsWithFriends;
-			sourceTree = "<group>";
-		};
-		99139C201D1F1E120033E114 /* Wordfeud */ = {
-			isa = PBXGroup;
-			children = (
-				99139C1A1D1F1E0F0033E114 /* WordfeudBagTests.swift */,
-				99139C1B1D1F1E0F0033E114 /* WordfeudBoardTests.swift */,
-				99139C1C1D1F1E0F0033E114 /* WordfeudGameTests.swift */,
-			);
-			name = Wordfeud;
-			sourceTree = "<group>";
-		};
-		991AE4641D1FC284001C98E4 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				991AE4691D1FC284001C98E4 /* Lookup.framework */,
-				991AE46B1D1FC284001C98E4 /* LookupTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		991AE46E1D1FC296001C98E4 /* Libraries */ = {
-			isa = PBXGroup;
-			children = (
-				991AE4631D1FC284001C98E4 /* Lookup.xcodeproj */,
-			);
-			name = Libraries;
-			sourceTree = "<group>";
-		};
-		991AE4701D1FC2AC001C98E4 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				991AE4761D1FC2AC001C98E4 /* AnagramDictionary.framework */,
-				991AE4781D1FC2AC001C98E4 /* AnagramDictionaryTests.xctest */,
-			);
-			name = Products;
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		9960AD601BA589D800765614 = {
@@ -265,6 +117,7 @@
 				9960AD6C1BA589D800765614 /* PapyrusCore */,
 				9960AD781BA589D800765614 /* PapyrusCoreTests */,
 				9960AD6B1BA589D800765614 /* Products */,
+				9951B5691D2922A4007FD0EC /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -281,13 +134,18 @@
 			isa = PBXGroup;
 			children = (
 				99FB2D0D1CF900A2005E611F /* Array+Combinations.swift */,
+				99E7309D1D51C4BC0057E727 /* Dictionary+Tuple.swift */,
+				99E7309F1D5269DA0057E727 /* Int+Times.swift */,
 				9960AD6D1BA589D800765614 /* PapyrusCore.h */,
-				99139C041D1EFE7F0033E114 /* Bag */,
-				99139BF81D1EF6EC0033E114 /* Board */,
+				995CBC0B1CCCB1E000DF06B8 /* Bag.swift */,
+				995CBC151CCCB58A00DF06B8 /* Board.swift */,
+				995CBC171CCCB5FC00DF06B8 /* BoardState.swift */,
 				995CBC051CCCB19000DF06B8 /* Game.swift */,
-				991AE46E1D1FC296001C98E4 /* Libraries */,
+				99DC69731D2902C200FFC5F6 /* JSONSerializable.swift */,
+				9951B5971D296A32007FD0EC /* Lookup.swift */,
 				995CBC091CCCB1C400DF06B8 /* Player.swift */,
-				99139BF91D1EF7090033E114 /* Solver */,
+				9948DF461D3BAF230091A333 /* Position.swift */,
+				995CBC071CCCB1A000DF06B8 /* Solver.swift */,
 				990E2E4E1D0B5BE000E2748F /* WordRepresentation.swift */,
 				9960AD6F1BA589D800765614 /* Info.plist */,
 			);
@@ -298,13 +156,11 @@
 			isa = PBXGroup;
 			children = (
 				99A4C71F1D1C7B0B002C17E1 /* Dictionary */,
-				99A4C71D1D1C7A75002C17E1 /* Scrabble */,
-				99A4C71E1D1C7A7A002C17E1 /* SuperScrabble */,
-				99139C201D1F1E120033E114 /* Wordfeud */,
-				99139C131D1F17410033E114 /* WordsWithFriends */,
+				99A4C71D1D1C7A75002C17E1 /* ConfigurationTests */,
 				99A4C7171D1C77E9002C17E1 /* CombosTests.swift */,
 				990E2E481D0B1A1F00E2748F /* ComputerPlayerTests.swift */,
 				990E2E461D0B14E500E2748F /* HumanPlayerTests.swift */,
+				992AB9901D4C1D7B0032CCFC /* XCTestCase+Extensions.swift */,
 				990E2E4A1D0B1DF100E2748F /* WordTests.swift */,
 				990E2E4C1D0B1F4400E2748F /* SolutionTests.swift */,
 				9960AD7B1BA589D800765614 /* Info.plist */,
@@ -312,31 +168,22 @@
 			path = PapyrusCoreTests;
 			sourceTree = "<group>";
 		};
-		99A4C71D1D1C7A75002C17E1 /* Scrabble */ = {
+		99A4C71D1D1C7A75002C17E1 /* ConfigurationTests */ = {
 			isa = PBXGroup;
 			children = (
-				995CBC0D1CCCB20A00DF06B8 /* ScrabbleBagTests.swift */,
-				9938B4011D0AED130018B8D2 /* ScrabbleBoardTests.swift */,
-				995CBC0F1CCCB24800DF06B8 /* ScrabbleGameTests.swift */,
-				995CBC111CCCB27300DF06B8 /* ScrabbleSolverTests.swift */,
+				995CBC0D1CCCB20A00DF06B8 /* BagTests.swift */,
+				9938B4011D0AED130018B8D2 /* BoardTests.swift */,
+				995CBC0F1CCCB24800DF06B8 /* GameTests.swift */,
+				995CBC111CCCB27300DF06B8 /* SolverTests.swift */,
+				992AB98E1D4C1AB20032CCFC /* TestConfiguration.json */,
 			);
-			name = Scrabble;
-			sourceTree = "<group>";
-		};
-		99A4C71E1D1C7A7A002C17E1 /* SuperScrabble */ = {
-			isa = PBXGroup;
-			children = (
-				99A4C71B1D1C7A5C002C17E1 /* SuperScrabbleBagTests.swift */,
-				9938B4031D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift */,
-				99A4C7191D1C7A3C002C17E1 /* SuperScrabbleGameTests.swift */,
-			);
-			name = SuperScrabble;
+			name = ConfigurationTests;
 			sourceTree = "<group>";
 		};
 		99A4C71F1D1C7B0B002C17E1 /* Dictionary */ = {
 			isa = PBXGroup;
 			children = (
-				991AE46F1D1FC2AC001C98E4 /* AnagramDictionary.xcodeproj */,
+				9951B5931D295AD8007FD0EC /* AnagramDictionary.swift */,
 				99417A611CF96F4800553AE0 /* AnagramSingleton.swift */,
 				99417A631CF96F6400553AE0 /* sowpods_anagrams.bin */,
 			);
@@ -369,7 +216,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				991AE46D1D1FC28C001C98E4 /* PBXTargetDependency */,
 			);
 			name = PapyrusCore;
 			productName = PapyrusCore;
@@ -387,8 +233,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				991AE47C1D1FC33C001C98E4 /* PBXTargetDependency */,
-				991AE47A1D1FC336001C98E4 /* PBXTargetDependency */,
 				9960AD771BA589D800765614 /* PBXTargetDependency */,
 			);
 			name = PapyrusCoreTests;
@@ -403,12 +247,13 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0710;
-				LastUpgradeCheck = 0710;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = CJNevin;
 				TargetAttributes = {
 					9960AD691BA589D800765614 = {
 						CreatedOnToolsVersion = 7.1;
 						LastSwiftMigration = 0800;
+						ProvisioningStyle = Manual;
 					};
 					9960AD731BA589D800765614 = {
 						CreatedOnToolsVersion = 7.1;
@@ -426,16 +271,6 @@
 			mainGroup = 9960AD601BA589D800765614;
 			productRefGroup = 9960AD6B1BA589D800765614 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 991AE4701D1FC2AC001C98E4 /* Products */;
-					ProjectRef = 991AE46F1D1FC2AC001C98E4 /* AnagramDictionary.xcodeproj */;
-				},
-				{
-					ProductGroup = 991AE4641D1FC284001C98E4 /* Products */;
-					ProjectRef = 991AE4631D1FC284001C98E4 /* Lookup.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				9960AD691BA589D800765614 /* PapyrusCore */,
@@ -443,37 +278,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		991AE4691D1FC284001C98E4 /* Lookup.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = Lookup.framework;
-			remoteRef = 991AE4681D1FC284001C98E4 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		991AE46B1D1FC284001C98E4 /* LookupTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = LookupTests.xctest;
-			remoteRef = 991AE46A1D1FC284001C98E4 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		991AE4761D1FC2AC001C98E4 /* AnagramDictionary.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = AnagramDictionary.framework;
-			remoteRef = 991AE4751D1FC2AC001C98E4 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		991AE4781D1FC2AC001C98E4 /* AnagramDictionaryTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = AnagramDictionaryTests.xctest;
-			remoteRef = 991AE4771D1FC2AC001C98E4 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		9960AD681BA589D800765614 /* Resources */ = {
@@ -487,6 +291,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				992AB98F1D4C1AB20032CCFC /* TestConfiguration.json in Resources */,
 				99417A641CF96F6400553AE0 /* sowpods_anagrams.bin in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -498,25 +303,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				99139C011D1EFB590033E114 /* SuperScrabbleBag.swift in Sources */,
-				99139BF31D1EF2D60033E114 /* ScrabbleBoard.swift in Sources */,
-				99139BFB1D1EF91F0033E114 /* WordsWithFriendsBoard.swift in Sources */,
-				99139C151D1F1A320033E114 /* WordfeudBag.swift in Sources */,
-				99139C171D1F1AF00033E114 /* WordfeudBoard.swift in Sources */,
+				9948DF471D3BAF230091A333 /* Position.swift in Sources */,
 				995CBC061CCCB19000DF06B8 /* Game.swift in Sources */,
 				995CBC081CCCB1A000DF06B8 /* Solver.swift in Sources */,
-				99139BF51D1EF2DE0033E114 /* SuperScrabbleBoard.swift in Sources */,
+				99E730A01D5269DA0057E727 /* Int+Times.swift in Sources */,
 				995CBC0A1CCCB1C400DF06B8 /* Player.swift in Sources */,
-				99139C031D1EFB7B0033E114 /* WordsWithFriendsBag.swift in Sources */,
+				99DC69741D2902C200FFC5F6 /* JSONSerializable.swift in Sources */,
+				9951B5981D296A32007FD0EC /* Lookup.swift in Sources */,
 				995CBC181CCCB5FC00DF06B8 /* BoardState.swift in Sources */,
 				995CBC161CCCB58A00DF06B8 /* Board.swift in Sources */,
+				99E7309E1D51C4BC0057E727 /* Dictionary+Tuple.swift in Sources */,
 				995CBC0C1CCCB1E000DF06B8 /* Bag.swift in Sources */,
-				99139C191D1F1B080033E114 /* WordfeudSolver.swift in Sources */,
 				990E2E4F1D0B5BE000E2748F /* WordRepresentation.swift in Sources */,
-				99139BFF1D1EFB530033E114 /* ScrabbleBag.swift in Sources */,
-				99139BEF1D1EF2610033E114 /* ScrabbleSolver.swift in Sources */,
 				99FB2D0E1CF900A2005E611F /* Array+Combinations.swift in Sources */,
-				99139BFD1D1EFB330033E114 /* WordsWithFriendsSolver.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -525,45 +324,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				990E2E471D0B14E500E2748F /* HumanPlayerTests.swift in Sources */,
-				99139C121D1F173D0033E114 /* WordsWithFriendsGameTests.swift in Sources */,
-				99A4C71A1D1C7A3C002C17E1 /* SuperScrabbleGameTests.swift in Sources */,
-				995CBC0E1CCCB20A00DF06B8 /* ScrabbleBagTests.swift in Sources */,
+				995CBC0E1CCCB20A00DF06B8 /* BagTests.swift in Sources */,
 				99417A621CF96F4800553AE0 /* AnagramSingleton.swift in Sources */,
-				995CBC101CCCB24800DF06B8 /* ScrabbleGameTests.swift in Sources */,
+				995CBC101CCCB24800DF06B8 /* GameTests.swift in Sources */,
+				992AB9911D4C1D7B0032CCFC /* XCTestCase+Extensions.swift in Sources */,
 				990E2E491D0B1A1F00E2748F /* ComputerPlayerTests.swift in Sources */,
-				99139C111D1F173D0033E114 /* WordsWithFriendsBoardTests.swift in Sources */,
-				99139C1D1D1F1E0F0033E114 /* WordfeudBagTests.swift in Sources */,
 				99A4C7181D1C77E9002C17E1 /* CombosTests.swift in Sources */,
-				99139C101D1F173D0033E114 /* WordsWithFriendsBagTests.swift in Sources */,
-				995CBC121CCCB27300DF06B8 /* ScrabbleSolverTests.swift in Sources */,
-				99139C1F1D1F1E0F0033E114 /* WordfeudGameTests.swift in Sources */,
-				99A4C71C1D1C7A5C002C17E1 /* SuperScrabbleBagTests.swift in Sources */,
-				99139C1E1D1F1E0F0033E114 /* WordfeudBoardTests.swift in Sources */,
-				9938B4021D0AED130018B8D2 /* ScrabbleBoardTests.swift in Sources */,
+				995CBC121CCCB27300DF06B8 /* SolverTests.swift in Sources */,
+				9951B5941D295AD8007FD0EC /* AnagramDictionary.swift in Sources */,
+				9938B4021D0AED130018B8D2 /* BoardTests.swift in Sources */,
 				990E2E4D1D0B1F4400E2748F /* SolutionTests.swift in Sources */,
 				990E2E4B1D0B1DF100E2748F /* WordTests.swift in Sources */,
-				9938B4041D0AEE6F0018B8D2 /* SuperScrabbleBoardTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		991AE46D1D1FC28C001C98E4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = Lookup;
-			targetProxy = 991AE46C1D1FC28C001C98E4 /* PBXContainerItemProxy */;
-		};
-		991AE47A1D1FC336001C98E4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = AnagramDictionary;
-			targetProxy = 991AE4791D1FC336001C98E4 /* PBXContainerItemProxy */;
-		};
-		991AE47C1D1FC33C001C98E4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = Lookup;
-			targetProxy = 991AE47B1D1FC33C001C98E4 /* PBXContainerItemProxy */;
-		};
 		9960AD771BA589D800765614 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 9960AD691BA589D800765614 /* PapyrusCore */;
@@ -589,7 +366,6 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -637,7 +413,6 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -678,7 +453,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -697,7 +472,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjnevin.PapyrusCore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 2.3;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -711,7 +487,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjnevin.PapyrusCoreTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -723,7 +499,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.cjnevin.PapyrusCoreTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 2.3;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
