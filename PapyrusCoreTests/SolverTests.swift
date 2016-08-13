@@ -269,7 +269,7 @@ class SolverTests: XCTestCase {
     func testSolutionForWord() {
         dropWords()
         let word = solver.word(startingAt: Position(x: 5, y: 7), horizontal: true, with: [])!
-        let solution = solver.solution(for: word.word, rackLetters: [])!
+        let solution = solver.solution(for: word.word, rackTiles: [])!
         let intersections = solver.intersections(forWord: word.word)
         XCTAssertEqual(solution.horizontal, word.word.horizontal)
         XCTAssertEqual(solution.x, word.word.x)
@@ -281,7 +281,7 @@ class SolverTests: XCTestCase {
         dropWords()
         solver.board.set(letter: "z", at: Position(x: 6, y: 6))
         let word = solver.word(startingAt: Position(x: 5, y: 7), horizontal: true, with: [])!
-        let solution = solver.solution(for: word.word, rackLetters: [])
+        let solution = solver.solution(for: word.word, rackTiles: [])
         XCTAssertNil(solution)
     }
     
