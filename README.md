@@ -57,7 +57,8 @@ let game = Game(config: configFileURL, dictionary: dictionary, players: players)
 game.start()
 ```
 
-### Example configuration file:
+### Example configuration file (Scrabble):
+
 ```json
 {
   "allTilesUsedBonus": 50,
@@ -127,11 +128,6 @@ Exposes various actions that a Human player may want to take including: move val
 
 #### Player
 A player can be either a Human or a Computer, Computer's have a difficulty associated with them and are automated. Both have the solutions they have played, the tiles they have in their rack and their score.
-
-### Dependencies
-
-#### Lookup
-Protocol for dictionary lookup.
 
 ### Thanks
 
