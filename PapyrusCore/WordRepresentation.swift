@@ -74,11 +74,11 @@ public struct Word: WordRepresentation, Equatable, JSONSerializable {
     }
     
     public static func object(from json: JSON) -> Word? {
-        guard let
-            word: String = JSONKey.word.in(json),
-            x: Int = JSONKey.x.in(json),
-            y: Int = JSONKey.y.in(json),
-            horizontal: Bool = JSONKey.horizontal.in(json) else {
+        guard
+            let word: String = JSONKey.word.in(json),
+            let x: Int = JSONKey.x.in(json),
+            let y: Int = JSONKey.y.in(json),
+            let horizontal: Bool = JSONKey.horizontal.in(json) else {
                 return nil
         }
         return Word(word: word, x: x, y: y, horizontal: horizontal)
@@ -130,14 +130,14 @@ public struct Solution: WordRepresentation, Equatable, JSONSerializable {
     }
     
     public static func object(from json: JSON) -> Solution? {
-        guard let
-            word: String = JSONKey.word.in(json),
-            x: Int = JSONKey.x.in(json),
-            y: Int = JSONKey.y.in(json),
-            horizontal: Bool = JSONKey.horizontal.in(json),
-            score: Int = JSONKey.score.in(json),
-            blanksJson: [JSON] = JSONKey.blank.in(json),
-            intersectionsJson: [JSON] = JSONKey.intersections.in(json) else {
+        guard
+            let word: String = JSONKey.word.in(json),
+            let x: Int = JSONKey.x.in(json),
+            let y: Int = JSONKey.y.in(json),
+            let horizontal: Bool = JSONKey.horizontal.in(json),
+            let score: Int = JSONKey.score.in(json),
+            let blanksJson: [JSON] = JSONKey.blank.in(json),
+            let intersectionsJson: [JSON] = JSONKey.intersections.in(json) else {
                 return nil
         }
         let intersections = intersectionsJson.flatMap({ Word.object(from: $0) })

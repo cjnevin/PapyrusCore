@@ -118,10 +118,10 @@ private func json<T: Player>(forPlayer player: T) -> JSON {
 }
 
 private func parameters(from json: JSON) -> (rack: [Character], solves: [Solution], score: Int)? {
-    guard let
-        rackJson: [JSON] = JSONKey.rack.in(json),
-        solvesJson: [JSON] = JSONKey.solves.in(json),
-        score: Int = JSONKey.score.in(json) else {
+    guard
+        let rackJson: [JSON] = JSONKey.rack.in(json),
+        let solvesJson: [JSON] = JSONKey.solves.in(json),
+        let score: Int = JSONKey.score.in(json) else {
         return nil
     }
     func letter(from json: JSON) -> Character {
@@ -187,10 +187,10 @@ public struct Computer: Player {
     }
     
     public static func object(from json: JSON) -> Computer? {
-        guard let
-            diff: Double = JSONKey.difficulty.in(json),
-            difficulty = Difficulty(rawValue: diff),
-            (rack, solves, score) = parameters(from: json) else {
+        guard
+            let diff: Double = JSONKey.difficulty.in(json),
+            let difficulty = Difficulty(rawValue: diff),
+            let (rack, solves, score) = parameters(from: json) else {
             return nil
         }
         return Computer(difficulty: difficulty, rack: rack, score: score, solves: solves, consecutiveSkips: 0)

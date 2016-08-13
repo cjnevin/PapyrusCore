@@ -17,7 +17,7 @@ internal extension Array {
     
     /// - returns: Shuffled array using elements in array.
     func shuffled() -> Array {
-        return sorted(isOrderedBefore: {_, _ in arc4random() % 2 == 0})
+        return sorted(by: {_, _ in arc4random() % 2 == 0})
     }
     
     // This thread on stack overflow was very helpful:

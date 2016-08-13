@@ -11,5 +11,5 @@ import Foundation
 extension AnagramDictionary {
     static let singleton = AnagramDictionary.deserialize(
         try! Data(contentsOf: URL(
-            fileURLWithPath: Bundle(for: SolutionTests.self).pathForResource("sowpods_anagrams", ofType: "bin")!)))
+            fileURLWithPath: Bundle(for: SolutionTests.self).path(forResource: "sowpods_anagrams", ofType: "bin")!)))
 }

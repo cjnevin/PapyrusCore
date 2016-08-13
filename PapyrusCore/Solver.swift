@@ -88,11 +88,11 @@ extension SolverType {
                 return .invalidArrangement
             }
             let horizontalWord = word(startingAt: positions.first!, horizontal: true, with: positions)
-            if let word = horizontalWord where word.valid == false {
+            if let word = horizontalWord, word.valid == false {
                 return .invalidWord(word.word)
             }
             let verticalWord = word(startingAt: positions.first!, horizontal: false, with: positions)
-            if let word = verticalWord where word.valid == false {
+            if let word = verticalWord, word.valid == false {
                 return .invalidWord(word.word)
             }
             if let word = horizontalWord?.word {
@@ -132,7 +132,7 @@ extension SolverType {
             if !board.isFirstPlay && intersectedWords.count == 0 {
                 return .invalidArrangement
             }
-            else if board.isFirstPlay && !word.toPositions().contains({ board.isCenter(at: $0) }) {
+            else if board.isFirstPlay && !word.toPositions().contains(where: { board.isCenter(at: $0) }) {
                 return .invalidArrangement
             }
             
@@ -155,7 +155,7 @@ extension SolverType {
     }
     
     func points(for letterPosition: LetterPosition, with blanks: [Position]) -> Int {
-        guard !blanks.contains({ $0.x == letterPosition.x && $0.y == letterPosition.y }) else {
+        guard !blanks.contains(where: { $0.x == letterPosition.x && $0.y == letterPosition.y }) else {
             return 0
         }
         return letterPoints[letterPosition.letter]!
@@ -164,7 +164,7 @@ extension SolverType {
     func intersectingScore(for word: Word, blanks: [Position]) -> Int {
         return word.toLetterPositions()
             .flatMap({ points(for: $0, with: blanks) })
-            .reduce(0, combine: +)
+            .reduce(0, +)
     }
     
     // TODO: Possible Improvement
@@ -308,9 +308,9 @@ extension SolverType {
         
         // Collect characters that are filled, must have at least one character to branch off of
         // Get possible words for given set of letters for this length
-        guard let
-            fixedLetters = characters(startingAt: position, length: length, horizontal: horizontal),
-            words = unvalidatedWords(forLetters: letters, fixedLetters: fixedLetters, length: length) else {
+        guard
+            let fixedLetters = characters(startingAt: position, length: length, horizontal: horizontal),
+            let words = unvalidatedWords(forLetters: letters, fixedLetters: fixedLetters, length: length) else {
                 return nil
         }
         
@@ -365,7 +365,7 @@ extension SolverType {
         }
         
         if serial {
-            completion(possibilities.count > 0 ? possibilities.sorted(isOrderedBefore: { $0.word > $1.word }) : nil)
+            completion(possibilities.count > 0 ? possibilities.sorted(by: { $0.word > $1.word }) : nil)
         }
     }
     
@@ -373,7 +373,7 @@ extension SolverType {
         if solutions.count == 0 {
             return nil
         }
-        let sorted = solutions.sorted(isOrderedBefore: { $0.score > $1.score })
+        let sorted = solutions.sorted(by: { $0.score > $1.score })
         let best = sorted.first!
         if difficulty == .hard || sorted.count == 1 {
             return best
@@ -400,10 +400,10 @@ internal struct Solver: SolverType {
     let operationQueue = OperationQueue()
     
     init?(json: JSON, bag: Bag, dictionary: Lookup) {
-        guard let
-            board = Board(json: json),
-            allTilesUsedBonus: Int = JSONConfigKey.allTilesUsedBonus.in(json),
-            maximumWordLength: Int = JSONConfigKey.maximumWordLength.in(json) else {
+        guard
+            let board = Board(json: json),
+            let allTilesUsedBonus: Int = JSONConfigKey.allTilesUsedBonus.in(json),
+            let maximumWordLength: Int = JSONConfigKey.maximumWordLength.in(json) else {
                 return nil
         }
         self.init(allTilesUsedBonus: allTilesUsedBonus, maximumWordLength: maximumWordLength,

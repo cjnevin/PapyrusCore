@@ -43,7 +43,7 @@ public extension Lookup {
         return self[letters]?.filter({ word in
             var remainingForWord = letters
             for (index, char) in Array(word.characters).enumerated() {
-                if let fixed = fixedLetters[index] where char != fixed {
+                if let fixed = fixedLetters[index], char != fixed {
                     return false
                 }
                 if let firstIndex = remainingForWord.index(of: char) {

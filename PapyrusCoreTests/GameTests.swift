@@ -11,7 +11,7 @@ import XCTest
 
 class GameTests: XCTestCase {
     var testConfigurationURL: URL {
-        return URL(fileURLWithPath: Bundle(for: self.dynamicType).pathForResource("TestConfiguration", ofType: "json")!)
+        return URL(fileURLWithPath: Bundle(for: self.dynamicType).path(forResource: "TestConfiguration", ofType: "json")!)
     }
     
     func eventHandler(_ event: GameEvent) {
@@ -43,7 +43,7 @@ class GameTests: XCTestCase {
     
     func testGameRestoresFromFile() {
         let dictionary = AnagramDictionary.singleton!
-        let turnCountExpectation = expectation(withDescription: "GameRestoresFromFile")
+        let turnCountExpectation = expectation(description: "GameRestoresFromFile")
         let game = try! Game(config: testConfigurationURL, dictionary: dictionary, players: [Computer(), Computer(), Human()], serial: true, eventHandler: { event in
             switch event {
             case let .turnBegan(currentGame):
@@ -58,7 +58,7 @@ class GameTests: XCTestCase {
             }
         })
         game.start()
-        waitForExpectations(withTimeout: 60, handler: nil)
+        waitForExpectations(timeout: 60, handler: nil)
         
         let url = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.cachesDirectory, .userDomainMask, true).first! + "/game.json")
         XCTAssert(game.save(to: url))

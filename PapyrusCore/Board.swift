@@ -242,9 +242,9 @@ public struct Board: BoardType, Equatable {
     }
     
     internal init?(json: JSON) {
-        guard let
-            letterMultipliers: [[Int]] = JSONConfigKey.letterMultipliers.in(json),
-            wordMultipliers: [[Int]] = JSONConfigKey.wordMultipliers.in(json) else {
+        guard
+            let letterMultipliers: [[Int]] = JSONConfigKey.letterMultipliers.in(json),
+            let wordMultipliers: [[Int]] = JSONConfigKey.wordMultipliers.in(json) else {
                 return nil
         }
         self.init(letterMultipliers: letterMultipliers, wordMultipliers: wordMultipliers)

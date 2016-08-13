@@ -62,9 +62,10 @@ internal func json(from: [JSONKey: AnyObject]) -> JSON {
 }
 
 internal func readJSON(from file: URL) -> JSON? {
-    guard let data = try? Data(contentsOf: file),
-        optionalJson = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? JSON,
-        json = optionalJson else {
+    guard
+        let data = try? Data(contentsOf: file),
+        let optionalJson = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? JSON,
+        let json = optionalJson else {
             return nil
     }
     return json

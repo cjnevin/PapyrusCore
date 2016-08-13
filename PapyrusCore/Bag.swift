@@ -26,10 +26,10 @@ public struct Bag: BagType {
     public var remaining: [Character]
     
     internal init?(json: JSON) {
-        guard let
-            lettersStrings: [String: Int] = JSONConfigKey.letters.in(json),
-            letterPointsStrings: [String: Int] = JSONConfigKey.letterPoints.in(json),
-            vowelsStrings: [String] = JSONConfigKey.vowels.in(json) else {
+        guard
+            let lettersStrings: [String: Int] = JSONConfigKey.letters.in(json),
+            let letterPointsStrings: [String: Int] = JSONConfigKey.letterPoints.in(json),
+            let vowelsStrings: [String] = JSONConfigKey.vowels.in(json) else {
                 return nil
         }
         self.init(vowels: vowelsStrings.map({ Character($0) }),

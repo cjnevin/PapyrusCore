@@ -41,7 +41,7 @@ class HumanPlayerTests : XCTestCase {
     }
     
     func sortRack(_ rack: [RackTile]) -> [RackTile] {
-        return rack.sorted(isOrderedBefore: { $0.letter < $1.letter })
+        return rack.sorted(by: { $0.letter < $1.letter })
     }
     
     func charactersForRack(_ rack: [RackTile]) -> [Character] {

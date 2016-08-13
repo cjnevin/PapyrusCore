@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum GameError: ErrorProtocol {
+public enum GameError: Error {
     case initialization
 }
 
@@ -58,10 +58,10 @@ public class Game {
     
     /// Create a new game.
     public init(config file: URL, dictionary: Lookup, players: [Player], serial: Bool = false, eventHandler: EventHandler) throws {
-        guard let
-            json = readJSON(from: file),
-            bag = Bag(json: json),
-            solver = Solver(json: json, bag: bag, dictionary: dictionary) else {
+        guard
+            let json = readJSON(from: file),
+            let bag = Bag(json: json),
+            let solver = Solver(json: json, bag: bag, dictionary: dictionary) else {
                 throw GameError.initialization
         }
         self.configJSON = json
@@ -81,15 +81,15 @@ public class Game {
     
     /// Restore a game from file.
     public init(restoring file: URL, dictionary: Lookup, eventHandler: EventHandler) throws {
-        guard let
-            json = readJSON(from: file),
-            bagRemaining: String = JSONKey.bag.in(json),
-            playersJson: [JSON] = JSONKey.players.in(json),
-            playerIndex: Int = JSONKey.playerIndex.in(json),
-            serial: Bool = JSONKey.serial.in(json),
-            configJson: JSON = JSONKey.config.in(json),
-            bag = Bag(json: configJson),
-            solver = Solver(json: configJson, bag: bag, dictionary: dictionary) else {
+        guard
+            let json = readJSON(from: file),
+            let bagRemaining: String = JSONKey.bag.in(json),
+            let playersJson: [JSON] = JSONKey.players.in(json),
+            let playerIndex: Int = JSONKey.playerIndex.in(json),
+            let serial: Bool = JSONKey.serial.in(json),
+            let configJson: JSON = JSONKey.config.in(json),
+            let bag = Bag(json: configJson),
+            let solver = Solver(json: configJson, bag: bag, dictionary: dictionary) else {
                 throw GameError.initialization
         }
         
@@ -182,7 +182,7 @@ public class Game {
         players = newPlayers
         
         // Does not currently handle ties
-        let bestScore = players.sorted(isOrderedBefore: { $0.score > $1.score }).first
+        let bestScore = players.sorted(by: { $0.score > $1.score }).first
         let winners = players.filter({ $0.score == bestScore?.score })
         eventHandler(.over(self, winners))
     }
@@ -211,7 +211,7 @@ public class Game {
                 }
             }
             solver.solutions(for: ai.rack, completion: { solutions in
-                guard let solutions = solutions, solution = self.solver.solve(with: solutions, difficulty: ai.difficulty) else {
+                guard let solutions = solutions, let solution = self.solver.solve(with: solutions, difficulty: ai.difficulty) else {
                     // Can't find any solutions, attempt to swap tiles
                     let tiles = Array(ai.rack[0..<min(self.bag.remaining.count, ai.rack.count)])
                     guard self.swap(tiles: tiles.map({ $0.letter })) else {
@@ -265,7 +265,7 @@ public class Game {
     /// Request a suggested solution given the users current tiles and the state of the board.
     public func suggestion(completion: (solution: Solution?) -> ()) {
         solver.solutions(for: player.rack, serial: false) { [weak self] solutions in
-            guard let solutions = solutions, best = self?.solver.solve(with: solutions, difficulty: .hard) else {
+            guard let solutions = solutions, let best = self?.solver.solve(with: solutions, difficulty: .hard) else {
                 completion(solution: nil)
                 return
             }

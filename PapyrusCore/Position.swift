@@ -50,11 +50,11 @@ internal extension Array where Element: PositionType {
     }
     
     func sortedByX() -> [Element] {
-        return sorted(isOrderedBefore: { $0.x < $1.x })
+        return sorted(by: { $0.x < $1.x })
     }
     
     func sortedByY() -> [Element] {
-        return sorted(isOrderedBefore: { $0.y < $1.y })
+        return sorted(by: { $0.y < $1.y })
     }
     
     var direction: Direction {
@@ -89,7 +89,7 @@ public struct Position: PositionType {
     }
     
     init?(json: JSON) {
-        guard let x: Int = JSONKey.x.in(json), y: Int = JSONKey.y.in(json) else {
+        guard let x: Int = JSONKey.x.in(json), let y: Int = JSONKey.y.in(json) else {
             return nil
         }
         self.x = x
