@@ -86,6 +86,16 @@ extension SolverType {
             guard !board.isFirstPlay else {
                 return .invalidArrangement
             }
+            
+            func solution(for word: Word?, inverse: Word?) -> Solution? {
+                guard let word = word else {
+                    return nil
+                }
+                let intersections = inverse != nil ? [inverse!] : []
+                let score = totalScore(for: word, intersections: intersections, blanks: allBlanks)
+                return Solution(word: word, score: score, intersections: intersections, blanks: blanks)
+            }
+            
             let horizontalWord = word(startingAt: positions.first!, horizontal: true, with: positions)
             if let word = horizontalWord, word.valid == false {
                 return .invalidWord(word.word)
@@ -94,18 +104,10 @@ extension SolverType {
             if let word = verticalWord, word.valid == false {
                 return .invalidWord(word.word)
             }
-            if let word = horizontalWord?.word {
-                let intersections = verticalWord != nil ? [verticalWord!.word] : []
-                let score = totalScore(for: word, intersections: intersections, blanks: allBlanks)
-                let solution = Solution(word: word, score: score, intersections: intersections, blanks: blanks)
-                return .valid(solution:solution)
-            }
-            else if let word = verticalWord?.word {
-                let score = totalScore(for: word, intersections: [], blanks: allBlanks)
-                let solution = Solution(word: word, score: score, intersections: [], blanks: blanks)
-                return .valid(solution: solution)
-            }
-            return .invalidArrangement
+            
+            let result = (solution(for: horizontalWord?.word, inverse: verticalWord?.word) ??
+                solution(for: verticalWord?.word, inverse: horizontalWord?.word))
+            return result != nil ? .valid(solution: result!) : .invalidArrangement
             
         case .horizontal, .vertical:
             let xSorted = positions.sortedByX()
