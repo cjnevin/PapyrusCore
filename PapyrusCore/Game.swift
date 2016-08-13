@@ -211,7 +211,7 @@ public class Game {
                 }
             }
             solver.solutions(for: ai.rack, completion: { solutions in
-                guard let solutions = solutions, let solution = self.solver.solve(with: solutions, difficulty: ai.difficulty) else {
+                guard let solution = solutions?.best(forDifficulty: ai.difficulty) else {
                     // Can't find any solutions, attempt to swap tiles
                     let tiles = Array(ai.rack[0..<min(self.bag.remaining.count, ai.rack.count)])
                     guard self.swap(tiles: tiles.map({ $0.letter })) else {
@@ -264,8 +264,8 @@ public class Game {
     
     /// Request a suggested solution given the users current tiles and the state of the board.
     public func suggestion(completion: (solution: Solution?) -> ()) {
-        solver.solutions(for: player.rack, serial: false) { [weak self] solutions in
-            guard let solutions = solutions, let best = self?.solver.solve(with: solutions, difficulty: .hard) else {
+        solver.solutions(for: player.rack, serial: false) { solutions in
+            guard let best = solutions?.best() else {
                 completion(solution: nil)
                 return
             }

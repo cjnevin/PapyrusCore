@@ -11,7 +11,7 @@ import XCTest
 
 class WordTests : XCTestCase {
     
-    var word: WordRepresentation!
+    var word: WordType!
     
     override func setUp() {
         super.setUp()

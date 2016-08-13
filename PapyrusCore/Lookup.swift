@@ -42,17 +42,16 @@ public extension Lookup {
     public subscript(letters: [Character], fixedLetters: FixedLetters) -> Anagrams? {
         return self[letters]?.filter({ word in
             var remainingForWord = letters
-            for (index, char) in Array(word.characters).enumerated() {
+            for (index, char) in word.characters.enumerated() {
                 if let fixed = fixedLetters[index], char != fixed {
                     return false
                 }
-                if let firstIndex = remainingForWord.index(of: char) {
-                    // Remove from pool, word still appears to be valid
-                    remainingForWord.remove(at: firstIndex)
-                } else {
+                guard let firstIndex = remainingForWord.index(of: char) else {
                     // We ran out of viable letters for this word
                     return false
                 }
+                // Remove from pool, word still appears to be valid
+                remainingForWord.remove(at: firstIndex)
             }
             return true
         })

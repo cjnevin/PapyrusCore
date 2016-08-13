@@ -316,13 +316,13 @@ class SolverTests: XCTestCase {
                                      RackTile(letter: "n", isBlank: false),
                                      RackTile(letter: "h", isBlank: false)]
         let word = Word(word: "archon", x: 7, y: 7, horizontal: true)
-        XCTAssertEqual(solver.blanks(forWord: word, rackLetters: rackTiles).map({ $0.x }), [9, 11])
+        XCTAssertEqual(word.blankPositions(using: rackTiles).map({ $0.x }), [9, 11])
     }
     
     // MARK: - Solve
     
     func testSolveWithNoItems() {
-        XCTAssertNil(solver.solve(with: []))
+        XCTAssertNil([Solution]().best())
     }
     
     func testScaling() {
@@ -333,26 +333,26 @@ class SolverTests: XCTestCase {
                 XCTAssert(false)
                 return
             }
-            
-            let hard = self.solver.solve(with: solutions)!
+        
+            let hard = solutions.best()!
             let hardExpectation = Solution(word: "created", x: 4, y: 10, horizontal: true, score: 40, intersections: [
                 Word(word: "asked", x: 6, y: 7, horizontal: false)], blanks: [])
             XCTAssertEqual(hard, hardExpectation)
             
-            let medium = self.solver.solve(with: solutions, difficulty: .medium)!
-            let mediumExpectation = Solution(word: "recta", x: 7, y: 10, horizontal: false, score: 30, intersections: [
+            let medium = solutions.best(forDifficulty: .medium)!
+            let mediumExpectation = Solution(word: "react", x: 7, y: 10, horizontal: false, score: 30, intersections: [
                 Word(word: "er", x: 6, y: 10, horizontal: true),
                 Word(word: "de", x: 6, y: 11, horizontal: true)], blanks: [])
             XCTAssertEqual(medium, mediumExpectation)
             
-            let easy = self.solver.solve(with: solutions, difficulty: .easy)!
-            let easyExpectation = Solution(word: "reacted", x: 5, y: 10, horizontal: true, score: 20, intersections: [
+            let easy = solutions.best(forDifficulty: .easy)!
+            let easyExpectation = Solution(word: "catered", x: 1, y: 10, horizontal: true, score: 20, intersections: [
                 Word(word: "asked", x: 6, y: 7, horizontal: false)], blanks: [])
             XCTAssertEqual(easy, easyExpectation)
             
-            let veryEasy = self.solver.solve(with: solutions, difficulty: .veryEasy)!
-            let veryEasyExpectation = Solution(word: "ared", x: 5, y: 11, horizontal: false, score: 10, intersections: [
-                Word(word: "ad", x: 5, y: 11, horizontal: true)], blanks: [])
+            let veryEasy = solutions.best(forDifficulty: .veryEasy)!
+            let veryEasyExpectation = Solution(word: "ered", x: 4, y: 10, horizontal: true, score: 10, intersections: [
+                Word(word: "asked", x: 6, y: 7, horizontal: false)], blanks: [])
             XCTAssertEqual(veryEasy, veryEasyExpectation)
         }
     }
@@ -394,7 +394,10 @@ class SolverTests: XCTestCase {
         for (index, rack) in racks.enumerated() {
             let expectation = expectations[index]
             solver.solutions(for: rack, serial: true, completion: { (solutions) in
-                let best = self.solver.solve(with: solutions!)!
+                guard let best = solutions?.best() else {
+                    XCTFail()
+                    return
+                }
                 XCTAssertEqual(best, expectation)
                 _ = self.solver.play(solution: best)
             })

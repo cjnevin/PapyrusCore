@@ -31,9 +31,8 @@ internal protocol SolverType {
     func validate(positions: LetterPositions, blanks: Positions) -> ValidationResponse
     func lexicographicalString(withLetters letters: [Character]) -> String
     func unvalidatedWords(forLetters letters: [Character], fixedLetters: [Int: Character], length: Int) -> Anagrams?
-    func intersections<T: WordRepresentation>(forWord word: T) -> (valid: Bool, words: [Word])
+    func intersections<T: WordType>(forWord word: T) -> (valid: Bool, words: [Word])
     func solution(for word: Word, rackLetters: [RackTile]) -> Solution?
-    func solve(with solutions: [Solution], difficulty: Difficulty) -> Solution?
     func solutions(for letters: [RackTile], serial: Bool, completion: ([Solution]?) -> ())
     mutating func play(solution: Solution) -> [Character]
 }
@@ -49,9 +48,9 @@ extension SolverType {
     func characters(startingAt origin: Position, length: Int, horizontal: Bool) -> [Int: Character]? {
         let start = boardState.state(at: origin, horizontal: horizontal)
         var position = Position(x: horizontal ? start : origin.x, y: horizontal ? origin.y : start)
+        var positions = [Position]()
         let startPosition = position
         let finalPosition = startPosition.move(amount: length - 1, horizontal: horizontal)
-        var positions = [Position]()
         
         @discardableResult func addPosition(ifTrue: ((Position) -> (Bool))? = nil) -> Bool {
             guard position.axesFallBelow(maximum: board.size) && (ifTrue == nil || ifTrue?(position) == true) else {
@@ -146,14 +145,6 @@ extension SolverType {
 
 // Word
 extension SolverType {
-    /// - returns: Offsets in word that are blank using a players rack tiles.
-    func blanks(forWord word: Word, rackLetters: [RackTile]) -> Positions {
-        var tempPlayer = Human(rackTiles: rackLetters)
-        return word.word.characters.enumerated().flatMap({ (index, letter) in
-            tempPlayer.remove(letter: letter).wasBlank ? word.position(forIndex: index) : nil
-        })
-    }
-    
     func points(for letterPosition: LetterPosition, with blanks: [Position]) -> Int {
         guard !blanks.contains(where: { $0.x == letterPosition.x && $0.y == letterPosition.y }) else {
             return 0
@@ -175,7 +166,7 @@ extension SolverType {
     //
     // This would make it more difficult for human players to compete against AI
     // while also emptying the bag/rack faster (to achieve victory sooner)
-    func totalScore<T: WordRepresentation>(for word: T, with intersections: [Word], blanks: [Position]) -> Int {
+    func totalScore<T: WordType>(for word: T, with intersections: [Word], blanks: [Position]) -> Int {
         var tilesUsed: Int = 0
         var intersectionTotal: Int = 0
         var total: Int = 0
@@ -202,7 +193,7 @@ extension SolverType {
     }
         
     /// - returns: `words` will contain the first invalid intersection if `valid` is `false` or the array of intersections if `valid` is `true`. `valid` should be handled appropriately.
-    func intersections<T: WordRepresentation>(forWord word: T) -> (valid: Bool, words: [Word]) {
+    func intersections<T: WordType>(forWord word: T) -> (valid: Bool, words: [Word]) {
         var words = [Word]()
         for (index, letter) in word.word.characters.enumerated() {
             let pos = word.position(forIndex: index)
@@ -290,7 +281,7 @@ extension SolverType {
     func solution(for word: Word, rackLetters: [RackTile]) -> Solution? {
         let (valid, intersectedWords) = intersections(forWord: word)
         guard valid else { return nil }
-        let blankSpots = blanks(forWord: word, rackLetters: rackLetters)
+        let blankSpots = word.blankPositions(using: rackLetters)
         let score = totalScore(for: word, with: intersectedWords, blanks: blankSpots)
         return Solution(word: word, score: score, intersections: intersectedWords, blanks: blankSpots)
     }
@@ -367,25 +358,6 @@ extension SolverType {
         if serial {
             completion(possibilities.count > 0 ? possibilities.sorted(by: { $0.word > $1.word }) : nil)
         }
-    }
-    
-    func solve(with solutions: [Solution], difficulty: Difficulty = .hard) -> Solution? {
-        if solutions.count == 0 {
-            return nil
-        }
-        let sorted = solutions.sorted(by: { $0.score > $1.score })
-        let best = sorted.first!
-        if difficulty == .hard || sorted.count == 1 {
-            return best
-        }
-        let scaled = Double(best.score) * difficulty.rawValue
-        func diff(solution: Solution) -> Double {
-            return abs(scaled - Double(solution.score))
-        }
-        return sorted.reduce((diff: diff(solution: best), solution: best)) { (current, solution) in
-            let newDiff = diff(solution: solution)
-            return min(current.diff, newDiff) == newDiff ? (newDiff, solution) : current
-        }.solution
     }
 }
 

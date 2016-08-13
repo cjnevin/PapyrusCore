@@ -1,5 +1,5 @@
 //
-//  WordRepresentation.swift
+//  WordType.swift
 //  PapyrusCore
 //
 //  Created by Chris Nevin on 10/06/2016.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-private func matches<T: WordRepresentation>(_ lhs: T, _ rhs: T) -> Bool {
+private func matches<T: WordType>(_ lhs: T, _ rhs: T) -> Bool {
     return (lhs.horizontal == rhs.horizontal &&
         lhs.word == rhs.word &&
         lhs.x == rhs.x &&
@@ -26,7 +26,7 @@ public func == (lhs: Solution, rhs: Solution) -> Bool {
         lhs.blanks.map({ $0.y }) == rhs.blanks.map({ $0.y }))
 }
 
-protocol WordRepresentation {
+protocol WordType {
     var word: String { get }
     var x: Int { get }
     var y: Int { get }
@@ -37,7 +37,15 @@ protocol WordRepresentation {
     func position(forIndex index: Int) -> Position
 }
 
-extension WordRepresentation {
+extension WordType {
+    /// - returns: Offsets in word that are blank using a players rack tiles.
+    func blankPositions(using rackTiles: [RackTile]) -> Positions {
+        var tempPlayer = Human(rackTiles: rackTiles)
+        return word.characters.enumerated().flatMap({ (index, letter) in
+            tempPlayer.remove(letter: letter).wasBlank ? position(forIndex: index) : nil
+        })
+    }
+    
     func length() -> Int {
         return word.characters.count
     }
@@ -59,7 +67,7 @@ extension WordRepresentation {
     }
 }
 
-public struct Word: WordRepresentation, Equatable, JSONSerializable {
+public struct Word: WordType, Equatable, JSONSerializable {
     public let word: String
     public let x: Int
     public let y: Int
@@ -85,7 +93,13 @@ public struct Word: WordRepresentation, Equatable, JSONSerializable {
     }
 }
 
-public struct Solution: WordRepresentation, Equatable, JSONSerializable {
+protocol SolutionType {
+    var score: Int { get }
+    var intersections: [Word] { get }
+    var blanks: [Position] { get }
+}
+
+public struct Solution: WordType, SolutionType, Equatable, JSONSerializable {
     public let word: String
     public let x: Int
     public let y: Int

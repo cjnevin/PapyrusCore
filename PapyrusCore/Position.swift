@@ -58,14 +58,10 @@ internal extension Array where Element: PositionType {
     }
     
     var direction: Direction {
-        if count == 1 { return .both }
-        if count < 1 { return .none }
-        if hasIdenticalXValues {
-            return .vertical
-        } else if hasIdenticalYValues {
-            return .horizontal
+        guard count > 1 else {
+            return count == 1 ? .both : .none
         }
-        return .scattered
+        return (hasIdenticalXValues ? .vertical : (hasIdenticalYValues ? .horizontal : .scattered))
     }
     
     var hasIdenticalXValues: Bool {
