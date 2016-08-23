@@ -297,9 +297,8 @@ extension SolverType {
         var letters = [Character]()
         for character in characters {
             buffer.append(character)
-            let letter = character
-            if letterPoints.keys.contains(letter) {
-                letters.append(letter)
+            if letterPoints.keys.contains(character) {
+                letters.append(character)
                 buffer.removeAll()
             }
         }
