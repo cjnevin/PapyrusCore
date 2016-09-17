@@ -1,4 +1,4 @@
 language: objective-c
 osx_image: xcode8
 script:
-  - xcodebuild -scheme 'PapyrusCore' -sdk iphonesimulator CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO test | xcpretty -c
+  - xcodebuild test -destination 'platform=iOS Simulator,name=iPhone 7,OS=10.0' -scheme 'PapyrusCore' -sdk iphonesimulator CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO | xcpretty -c
