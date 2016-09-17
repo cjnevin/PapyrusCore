@@ -57,7 +57,7 @@ public class Game {
     private var _lastMove: Solution? = nil
     
     /// Create a new game.
-    public init(config file: URL, dictionary: Lookup, players: [Player], serial: Bool = false, eventHandler: EventHandler) throws {
+    public init(config file: URL, dictionary: Lookup, players: [Player], serial: Bool = false, eventHandler: @escaping EventHandler) throws {
         guard
             let json = readJSON(from: file),
             let bag = Bag(json: json),
@@ -80,7 +80,7 @@ public class Game {
     }
     
     /// Restore a game from file.
-    public init(restoring file: URL, dictionary: Lookup, eventHandler: EventHandler) throws {
+    public init(restoring file: URL, dictionary: Lookup, eventHandler: @escaping EventHandler) throws {
         guard
             let json = readJSON(from: file),
             let bagRemaining: String = JSONKey.bag.in(json),
@@ -116,13 +116,14 @@ public class Game {
     
     /// Save the current state of the game to disk. Can be restored using `Game(restoring:)`.
     public func save(to file: URL) -> Bool {
-        let lastMoveJson = _lastMove?.toJSON() ?? NSNull()
-        let output = json(from: [.lastMove: lastMoveJson,
-                                 .config: configJSON,
-                                 .bag: String(bag.remaining),
-                                 .players: players.map({ $0.toJSON() }),
-                                 .playerIndex: playerIndex,
-                                 .serial: serial])
+        let lastMoveJson: JSONValueType = _lastMove?.toJSON() ?? NSNull()
+        let values: [JSONKey: JSONValueType] = [.lastMove: lastMoveJson,
+                                                .config: configJSON,
+                                                .bag: String(bag.remaining),
+                                                .players: players.map({ $0.toJSON() }),
+                                                .playerIndex: playerIndex,
+                                                .serial: serial]
+        let output = json(from: values)
         return writeJSON(output, to: file)
     }
     
@@ -263,13 +264,13 @@ public class Game {
     }
     
     /// Request a suggested solution given the users current tiles and the state of the board.
-    public func suggestion(completion: (solution: Solution?) -> ()) {
+    public func suggestion(completion: @escaping (Solution?) -> ()) {
         solver.solutions(for: player.rack, serial: false) { solutions in
-            guard let best = solutions?.best() else {
-                completion(solution: nil)
+            guard let bestSolution = solutions?.best() else {
+                completion(nil)
                 return
             }
-            completion(solution: best)
+            completion(bestSolution)
         }
     }
     

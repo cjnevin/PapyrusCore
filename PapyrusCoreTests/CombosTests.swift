@@ -21,6 +21,7 @@ class CombosTests: XCTestCase {
     }
     
     func testCombinations() {
-        XCTAssertEqual(["a", "b", "c", "d"].combinations(3), [ ["a", "b", "c"], ["a", "b", "d"], ["a", "c", "d"], ["b", "c", "d"] ])
+        XCTAssertEqual(["a", "b", "c", "d"].combinations(3).flatMap({ $0 }),
+                       ["a", "b", "c", "a", "b", "d", "a", "c", "d", "b", "c", "d"])
     }
 }

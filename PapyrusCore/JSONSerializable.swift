@@ -8,7 +8,9 @@
 
 import Foundation
 
-public typealias JSON = [String: AnyObject]
+public typealias JSONValueType = Any
+
+public typealias JSON = [String: JSONValueType]
 public protocol JSONSerializable {
     static func object(from json: JSON) -> Self?
     func toJSON() -> JSON
@@ -53,11 +55,11 @@ internal enum JSONKey: String {
     }
 }
 
-internal func json(from: [JSONConfigKey: AnyObject]) -> JSON {
+internal func json(from: [JSONConfigKey: JSONValueType]) -> JSON {
     return from.mapTuple({ ($0.rawValue, $1) })
 }
 
-internal func json(from: [JSONKey: AnyObject]) -> JSON {
+internal func json(from: [JSONKey: JSONValueType]) -> JSON {
     return from.mapTuple({ ($0.rawValue, $1) })
 }
 
@@ -72,6 +74,7 @@ internal func readJSON(from file: URL) -> JSON? {
 }
 
 internal func writeJSON(_ json: JSON, to file: URL) -> Bool {
+    // TODO: Sanitise JSON so it only includes valid types (String, NSNumber, NSNull).
     do {
         try JSONSerialization.data(withJSONObject: json, options: .init(rawValue: 0)).write(to: file)
         return true

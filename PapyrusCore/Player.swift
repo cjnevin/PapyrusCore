@@ -20,7 +20,7 @@ public func == (lhs: RackTile, rhs: RackTile) -> Bool {
 }
 
 public struct RackTile: Equatable {
-    private let id = UUID().uuidString
+    fileprivate let id = UUID().uuidString
     public let letter: Character
     public let isBlank: Bool
     public init(letter: Character, isBlank: Bool) {
@@ -58,7 +58,7 @@ public extension Player {
             return (true, rack.remove(at: i).isBlank)
         }
         // Tile must be a blank? Lets check...
-        if rack.map({$0.letter}).contains(Game.blankLetter) {
+        if rack.map({ $0.letter }).contains(Game.blankLetter) {
             return remove(letter: Game.blankLetter)
         }
         return (false, false)
@@ -102,13 +102,13 @@ public extension Player {
     }
 }
 
-private func makePlayers(using values: [JSON], f: (from: JSON) -> Player?) -> [Player] {
-    return values.flatMap({ f(from: $0) })
+private func makePlayers(using values: [JSON], mapping: (JSON) -> Player?) -> [Player] {
+    return values.flatMap{ mapping($0) }
 }
 
 func makePlayers(using JSONSerializables: [JSON]) -> [Player] {
-    return makePlayers(using: JSONSerializables.filter({ $0[JSONKey.difficulty.rawValue] != nil }), f: Computer.object) +
-        makePlayers(using: JSONSerializables.filter({ $0[JSONKey.difficulty.rawValue] == nil }), f: Human.object)
+    return makePlayers(using: JSONSerializables.filter({ $0[JSONKey.difficulty.rawValue] != nil }), mapping: Computer.object) +
+        makePlayers(using: JSONSerializables.filter({ $0[JSONKey.difficulty.rawValue] == nil }), mapping: Human.object)
 }
 
 private func json<T: Player>(forPlayer player: T) -> JSON {
@@ -182,7 +182,7 @@ public struct Computer: Player {
     
     public func toJSON() -> JSON {
         var buffer = json(forPlayer: self)
-        buffer[JSONKey.difficulty.rawValue] = difficulty.rawValue
+        buffer[JSONKey.difficulty.rawValue] = NSNumber(value: difficulty.rawValue)
         return buffer
     }
     

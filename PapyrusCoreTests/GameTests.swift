@@ -11,7 +11,7 @@ import XCTest
 
 class GameTests: XCTestCase {
     var testConfigurationURL: URL {
-        return URL(fileURLWithPath: Bundle(for: self.dynamicType).path(forResource: "TestConfiguration", ofType: "json")!)
+        return URL(fileURLWithPath: Bundle(for: type(of: self)).path(forResource: "TestConfiguration", ofType: "json")!)
     }
     
     func eventHandler(_ event: GameEvent) {
@@ -67,7 +67,7 @@ class GameTests: XCTestCase {
             XCTFail()
             return
         }
-        XCTAssertEqual(String(loadedGame.bag.remaining), String(game.bag.remaining))
+        XCTAssertEqual(String(describing: loadedGame.bag.remaining), String(describing: game.bag.remaining))
         checkBoardEquality(loadedGame.board as! Board, game.board as! Board)
     }
     

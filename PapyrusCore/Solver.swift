@@ -33,7 +33,7 @@ internal protocol SolverType {
     func unvalidatedWords(forLetters letters: [Character], fixedLetters: [Int: Character], length: Int) -> Anagrams?
     func intersections<T: WordType>(forWord word: T) -> (valid: Bool, words: [Word])
     func solution(for word: Word, rackTiles: [RackTile]) -> Solution?
-    func solutions(for letters: [RackTile], serial: Bool, completion: ([Solution]?) -> ())
+    func solutions(for letters: [RackTile], serial: Bool, completion: @escaping ([Solution]?) -> ())
     mutating func play(solution: Solution) -> [Character]
 }
 
@@ -288,7 +288,25 @@ extension SolverType {
         return Solution(word: word, score: score, intersections: intersectedWords, blanks: blankSpots)
     }
     
-    private func solutions(at position: Position, letters: [Character], rackLetters: [RackTile], length: Int, horizontal: Bool) -> [Solution]? {
+    fileprivate func letters(forString string: String) -> [Character]? {
+        return letters(forCharacters: Array(string.characters))
+    }
+    
+    fileprivate func letters(forCharacters characters: [Character]) -> [Character]? {
+        var buffer = [Character]()
+        var letters = [Character]()
+        for character in characters {
+            buffer.append(character)
+            let letter = character
+            if letterPoints.keys.contains(letter) {
+                letters.append(letter)
+                buffer.removeAll()
+            }
+        }
+        return letters.count > 0 && buffer.count == 0 ? letters : nil
+    }
+    
+    fileprivate func solutions(at position: Position, letters: [Character], rackLetters: [RackTile], length: Int, horizontal: Bool) -> [Solution]? {
         assert((horizontal ? position.x : position.y) + length - 1 < board.size)
         
         guard board.isValid(at: position, length: length, horizontal: horizontal) else {
@@ -310,7 +328,7 @@ extension SolverType {
         return words.flatMap({ solution(for: Word(word: $0, x: position.x, y: position.y, horizontal: horizontal), rackTiles: rackLetters) })
     }
     
-    func solutions(for letters: [RackTile], serial: Bool = false, completion: ([Solution]?) -> ()) {
+    func solutions(for letters: [RackTile], serial: Bool = false, completion: @escaping ([Solution]?) -> ()) {
         if letters.count == 0 {
             completion(nil)
             return
@@ -342,17 +360,16 @@ extension SolverType {
             if serial {
                 collect(into: &possibilities, effectiveRange: effectiveRange, length: length)
             } else {
-                let currentQueue = OperationQueue.current
                 operationQueue.addOperation({
                     var innerSolutions = [Solution]()
                     collect(into: &innerSolutions, effectiveRange: effectiveRange, length: length)
-                    currentQueue?.addOperation({
+                    OperationQueue.current?.addOperation {
                         possibilities += innerSolutions
                         count -= 1
                         if count == 0 {
                             completion(possibilities)
                         }
-                    })
+                    }
                 })
             }
         }

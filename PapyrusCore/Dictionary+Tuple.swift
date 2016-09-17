@@ -9,18 +9,14 @@
 import Foundation
 
 internal extension Dictionary {
-    init<S: Sequence where S.Iterator.Element == Element>(_ seq: S) {
+    init<S: Sequence>(_ seq: S) where S.Iterator.Element == Element {
         self.init()
         for (k, v) in seq {
             self[k] = v
         }
     }
     
-    func mapTuple<OutKey: Hashable, OutValue>(_ transform: @noescape (Element) throws -> (OutKey, OutValue)) rethrows -> [OutKey: OutValue] {
+    func mapTuple<OutKey: Hashable, OutValue>(_ transform: (Element) throws -> (OutKey, OutValue)) rethrows -> [OutKey: OutValue] {
         return Dictionary<OutKey, OutValue>(try map(transform))
-    }
-    
-    func filterTuple(_ includeElement: @noescape (Element) throws -> Bool) rethrows -> [Key: Value] {
-        return Dictionary(try filter(includeElement))
     }
 }
