@@ -1,16 +1,4 @@
 language: objective-c
 osx_image: xcode8
 script:
-  xctool
-  -project PapyrusCore.xcodeproj
-  -scheme PapyrusCore
-  -sdk iphonesimulator
-  -destination 'platform=iOS Simulator,name=iPhone 7'
-  build
-  test
-  ONLY_ACTIVE_ARCH=NO
-  CODE_SIGN_IDENTITY=""
-  CODE_SIGNING_REQUIRED=NO
-before_install:
-  - brew update
-  - brew uninstall xctool && brew install --HEAD xctool
+  - xcodebuild -scheme 'PapyrusCore' -sdk iphonesimulator CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO test | xcpretty -c
