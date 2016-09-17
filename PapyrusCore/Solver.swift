@@ -359,10 +359,11 @@ extension SolverType {
             if serial {
                 collect(into: &possibilities, effectiveRange: effectiveRange, length: length)
             } else {
+                let queue = OperationQueue.current
                 operationQueue.addOperation({
                     var innerSolutions = [Solution]()
                     collect(into: &innerSolutions, effectiveRange: effectiveRange, length: length)
-                    OperationQueue.current?.addOperation {
+                    queue?.addOperation {
                         possibilities += innerSolutions
                         count -= 1
                         if count == 0 {

@@ -13,8 +13,8 @@ internal func == (lhs: BoardState, rhs: BoardState) -> Bool {
 }
 
 internal struct BoardState: Equatable {
-    fileprivate let horizontal: [Int]
-    fileprivate let vertical: [Int]
+    fileprivate let horizontal: Array2D<Int>
+    fileprivate let vertical: Array2D<Int>
     fileprivate let size: Int
     
     init(board: Board) {
@@ -32,15 +32,14 @@ internal struct BoardState: Equatable {
         size = board.size
         
         let count = size * size
-        var h = Array(repeating: 0, count: count)
-        var v = Array(repeating: 0, count: count)
+        var h = Array2D(columns: count, rows: count, initialValue: 0)
+        var v = Array2D(columns: count, rows: count, initialValue: 0)
         
         let range = board.layout.indices
         for x in range {
             for y in range {
-                let i = y * size + x
-                h[i] = decrement(from: x, when: { board.isFilled(at: Position(x: $0, y: y)) })
-                v[i] = decrement(from: y, when: { board.isFilled(at: Position(x: x, y: $0)) })
+                h[y, x] = decrement(from: x, when: { board.isFilled(at: Position(x: $0, y: y)) })
+                v[y, x] = decrement(from: y, when: { board.isFilled(at: Position(x: x, y: $0)) })
             }
         }
         
@@ -48,11 +47,7 @@ internal struct BoardState: Equatable {
         vertical = v
     }
     
-    private func index(of position: Position) -> Int {
-        return position.y * size + position.x
-    }
-    
     func state(at position: Position, horizontal h: Bool) -> Int {
-        return (h ? horizontal : vertical)[index(of: position)]
+        return (h ? horizontal : vertical)[position.y, position.x]
     }
 }
