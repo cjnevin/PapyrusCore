@@ -306,7 +306,7 @@ extension SolverType {
     }
     
     fileprivate func solutions(at position: Position, letters: [Character], rackLetters: [RackTile], length: Int, horizontal: Bool) -> [Solution]? {
-        assert((horizontal ? position.x : position.y) + length - 1 < board.size)
+        precondition((horizontal ? position.x : position.y) + length - 1 < board.size, "Invalid position to check for solutions.")
         
         guard board.isValid(at: position, length: length, horizontal: horizontal) else {
             return nil
@@ -314,7 +314,7 @@ extension SolverType {
         
         // Is valid spot should filter these...
         let offset = boardState.state(at: position, horizontal: horizontal)
-        assert(offset == position.x && horizontal || offset == position.y && !horizontal)
+        precondition(offset == position.x && horizontal || offset == position.y && !horizontal, "Invalid offset.")
         
         // Collect characters that are filled, must have at least one character to branch off of
         // Get possible words for given set of letters for this length

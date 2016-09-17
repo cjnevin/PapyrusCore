@@ -250,7 +250,7 @@ public class Game {
         }
         _lastMove = solution
         let dropped = solver.play(solution: solution)
-        assert(dropped.count > 0)
+        precondition(dropped.count > 0, "Unable to play solution, tiles didn't exist in player's rack.")
         players[playerIndex].played(solution: solution, tiles: dropped)
         replenishRack()
         eventHandler(.move(self, solution))

@@ -71,12 +71,12 @@ public extension Player {
     mutating func played(solution: Solution, tiles: [Character]) {
         score += solution.score
         solves.append(solution)
-        tiles.forEach({ assert(remove(letter: $0).removed) })
+        tiles.forEach({ precondition(remove(letter: $0).removed, "Could not remove tile. Play cannot continue.") })
         consecutiveSkips = 0
     }
     
     mutating func swapped(tiles: [Character], with newTiles: [Character]) {
-        tiles.forEach({ assert(remove(letter: $0).removed) })
+        tiles.forEach({ precondition(remove(letter: $0).removed, "Could not swap tile. Play cannot continue.") })
         drew(tiles: newTiles)
         consecutiveSkips = 0
     }
