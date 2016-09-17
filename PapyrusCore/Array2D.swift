@@ -8,22 +8,22 @@
 
 import Foundation
 
-func ==<T: Hashable>(lhs: Array2D<T>, rhs: Array2D<T>) -> Bool {
+public func ==<T: Hashable>(lhs: Array2D<T>, rhs: Array2D<T>) -> Bool {
     return lhs.array == rhs.array
 }
 
-struct Array2D<T: Hashable>: Equatable {
+public struct Array2D<T: Hashable>: Equatable {
     fileprivate var array: [T]
-    let columns: Int
-    let rows: Int
+    public let columns: Int
+    public let rows: Int
     
-    init(columns: Int, rows: Int, initialValue: T) {
+    public init(columns: Int, rows: Int, initialValue: T) {
         self.columns = columns
         self.rows = rows
         array = .init(repeating: initialValue, count: rows * columns)
     }
     
-    subscript(column: Int, row: Int) -> T {
+    public subscript(column: Int, row: Int) -> T {
         get {
             return array[row * columns + column]
         }

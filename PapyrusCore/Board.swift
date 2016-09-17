@@ -9,8 +9,7 @@
 import Foundation
 
 public func == (_ lhs: Board, _ rhs: Board) -> Bool {
-    for (left, right) in zip(lhs.layout, rhs.layout) where left != right { return false }
-    return true
+    return lhs.layout == rhs.layout
 }
 
 private func makePositions(indices: CountableRange<Int>) -> Positions {
@@ -33,7 +32,7 @@ public protocol BoardType: CustomDebugStringConvertible {
     var empty: Character { get }
     var center: Int { get }
     var size: Int { get }
-    var layout: [[Character]] { get set }
+    var layout: Array2D<Character> { get set }
     var blanks: Positions { get set }
     var isFirstPlay: Bool { get }
     var letterMultipliers: [[Int]] { get }
@@ -68,9 +67,20 @@ extension BoardType {
     }
     
     public var debugDescription: String {
-        return layout.map { (line) in
-            line.map({ String($0 == empty ? "_" : $0) }).joined(separator: ",")
-            }.joined(separator: "\n")
+        var buffer = ""
+        for row in 0..<layout.rows {
+            var rowBuffer = [String]()
+            for column in 0..<layout.columns {
+                let letter = layout[column, row]
+                if letter == empty {
+                    rowBuffer.append("_")
+                } else {
+                    rowBuffer.append(String(letter))
+                }
+            }
+            buffer += rowBuffer.joined(separator: ",") + (row < layout.rows - 1 ? "\n" : "")
+        }
+        return buffer
     }
     
     public func letterMultiplier<T: PositionType>(at position: T) -> Int {
@@ -82,11 +92,11 @@ extension BoardType {
     }
     
     public mutating func set<T: PositionType>(letter: Character, at position: T) {
-        layout[position.y][position.x] = letter
+        layout[position.y, position.x] = letter
     }
     
     public func letter<T: PositionType>(at position: T) -> Character? {
-        let value = layout[position.y][position.x]
+        let value = layout[position.y, position.x]
         return value == empty ? nil : value
     }
     
@@ -231,7 +241,7 @@ public struct Board: BoardType, Equatable {
     public let letterMultipliers: [[Int]]
     public let wordMultipliers: [[Int]]
     public let allPositions: Positions
-    public var layout: [[Character]]
+    public var layout: Array2D<Character>
     public var blanks = Positions()
     
     public init?(with config: URL) {
@@ -254,8 +264,16 @@ public struct Board: BoardType, Equatable {
         empty = Character(" ")
         center = Int(letterMultipliers.count / 2)
         size = letterMultipliers.count
-        layout = Array(repeating: Array(repeating: Character(" "), count: size), count: size)
-        allPositions = makePositions(indices: layout.indices)
+        layout = Array2D(columns: size, rows: size, initialValue: Character(" "))
+        
+        var positions = [Position]()
+        for x in 0..<layout.columns {
+            for y in 0..<layout.rows {
+                positions.append(Position(x: x, y: y))
+            }
+        }
+        allPositions = positions
+        
         self.letterMultipliers = letterMultipliers
         self.wordMultipliers = wordMultipliers
     }

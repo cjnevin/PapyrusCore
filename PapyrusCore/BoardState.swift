@@ -35,9 +35,8 @@ internal struct BoardState: Equatable {
         var h = Array2D(columns: count, rows: count, initialValue: 0)
         var v = Array2D(columns: count, rows: count, initialValue: 0)
         
-        let range = board.layout.indices
-        for x in range {
-            for y in range {
+        for x in 0..<board.layout.columns {
+            for y in 0..<board.layout.rows {
                 h[y, x] = decrement(from: x, when: { board.isFilled(at: Position(x: $0, y: y)) })
                 v[y, x] = decrement(from: y, when: { board.isFilled(at: Position(x: x, y: $0)) })
             }
