@@ -353,6 +353,10 @@ extension SolverType {
             }
         }
         
+        // Minor, but possible optimisation here might be to pass in all letters in rack and
+        // then step through each location on the board adding 1 to length until we reach 
+        // the maximum letter count.
+        
         for length in 2...maximumWordLength {
             count += 1
             let effectiveRange = (0...(size - length))
@@ -406,7 +410,7 @@ internal struct Solver: SolverType {
         self.maximumWordLength = maximumWordLength
         self.letterPoints = letterPoints
         self.board = board
-        boardState = BoardState(board: board)
+        self.boardState = BoardState(board: board)
         self.debug = debug
         self.dictionary = dictionary
     }
