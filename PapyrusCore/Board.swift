@@ -13,7 +13,7 @@ public func == (_ lhs: Board, _ rhs: Board) -> Bool {
 }
 
 private func makePositions(indices: CountableRange<Int>) -> Positions {
-    return indices.flatMap({ x in indices.flatMap({ y in Position(x: x, y: y) }) })
+    return indices.flatMap({ x in indices.compactMap({ y in Position(x: x, y: y) }) })
 }
 
 internal struct Edge: OptionSet {
@@ -216,7 +216,7 @@ extension BoardType {
     
     mutating public func play(solution: Solution) -> [Character] {
         blanks.append(contentsOf: solution.blanks)
-        return solution.toLetterPositions().flatMap { position -> Character? in
+        return solution.toLetterPositions().compactMap { position -> Character? in
             guard isEmpty(at: position) else {
                 return nil
             }

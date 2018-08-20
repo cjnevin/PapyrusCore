@@ -92,18 +92,10 @@ public struct Position: PositionType {
         self.y = y
     }
     
-    var bottom: Position {
-        return moveY(amount: 1)
-    }
-    var right: Position {
-        return moveX(amount: 1)
-    }
-    var top: Position {
-        return moveY(amount: -1)
-    }
-    var left: Position {
-        return moveX(amount: -1)
-    }
+    var left: Position { return moveX(amount: -1) }
+    var right: Position { return moveX(amount: 1) }
+    var top: Position { return moveY(amount: -1) }
+    var bottom: Position { return moveY(amount: 1) }
     
     func moveX(amount: Int) -> Position {
         return Position(x: x + amount, y: y)
@@ -117,16 +109,8 @@ public struct Position: PositionType {
         return horizontal ? moveX(amount: amount) : moveY(amount: amount)
     }
     
-    func previous(horizontal: Bool) -> Position {
-        return horizontal ? moveX(amount: -1) : moveY(amount: -1)
-    }
-    
     func next(horizontal: Bool) -> Position {
         return horizontal ? moveX(amount: 1) : moveY(amount: 1)
-    }
-    
-    mutating func previousInPlace(horizontal: Bool) {
-        self = previous(horizontal: horizontal)
     }
     
     mutating func nextInPlace(horizontal: Bool) {

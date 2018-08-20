@@ -69,7 +69,7 @@ extension SolverType {
         length.times({ addPosition() })
         addPositionWhileFilled()
         
-        return positions.last != finalPosition ? nil : Dictionary(positions.flatMap({ p in
+        return positions.last != finalPosition ? nil : Dictionary(positions.compactMap({ p in
             let letter = board.letter(at: p)
             return letter == nil ? nil : (horizontal ? p.x - start : p.y - start, letter!) }))
     }
@@ -165,7 +165,7 @@ extension SolverType {
     func totalScore<T: WordType>(for word: T, intersections: [Word], blanks: [Position]) -> Int {
         func score(forIntersection word: WordType) -> Int {
             return word.toLetterPositions()
-                .flatMap({ points(for: $0, with: blanks) })
+                .compactMap({ points(for: $0, with: blanks) })
                 .reduce(0, +)
         }
         
@@ -223,7 +223,7 @@ extension SolverType {
         } else {
             combinations = Array(Set(anagramLetters.combinations(length).map(lexicographicalString)))
         }
-        let anagrams = combinations.flatMap({ dictionary[$0, fixedLetters] }).flatMap({ $0 })
+        let anagrams = combinations.compactMap({ dictionary[$0, fixedLetters] }).flatMap({ $0 })
         return anagrams.count > 0 ? anagrams : nil
     }
     
@@ -324,7 +324,7 @@ extension SolverType {
                 return nil
         }
         
-        return words.flatMap({ solution(for: Word(word: $0, x: position.x, y: position.y, horizontal: horizontal), rackTiles: rackLetters) })
+        return words.compactMap({ solution(for: Word(word: $0, x: position.x, y: position.y, horizontal: horizontal), rackTiles: rackLetters) })
     }
     
     func solutions(for letters: [RackTile], serial: Bool = false, completion: @escaping ([Solution]?) -> ()) {

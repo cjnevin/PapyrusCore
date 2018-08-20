@@ -9,11 +9,8 @@
 import Foundation
 
 internal extension Array where Element: SolutionType {
-
     func best(forDifficulty difficulty: Difficulty = .hard) -> Element? {
-        guard count > 0 else {
-            return nil
-        }
+        if isEmpty { return nil }
         let sorted = self.sorted(by: { $0.score > $1.score })
         let highestScore = sorted.first!
         if difficulty == .hard || sorted.count == 1 {
@@ -25,5 +22,4 @@ internal extension Array where Element: SolutionType {
         }
         return sorted.min(by: { diff(solution: $0) < diff(solution: $1) })
     }
-    
 }

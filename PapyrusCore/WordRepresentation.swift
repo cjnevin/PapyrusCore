@@ -41,7 +41,7 @@ extension WordType {
     /// - returns: Offsets in word that are blank using a players rack tiles.
     func blankPositions(using rackTiles: [RackTile]) -> Positions {
         var tempPlayer = Human(rackTiles: rackTiles)
-        return word.enumerated().flatMap({ (index, letter) in
+        return word.enumerated().compactMap({ (index, letter) in
             tempPlayer.remove(letter: letter).wasBlank ? position(forIndex: index) : nil
         })
     }
@@ -51,14 +51,14 @@ extension WordType {
     }
     
     func toLetterPositions() -> [LetterPosition] {
-        return word.enumerated().flatMap { (offset, element) in
+        return word.enumerated().compactMap { (offset, element) in
             let pos = position(forIndex: offset)
             return LetterPosition(x: pos.x, y: pos.y, letter: element)
         }
     }
     
     func toPositions() -> [Position] {
-        return (0..<word.count).flatMap{ position(forIndex: $0) }
+        return (0..<word.count).compactMap{ position(forIndex: $0) }
     }
     
     func position(forIndex index: Int) -> Position {
@@ -67,30 +67,11 @@ extension WordType {
     }
 }
 
-public struct Word: WordType, Equatable, JSONSerializable {
+public struct Word: WordType, Equatable {
     public let word: String
     public let x: Int
     public let y: Int
     public let horizontal: Bool
-    
-    public func toJSON() -> JSON {
-        return json(from: [
-            .word: word,
-            .x: x,
-            .y: y,
-            .horizontal: horizontal])
-    }
-    
-    public static func object(from json: JSON) -> Word? {
-        guard
-            let word: String = JSONKey.word.in(json),
-            let x: Int = JSONKey.x.in(json),
-            let y: Int = JSONKey.y.in(json),
-            let horizontal: Bool = JSONKey.horizontal.in(json) else {
-                return nil
-        }
-        return Word(word: word, x: x, y: y, horizontal: horizontal)
-    }
 }
 
 protocol SolutionType {
@@ -99,7 +80,7 @@ protocol SolutionType {
     var blanks: [Position] { get }
 }
 
-public struct Solution: WordType, SolutionType, Equatable, JSONSerializable {
+public struct Solution: WordType, SolutionType, Equatable {
     public let word: String
     public let x: Int
     public let y: Int
@@ -131,7 +112,32 @@ public struct Solution: WordType, SolutionType, Equatable, JSONSerializable {
     public func getPositions() -> Positions {
         return Array(Set(toPositions()).union(intersections.flatMap({ $0.toPositions() })))
     }
+}
+
+// MARK: JSON
+
+extension Word: JSONSerializable {
+    public func toJSON() -> JSON {
+        return json(from: [
+            .word: word,
+            .x: x,
+            .y: y,
+            .horizontal: horizontal])
+    }
     
+    public static func object(from json: JSON) -> Word? {
+        guard
+            let word: String = JSONKey.word.in(json),
+            let x: Int = JSONKey.x.in(json),
+            let y: Int = JSONKey.y.in(json),
+            let horizontal: Bool = JSONKey.horizontal.in(json) else {
+                return nil
+        }
+        return Word(word: word, x: x, y: y, horizontal: horizontal)
+    }
+}
+
+extension Solution: JSONSerializable {
     public func toJSON() -> JSON {
         return json(from: [
             .word: word,
@@ -154,8 +160,8 @@ public struct Solution: WordType, SolutionType, Equatable, JSONSerializable {
             let intersectionsJson: [JSON] = JSONKey.intersections.in(json) else {
                 return nil
         }
-        let intersections = intersectionsJson.flatMap({ Word.object(from: $0) })
-        let blanks: [Position] = blanksJson.flatMap(Position.init)
+        let intersections = intersectionsJson.compactMap({ Word.object(from: $0) })
+        let blanks: [Position] = blanksJson.compactMap(Position.init)
         return Solution(word: word, x: x, y: y, horizontal: horizontal, score: score, intersections: intersections, blanks: blanks)
     }
 }

@@ -103,7 +103,7 @@ public extension Player {
 }
 
 private func makePlayers(using values: [JSON], mapping: (JSON) -> Player?) -> [Player] {
-    return values.flatMap{ mapping($0) }
+    return values.compactMap{ mapping($0) }
 }
 
 func makePlayers(using JSONSerializables: [JSON]) -> [Player] {
@@ -129,7 +129,7 @@ private func parameters(from json: JSON) -> (rack: [Character], solves: [Solutio
         let char: String = JSONKey.letter.in(json)!
         return blank ? Game.blankLetter : Character(char)
     }
-    let solves = solvesJson.flatMap({ Solution.object(from: $0) })
+    let solves = solvesJson.compactMap({ Solution.object(from: $0) })
     let rack = rackJson.map(letter)
     return (rack, solves, score)
 }

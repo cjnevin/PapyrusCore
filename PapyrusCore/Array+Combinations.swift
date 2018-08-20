@@ -9,7 +9,6 @@
 import Foundation
 
 internal extension Array {
-    
     /// Shuffle array in place.
     mutating func shuffle() {
         self = shuffled()
@@ -58,6 +57,4 @@ internal extension Array {
             }
         }
     }
-    
 }
-

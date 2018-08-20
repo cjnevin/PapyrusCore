@@ -177,7 +177,7 @@ public class Game {
         for i in 0..<newPlayers.count {
             newPlayers[i].score -= newPlayers[i].rack
                 .filter({ !$0.isBlank })
-                .reduce(0){ $0.0 + (bag.letterPoints[$0.1.letter] ?? 0) }
+                .reduce(0){ $0 + (bag.letterPoints[$1.letter] ?? 0) }
             newPlayers[i].rack = []
         }
         players = newPlayers
@@ -258,7 +258,7 @@ public class Game {
     
     private func replenishRack() {
         let amount = min(Game.rackAmount - player.rack.count, bag.remaining.count)
-        let newTiles = (0..<amount).flatMap { _ in bag.draw() }
+        let newTiles = (0..<amount).compactMap { _ in bag.draw() }
         players[playerIndex].drew(tiles: newTiles)
         eventHandler(.drewTiles(self, newTiles))
     }
@@ -284,7 +284,7 @@ public class Game {
         guard canSwap else { return false }
         
         oldTiles.forEach { bag.replace($0) }
-        let newTiles = oldTiles.flatMap { _ in bag.draw() }
+        let newTiles = oldTiles.compactMap { _ in bag.draw() }
         players[playerIndex].swapped(tiles: oldTiles, with: newTiles)
         
         print("Swapped \(oldTiles) for \(newTiles)")
