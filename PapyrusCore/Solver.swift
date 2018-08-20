@@ -197,7 +197,7 @@ extension SolverType {
     /// - returns: `words` will contain the first invalid intersection if `valid` is `false` or the array of intersections if `valid` is `true`. `valid` should be handled appropriately.
     func intersections<T: WordType>(forWord word: T) -> (valid: Bool, words: [Word]) {
         var words = [Word]()
-        for (index, letter) in word.word.characters.enumerated() {
+        for (index, letter) in word.word.enumerated() {
             let pos = word.position(forIndex: index)
             if let intersectedWord = self.word(startingAt: pos, horizontal: !word.horizontal, with: [LetterPosition(x: pos.x, y: pos.y, letter: letter)]) {
                 guard intersectedWord.valid else {
@@ -289,7 +289,7 @@ extension SolverType {
     }
     
     fileprivate func letters(forString string: String) -> [Character]? {
-        return letters(forCharacters: Array(string.characters))
+        return letters(forCharacters: Array(string))
     }
     
     fileprivate func letters(forCharacters characters: [Character]) -> [Character]? {

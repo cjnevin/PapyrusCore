@@ -19,7 +19,7 @@ public func ==(lhs: LetterPosition, rhs: LetterPosition) -> Bool {
     return lhs.x == rhs.x && lhs.y == rhs.y && lhs.letter == rhs.letter
 }
 
-public protocol PositionType: Equatable, Hashable {
+public protocol PositionType: Hashable {
     var x: Int { get }
     var y: Int { get }
     init(x: Int, y: Int)

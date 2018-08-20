@@ -97,7 +97,7 @@ public class Game {
         self.serial = serial
         self.eventHandler = eventHandler
         self.bag = bag
-        self.bag.remaining = Array(bagRemaining.characters)
+        self.bag.remaining = Array(bagRemaining)
         self.solver = solver
         self.players = makePlayers(using: playersJson)
         self.playerIndex = playerIndex

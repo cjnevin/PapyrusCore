@@ -41,24 +41,24 @@ extension WordType {
     /// - returns: Offsets in word that are blank using a players rack tiles.
     func blankPositions(using rackTiles: [RackTile]) -> Positions {
         var tempPlayer = Human(rackTiles: rackTiles)
-        return word.characters.enumerated().flatMap({ (index, letter) in
+        return word.enumerated().flatMap({ (index, letter) in
             tempPlayer.remove(letter: letter).wasBlank ? position(forIndex: index) : nil
         })
     }
     
     func length() -> Int {
-        return word.characters.count
+        return word.count
     }
     
     func toLetterPositions() -> [LetterPosition] {
-        return word.characters.enumerated().flatMap { (offset, element) in
+        return word.enumerated().flatMap { (offset, element) in
             let pos = position(forIndex: offset)
             return LetterPosition(x: pos.x, y: pos.y, letter: element)
         }
     }
     
     func toPositions() -> [Position] {
-        return (0..<word.characters.count).flatMap{ position(forIndex: $0) }
+        return (0..<word.count).flatMap{ position(forIndex: $0) }
     }
     
     func position(forIndex index: Int) -> Position {

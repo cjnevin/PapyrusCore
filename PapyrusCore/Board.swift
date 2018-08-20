@@ -67,20 +67,12 @@ extension BoardType {
     }
     
     public var debugDescription: String {
-        var buffer = ""
-        for row in 0..<layout.rows {
-            var rowBuffer = [String]()
-            for column in 0..<layout.columns {
+        return (0..<layout.rows).flatMap { row in
+            (0..<layout.columns).map { column in
                 let letter = layout[column, row]
-                if letter == empty {
-                    rowBuffer.append("_")
-                } else {
-                    rowBuffer.append(String(letter))
-                }
-            }
-            buffer += rowBuffer.joined(separator: ",") + (row < layout.rows - 1 ? "\n" : "")
-        }
-        return buffer
+                return letter == empty ? "_" : String(letter)
+            }.joined(separator: ",")
+        }.joined(separator: "\n")
     }
     
     public func letterMultiplier<T: PositionType>(at position: T) -> Int {

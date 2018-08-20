@@ -34,15 +34,15 @@ public protocol Lookup {
 
 public extension Lookup {
     public subscript(letters: String) -> Anagrams? {
-        return self[Array(letters.characters)]
+        return self[Array(letters)]
     }
     public subscript(letters: String, fixedLetters: FixedLetters) -> Anagrams? {
-        return self[Array(letters.characters), fixedLetters]
+        return self[Array(letters), fixedLetters]
     }
     public subscript(letters: [Character], fixedLetters: FixedLetters) -> Anagrams? {
         return self[letters]?.filter({ word in
             var remainingForWord = letters
-            for (index, char) in word.characters.enumerated() {
+            for (index, char) in word.enumerated() {
                 if let fixed = fixedLetters[index], char != fixed {
                     return false
                 }
