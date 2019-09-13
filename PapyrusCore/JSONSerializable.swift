@@ -66,8 +66,7 @@ internal func json(from: [JSONKey: JSONValueType]) -> JSON {
 internal func readJSON(from file: URL) -> JSON? {
     guard
         let data = try? Data(contentsOf: file),
-        let optionalJson = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? JSON,
-        let json = optionalJson else {
+        let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? JSON else {
             return nil
     }
     return json
